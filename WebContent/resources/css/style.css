@@ -1,0 +1,411 @@
+html,body
+{
+	background-color: white;
+	font:serif;
+	margin:0;
+}
+
+body
+{
+	width : 800px;
+    font-family: 'Cambria', Arial, sans-serif;
+	font-style : normal;
+    color: #181818;
+	
+	/*
+	border: 2px dotted;
+	border-color : #CC0033
+	*/
+}
+
+
+
+
+
+
+/************************************** < div id = "logo" > *********************************************/
+
+
+#logo
+{
+	position : relative;
+	left : 20px;
+}
+
+/*gestion du logo "Lotterie" */
+#logo h1
+{
+	display: inline-block;
+	vertical-align: top;	
+	
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+}
+/*gestion de l'image du trefle entre le "L" et le "tterie"*/
+#L
+{
+	font-size: 50px;
+	/*decalage un peu plus vers la gauche*/
+	position: relative;
+	left : 7px;		
+}
+#tterie
+{
+	font-size: 50px;
+	/*on déplace un peu vers la droite le texte pour qu'il soit collé à l'image "trefle"*/
+	position: relative;
+	right : 4px;
+}
+/*gestion de la position de l'image "trefle"*/
+#trefle
+{
+	display: inline-block;
+	vertical-align: top;	
+
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+
+	/*on déplace un peu vers la gauche le texte pour qu'il soit collé à l'image "trefle"*/
+	position: relative;
+	top : 45px;
+}
+
+
+
+
+/************************************** < div class = "login" > ********************************************/
+
+
+
+
+/*le div logo est aligné avec le div login*/
+#logo
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+
+}
+
+.login
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*les éléments de "login" sont sur la droit du "body"*/
+	float : right;	
+	margin : 0px;
+	padding : 0px;	
+	
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+}
+
+.login th
+{
+	display: inline-block;
+	vertical-align: top;
+	background-color : #a49456;
+
+	/*on met une forte bordure pour créer cet effet de séparation des cases "account", "logout" et "namevorname" les unes des autres"*/
+	border: 5px solid;
+	border-color : white;
+	/*la hauteur des cases est un peu élevée car elles seront déplacées vers le haut par la suite*/
+	height: 40px;
+	
+	/*on déplace les boîtes vers le haut pour que leur extrêmité du haut soit cachée*/
+	position: relative;
+	bottom: 25px;
+	
+	/*réglages du texte*/
+	text-decoration : none;
+	font-size: 15px;
+	color: white;
+	
+}
+
+.login #account 
+{
+	/*la largeur est volontairement plus grande pour que l'extrêmité droite soit cachée*/
+	width : 80px;
+	/*alignement du texte à gauche*/
+	text-align : left;
+	padding-left : 7px; /*le texte ne doit pas être collé au bord*/
+	/*effet arrondi*/
+	border-radius: 20px;
+	/*on déplace la case pour que son extrêmité droite soit cachée*/
+	position : relative;
+	left : 23px;
+	z-index : 1; /*la case est en dessous de l'autre*/
+}
+
+.login #namevorname 
+{
+	/*alignement du texte à droite*/
+	text-align : right;
+	padding-right : 7px; /*le texte ne doit pas être collé au bord*/
+	/*effet arrondi*/
+	border-radius: 20px;
+	/*on déplace la case pour que son extrêmité gauche soit cachée*/
+	position : relative;
+	right : 20px;
+	z-index : 1; /*la case est en dessous de l'autre*/
+}
+
+.login #logout
+{
+	/*le texte est centré*/
+	text-align : center;
+	padding-left : 7px;
+	padding-right : 7px;
+	/*la case "logout" est au dessus des autres profondeurement parlant*/
+	position : relative;
+	z-index : 2;
+}
+
+.login th a
+{
+	/*on a déplacé la case où se situe le lien vers le haut, il faut donc déplacer le lien vers le bas*/
+	position : relative;
+	top : 15px;
+	
+	/*réglages du texte des liens NE PAS SUPPRIMER !!!*/
+	text-decoration : none;
+	color : white;
+}
+
+.login #name-vorname
+{
+	/*on a déplacé la case où se situe les nom et prénom de l'utilisateur vers le haut, il faut donc déplacer les vers le bas*/
+	position : relative;
+	top : 15px;
+}
+
+
+
+
+/************************************** < div class = "top-navi" > **************************************/
+
+.top_navi
+{
+	
+	display: inline-block;
+	vertical-align: top;
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 790px;
+	height : 32px;
+	
+	/*on met on peu d'écart avec le cöté de la page*/
+	margin-left : 15px;
+
+	background-color: #7db149;
+}
+
+.top_navi ul
+{
+	/*les puces de la liste n'apparaissent plus*/
+    list-style-type: none;
+	
+}
+
+.top_navi li
+{	
+    display: inline-block;
+	vertical-align : top;
+	
+	/*réglages du texte*/
+	font-size: 17px;
+	color: white;
+	
+	/*réglage de la hauteur des cases*/
+	height : 32px;
+	
+	/*réglage du fond des cases, même couleur que la barre de navigation*/
+	background-color: #7db149;
+	border: 5px solid;
+	border-color : white;
+	padding-left : 15px;
+	padding-right : 15px;
+	
+	/*réglages de la position des cases par rapport à la barre de navigation*/
+	position : relative;
+	bottom : 21px;
+	right : 35px;
+	margin-left : -10px; /*on rapproche les cases les unes des autres*/
+}
+
+.top_navi a
+{
+	/*on centre le texte dans la case*/
+	position : relative;
+	top : 4px;
+	
+	/*les liens sont de couleur blanche et non soulignés*/
+	color: white;
+    text-decoration: none;
+	
+}
+
+.top_navi #currentpagename
+{
+	/*on centre le texte dans la case*/
+	position : relative;
+	top : 4px;
+	/*la police est de couleur noire*/
+	color: black;
+	/*pour le background-color, la balise css a directement été insérée dans la balise html*/
+}
+
+.top_navi  li:hover, li:hover a
+{
+	color:black;
+	background-color: #bfdaa5;
+}
+
+
+
+/************************************** < div class = "sub-navi" > **************************************/
+
+.sub_navi
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 500px;
+	height : 300px;
+	
+	/*on met on peu d'écart avec le login*/
+	margin-top : 30px;
+	margin-left : 15px;
+	
+	border: 1px solid;
+	border-color : green;
+}
+
+.sub_navi section
+{
+	display : inline-block;
+	vertical-align :top;
+	height : 20px;
+	background-color : #7db149;
+	
+	/*position par rapport à la ligne verte*/
+	position : relative;
+	bottom : 10px;
+	left : 10px;
+	
+	/*espace entre les cases*/
+	margin-right : 5px;
+	/*marge à l'intérieur pour que le texte ne touche pas les bords de la case*/
+	padding-left: 8px;
+	padding-right : 8px;
+	
+}
+.sub_navi a
+{
+	/*position par rapport à la case ou le lien se trouve*/
+	position : relative;
+	bottom : 2px;
+
+	/*les liens sont de couleur blanche et non soulignés*/
+	font-size :14px;
+	color: white;
+    text-decoration: none;
+}
+.sub_navi section:hover, .sub_navi a:hover
+{
+    background-color: #bfdaa5;
+	color: black;
+}
+.sub_navi h5
+{
+	margin :15px;
+}
+
+
+
+
+
+/************************************** < div class = "side" > **************************************/
+
+
+
+
+.side
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 250px;
+	height : 300px;
+}
+#side_calendar
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 265px;
+	height : 100px;
+	
+	/*on met on peu d'écart avec le login*/
+	margin-top : 40px;
+	margin-left : 15px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+}
+#side_tipps
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 265px;
+	height : 100px;
+	
+	/*on met on peu d'écart avec le login*/
+	margin-top : 30px;
+	margin-left : 15px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+}
+.side p
+{
+	margin : 15px;
+}
+.footer
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*réglages texte*/
+	font-size: 10px;
+	text-align : right;
+	
+	
+	/*la largeur est un peu plus petite que celle de "body" = 800px */
+	width : 800px;
+	height : 25px;
+	
+	/*on met on peu d'écart avec le login*/
+	margin-top : 30px;
+	margin-left : 15px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+}
+.footer p
+{
+	margin-right : 15px;
+}
