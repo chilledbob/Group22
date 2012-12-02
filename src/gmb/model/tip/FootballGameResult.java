@@ -1,22 +1,25 @@
 package gmb.model.tip;
-import java.util.Date;
+
+import org.joda.time.DateTime;
 
 
-public class FootballGameResult {
+public class FootballGameResult 
+{
+	protected DateTime matchDay;
+	protected PartialResult homeResult;
+	protected PartialResult visitorResult;
+	
+	@Deprecated
+	protected FootballGameResult(){}
+	
+	public FootballGameResult(DateTime matchDay, PartialResult homeResult, PartialResult visitorResult)
+	{
+		this.matchDay = matchDay;
+		this.homeResult = homeResult;
+		this.visitorResult = visitorResult;
+	}
 
-	private Date matchDay;
-	private PartialResult homeResult;
-	private PartialResult visitorResult;
-	
-	public Date getMatchDay(){
-		return matchDay;
-	}
-	
-	public PartialResult getHomeResult(){
-		return homeResult;
-	}
-	
-	public PartialResult getVisitorResult(){
-		return visitorResult;
-	}
+	public DateTime getMatchDay(){ return matchDay; }
+	public PartialResult getHomeResult(){ return homeResult; }
+	public PartialResult getVisitorResult(){ return visitorResult; }
 }

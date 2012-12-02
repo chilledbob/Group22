@@ -12,6 +12,7 @@ public class FinancialManagement
 	protected ReceiptsDistribution receiptsDistribution;
 	protected LinkedList<InternalTransaction> internalTransactions;
 	protected LinkedList<ExternalTransaction> externalTransactions;
+	protected LinkedList<Winnings> winnings;
 	protected LinkedList<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 
 	@Deprecated
@@ -24,46 +25,38 @@ public class FinancialManagement
 		this.receiptsDistribution = receiptsDistribution;
 		internalTransactions = new LinkedList<InternalTransaction>();
 		externalTransactions = new LinkedList<ExternalTransaction>();
+		winnings = new LinkedList<Winnings>();
 		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
 	}
 
 	/**
-	 * initializes an internal transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
+	 * updates the credit and adds the transaction to the list
 	 * @param transaction
 	 */
-	public void initTransaction(InternalTransaction transaction)
+	public void updateCredit(InternalTransaction transaction)
 	{
-
-		addInternalTransaction(transaction);
-//		transaction.getAffectedCustomer().getBankAccount().
+		credit.subtract(transaction.getAmount());
+		this.addTransaction(transaction);
 	}
+	
+	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request); }
 
-	/**
-	 * initializes an external transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
-	 * @param transaction
-	 */
-	public void initTransaction(ExternalTransaction transaction)
-	{
-
+	public void addTransaction(InternalTransaction transaction){ internalTransactions.add(transaction); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
+	
+	//delegate method:
+	public void addTransaction(Transaction transaction)
+	{ 
+		if(transaction instanceof Winnings)
+			addTransaction((Winnings)transaction);
+		else
+		if(transaction instanceof InternalTransaction)
+			addTransaction((InternalTransaction)transaction);
+		else
+			addTransaction((ExternalTransaction)transaction);		
 	}
-
-	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request)
-	{
-		realAccounDataUpdateRequests.add(request);
-	}
-
-	public void addInternalTransaction(InternalTransaction transaction)
-	{
-		internalTransactions.add(transaction);
-	}
-
-	public void addExternalTransaction(ExternalTransaction transaction)
-	{
-		externalTransactions.add(transaction);
-	}
-
+	
 	public void setCredit(BigDecimal credit){ this.credit = credit; }
 	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; }
 	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; }
@@ -74,5 +67,6 @@ public class FinancialManagement
 	
 	public LinkedList<ExternalTransaction> getExternalTransactions() { return externalTransactions; }	
 	public LinkedList<InternalTransaction> getInternalTransactions() { return internalTransactions; }
+	public LinkedList<Winnings> getWinnings() { return winnings; }
 	public LinkedList<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
 }

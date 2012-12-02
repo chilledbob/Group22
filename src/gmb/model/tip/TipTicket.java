@@ -25,5 +25,6 @@ public abstract class TipTicket
 	public Customer getOwner(){ return owner; }
 	public DateTime getPurchaseDate(){ return purchaseDate; }	
 	
+	public abstract boolean addTip(SingleTip tip);
 	public abstract boolean removeTip(SingleTip tip); 
 }

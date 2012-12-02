@@ -1,21 +1,24 @@
 package gmb.model.financial;
 
-import gmb.model.tip.Tip;
+import java.math.BigDecimal;
 
-public class Winnings 
+import org.joda.time.DateTime;
+
+import gmb.model.tip.Tip;
+import gmb.model.user.Customer;
+
+public class Winnings extends InternalTransaction
 {
 	protected Tip tip;
-	protected InternalTransaction transaction;
 
 	@Deprecated
 	protected Winnings(){}
 
-	public Winnings(Tip tip, InternalTransaction transaction)
+	public Winnings(Tip tip, Customer affectedCustomer, BigDecimal amount, DateTime date)
 	{
+		super( affectedCustomer,  amount,  date);
 		this.tip = tip;
-		this.transaction = transaction;
 	}
 
 	public Tip getTip(){ return tip; }
-	public InternalTransaction getTransaction(){ return transaction; }
 }

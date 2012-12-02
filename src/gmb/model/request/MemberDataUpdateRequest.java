@@ -8,6 +8,9 @@ public class MemberDataUpdateRequest extends Request
 	//ATTRIBUTE
 	protected MemberData updatedData;
 
+	@Deprecated
+	protected MemberDataUpdateRequest(){}
+	
 	//CONSTRUCTORS
 	public MemberDataUpdateRequest(MemberData updatedData, Member member, String note)
 	{

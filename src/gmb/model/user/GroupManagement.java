@@ -3,21 +3,19 @@ package gmb.model.user;
 import java.util.LinkedList;
 
 
-public class GroupManagement {
-
-	private LinkedList<Group> groups;
+public class GroupManagement 
+{
+	protected LinkedList<Group> groups;
 	
-	public LinkedList<Group> getGroups(){
-		return groups;
+//	@Deprecated
+//	protected GroupManagement(){}
+	
+	public GroupManagement()
+	{
+		groups = new LinkedList<Group>();
 	}
 	
-	public void addGroup(Group group){
-		groups.add(group);
-	}
-	
-	public void removeGroup(Group group){
-		groups.remove(group);
-	}
-	
-	
+	public LinkedList<Group> getGroups(){ return groups; }
+	public void addGroup(Group group){ groups.add(group); }
+	public boolean removeGroup(Group group){ return groups.remove(group); }
 }

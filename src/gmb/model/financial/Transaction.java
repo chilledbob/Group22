@@ -2,20 +2,20 @@ package gmb.model.financial;
 import gmb.model.user.Customer;
 
 import java.math.BigDecimal;
-import java.util.Date;
+
+import org.joda.time.DateTime;
 
 
-
-public class Transaction 
+public abstract class Transaction 
 {
 	protected Customer affectedCustomer; 
 	protected BigDecimal amount;
-	protected Date date;
+	protected DateTime date;
 	
 	@Deprecated
 	protected Transaction(){}
 	
-	public Transaction(Customer affectedCustomer, BigDecimal amount, Date date)
+	public Transaction(Customer affectedCustomer, BigDecimal amount, DateTime date)
 	{
 		this.affectedCustomer = affectedCustomer;
 		this.amount = amount;
@@ -24,5 +24,10 @@ public class Transaction
 	
 	public Customer getAffectedCustomer(){ return affectedCustomer; }
 	public BigDecimal getAmount(){ return amount; }
-	public Date getDate(){ return date; }
+	public DateTime getDate(){ return date; }
+	
+	public void init()
+	{
+		affectedCustomer.getBankAccount().updateCredit(this);
+	}
 }

@@ -40,12 +40,21 @@ public abstract class Draw
 		return true;
 	}
 	
+	/**
+	 * returns true if there is still time to submit or "unsubmit" tips, otherwise false
+	 * @return
+	 */
 	public boolean isTimeLeftUntilEvaluation()
 	{
 		Duration duration = new Duration(planedEvaluationDate, Lottery.getInstance().getTimer().getDateTime());
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 	
+	/**
+	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
+	 * @param tip
+	 * @return
+	 */
 	public boolean addTip(SingleTip tip)
 	{ 
 		if(isTimeLeftUntilEvaluation())
@@ -57,6 +66,11 @@ public abstract class Draw
 			return false;
 	}
 	
+	/**
+	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
+	 * @param tip
+	 * @return
+	 */
 	public boolean addTip(GroupTip tip)
 	{ 
 		if(isTimeLeftUntilEvaluation())
@@ -68,6 +82,11 @@ public abstract class Draw
 			return false;
 	}
 	
+	/**
+	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
+	 * @param tip
+	 * @return
+	 */
 	public boolean removeTip(SingleTip tip)
 	{ 
 		if(isTimeLeftUntilEvaluation())
@@ -76,6 +95,11 @@ public abstract class Draw
 			return false;
 	}
 	
+	/**
+	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
+	 * @param tip
+	 * @return
+	 */
 	public boolean removeTip(GroupTip tip)
 	{ 
 		if(isTimeLeftUntilEvaluation())
