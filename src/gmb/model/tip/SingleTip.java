@@ -1,15 +1,15 @@
 package gmb.model.tip;
 
 
-public abstract class SingleTip extends Tip 
+public class SingleTip extends Tip 
 {
-	protected SingleTT tipTicket;
+	protected TipTicket tipTicket;
 	protected GroupTip groupTip = null;
 	
 	@Deprecated
 	protected SingleTip(){}
 	
-	public SingleTip(SingleTT tipTicket, GroupTip groupTip) 
+	public SingleTip(TipTicket tipTicket, GroupTip groupTip) 
 	{
 		super(groupTip.getDraw());
 		
@@ -17,7 +17,7 @@ public abstract class SingleTip extends Tip
 		this.groupTip = groupTip;
 	}
 
-	public SingleTip(SingleTT tipTicket, Draw draw) 
+	public SingleTip(TipTicket tipTicket, Draw draw) 
 	{
 		super(draw);
 		
@@ -36,6 +36,7 @@ public abstract class SingleTip extends Tip
 		if(groupTip == null)
 		{
 			draw.removeTip(this);
+			tipTicket.removeTip(this);
 			
 			return 0;
 		}

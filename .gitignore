@@ -28,15 +28,9 @@ local.properties
 build/
 
 .settings/
-
 .classpath
-
 .project
-
 WebContent/META-INF/
-
 WebContent/WEB-INF/
-
 src/META-INF/
-
 login.properties

@@ -18,7 +18,8 @@ public class TotoTip extends SingleTip
 	
 	public boolean setTip(LinkedList<FootballGameResult> tips)
 	{ 	
-		//check the date before continue! five minutes limit before evaluation of the draw!
+		if(!draw.isTimeLeftUntilEvaluation()) return false;
+		
 		this.tips = tips; 
 		
 		return true;

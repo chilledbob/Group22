@@ -66,6 +66,11 @@ public abstract class PermaTT extends TipTicket
 		return false;
 	}
 	
+	/**
+	 * adds the tip to the "tips" list if the ticket's duration hasn't been expired
+	 * @param tip
+	 * @return
+	 */
 	public boolean addTip(SingleTip tip)
 	{ 
 		if(!isExpired())

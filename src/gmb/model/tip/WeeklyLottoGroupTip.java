@@ -13,6 +13,10 @@ public class WeeklyLottoGroupTip extends GroupTip
 		super(draw, group, minimumStake, overallMinimumStake);
 	}
 	
+	/**
+	 * tries to withdraw the "GroupTip" and removes all existing references in the system.
+	 * returns 0 if successful.
+	 */
 	public int withdraw()
 	{
 		int result = super.withdraw();	

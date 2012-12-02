@@ -1,15 +1,19 @@
 package gmb.model.tip;
 
-public class PartialResult {
-
-	private String clubname;
-	private int score;
+public class PartialResult 
+{
+	protected String clubname;
+	protected int score;
 	
-	public String getClubName(){
-		return clubname;
+	@Deprecated
+	protected PartialResult(){}
+	
+	public PartialResult(String clubname, int score)
+	{
+		this.clubname = clubname;
+		this.score = score;
 	}
 	
-	public int getScore(){
-		return score;
-	}
+	public String getClubName(){ return clubname; }
+	public int getScore(){ return score; }
 }

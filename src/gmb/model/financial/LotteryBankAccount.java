@@ -56,18 +56,21 @@ public class LotteryBankAccount
 	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; }	
 	
 	//delegate method:
-	protected void addTransaction(Transaction transaction)
+	public void addTransaction(Transaction transaction)
 	{ 
+		if(transaction instanceof Winnings)
+			addTransaction((Winnings)transaction);
+		else
 		if(transaction instanceof InternalTransaction)
 			addTransaction((InternalTransaction)transaction);
 		else
 			addTransaction((ExternalTransaction)transaction);		
 	}
 	
-	protected void addTransaction(InternalTransaction transaction){ internalTransactions.add(transaction); }
-	protected void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(InternalTransaction transaction){ internalTransactions.add(transaction); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
 	
-	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); }
 	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request); }
 	
 	public BigDecimal getCredit(){ return credit; }

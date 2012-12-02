@@ -16,7 +16,6 @@ public class TotoEvaluation extends Draw
 		super(planedEvaluationDate);
 	}
 	
-	@Override
 	public boolean evaluate() 
 	{
 		super.evaluate();//set actualEvaluationDate

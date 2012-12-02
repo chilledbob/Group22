@@ -14,7 +14,6 @@ public class WeeklyLottoDraw extends Draw
 		super(planedEvaluationDate);
 	}
 	
-	@Override
 	public boolean evaluate() 
 	{
 		super.evaluate();//set actualEvaluationDate
