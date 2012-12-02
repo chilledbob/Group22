@@ -8,6 +8,9 @@ public class RealAccountDataUpdateRequest extends Request
 	//ATTRIBUTE
 	protected RealAccountData updatedData;
 
+	@Deprecated
+	protected RealAccountDataUpdateRequest(){}
+	
 	//CONSTRUCTORS
 	public RealAccountDataUpdateRequest(RealAccountData updatedData, Member member, String note)
 	{

@@ -26,11 +26,13 @@ public abstract class GroupTip extends Tip
 		this.group = group;
 		this.minimumStake = minimumStake;
 		this.overallMinimumStake = overallMinimumStake;
-
+		
+		tips = new LinkedList<SingleTip>();
 	}
 	
 	/**
 	 * submit "groupTip" to "draw" if all criterias were met
+	 * return false if submission failed, otherwise true
 	 * @return
 	 */
 	public boolean submit()
@@ -112,6 +114,7 @@ public abstract class GroupTip extends Tip
 					return 2;
 			}
 			
+			tip.getTipTicket().removeTip(tip);
 			tips.remove(tip);
 			--currentOverallMinimumStake;
 			

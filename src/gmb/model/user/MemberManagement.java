@@ -12,6 +12,15 @@ public class MemberManagement extends PersistentUserManager
 	protected LinkedList<Member> members;
 	protected LinkedList<MemberDataUpdateRequest> requests;
 	
+//	@Deprecated
+//	protected MemberManagement(){}
+	
+	public MemberManagement()
+	{
+		members = new LinkedList<Member>();
+		requests = new LinkedList<MemberDataUpdateRequest>();
+	}
+	
 	//METHODS
 	public void addMember(Member member)
 	{
@@ -19,19 +28,19 @@ public class MemberManagement extends PersistentUserManager
 		this.add(member);	//the member is added as a persistent user by the persistentusermanager
 	}
 	
-	public void removeMember(Member member)
+	public boolean removeMember(Member member)
 	{	
 		//if the member is in the list and the removal from the database was successful
-		if ( !members.contains(member) &&  remove(member.getIdentifier()) ) 
+		if ( members.contains(member) && remove(member.getIdentifier()) ) 
 		{
-			members.remove(member);			
+			members.remove(member);	
+			return true;
 		}
+		else
+			return false;
 	}
 	
-	public void addMemberDataUpdateRequest(MemberDataUpdateRequest newRequest)
-	{
-		requests.add(newRequest);
-	}
+	public void addMemberDataUpdateRequest(MemberDataUpdateRequest newRequest){ requests.add(newRequest); }
 	
 	public LinkedList<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return requests; }
 }

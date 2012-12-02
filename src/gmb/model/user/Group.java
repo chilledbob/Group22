@@ -42,15 +42,15 @@ public class Group
 	{
 		this.name = name;
 		this.infoText = infoText;
-		this.groupAdmin = groupAdmin;
-
 		foundingDate = Lottery.getInstance().getTimer().getDateTime();
-
+		
+		this.groupAdmin = groupAdmin;
+		groupMembers =  new LinkedList<Customer>();
+		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
 		totoGroupTips = new LinkedList<TotoGroupTip>();
 
-		groupMembers =  new LinkedList<Customer>();
 		groupInvitations = new LinkedList<GroupInvitation>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
@@ -65,7 +65,7 @@ public class Group
 	{
 		GroupMembershipApplication application = new GroupMembershipApplication(this, customer, note);
 
-		customer.getGroupMembershipApplications().add(application);
+		customer.addGroupMembershipApplication(application);
 		this.groupMembershipApplications.add(application);
 	}
 
@@ -78,7 +78,7 @@ public class Group
 	{
 		GroupInvitation application = new GroupInvitation(this, customer, note);
 
-		customer.getGroupInvitations().add(application);
+		customer.addGroupInvitation(application);
 		this.groupInvitations.add(application);
 	}
 
@@ -89,19 +89,28 @@ public class Group
 	 */
 	public void sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
-		GroupAdminRightsTransfereOffering application = new GroupAdminRightsTransfereOffering(this, groupMember, note);
+		GroupAdminRightsTransfereOffering offering = new GroupAdminRightsTransfereOffering(this, groupMember, note);
 
-		groupMember.getGroupAdminRightsTransfereOfferings().add(application);
-		this.groupAdminRightsTransfereOfferings.add(application);
+		groupMember.addGroupAdminRightsTransfereOffering(offering);
+		this.groupAdminRightsTransfereOfferings.add(offering);
 	}
 
 	/**
-	 * resigning a "groupMember" by withdrawing all unhandled group related requests in "groupMember",
-	 * sending a "Notification" to the member and removing it from the "groupMembers" list 
+	 * resign the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
+	 * sending a "Notification" to the member and removing him from the "groupMembers" list.
+	 * if it's the "groupAdmin" who resigns "close" the group. 
 	 * @param groupMember
 	 */
 	public void resign(Customer groupMember)
 	{	
+		if(groupMember == groupAdmin)
+		{
+			close();
+			
+			withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
+			groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
+		}
+		else
 		if(groupMembers.contains(groupMember))
 		{
 			withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
@@ -141,6 +150,10 @@ public class Group
 	 */
 	public void close()
 	{
+		if(closed == true) return;
+		
+		closed = true;
+		
 		for(Customer groupMember : groupMembers)
 		{
 			if(groupMembers.contains(groupMember))
@@ -152,10 +165,7 @@ public class Group
 		
 		groupMembers.clear();
 		
-		withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
-		groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
-
-		closed = true;
+		resign(groupAdmin);
 	}
 
 	//SET/ADD METHODS 

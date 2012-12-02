@@ -13,6 +13,5 @@ public class WeeklyLottoPTT extends PermaTT
 		super(owner, duration);
 	}
 
-	@Override
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
 }

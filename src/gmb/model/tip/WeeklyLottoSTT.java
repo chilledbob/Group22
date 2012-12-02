@@ -13,6 +13,6 @@ public class WeeklyLottoSTT extends SingleTT
 		super(owner);
 	}
 
-	@Override
-	public void setTip(SingleTip tip){ super.setTip(tip, WeeklyLottoTip.class);}
+	public void setTip(SingleTip tip){ super.setTip(tip, WeeklyLottoTip.class); }
+	public boolean addTip(SingleTip tip){ super.setTip(tip, WeeklyLottoTip.class); return true; }
 }

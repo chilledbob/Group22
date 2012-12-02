@@ -20,7 +20,8 @@ public class DailyLottoTip extends SingleTip
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
 		
-		//check the date before continue! five minutes limit before evaluation of the draw!
+		if(!draw.isTimeLeftUntilEvaluation()) return false;
+		
 		this.tip = tip; 
 		
 		return true;

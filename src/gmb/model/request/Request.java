@@ -2,7 +2,7 @@ package gmb.model.request;
 import gmb.model.user.Member;
 
 
-public class Request extends Notification
+public abstract class Request extends Notification
 { 
 	//ATTRIBUTES
 	protected Member member;
@@ -33,6 +33,10 @@ public class Request extends Notification
 					return RequestState.UNHANDELED;
 	}
 
+	/**
+	 * returns the value of the integer which internally encodes the state
+	 * @return
+	 */
 	public int getStateAsInt(){ return state; }
 	
 	//SET METHODS
@@ -51,7 +55,7 @@ public class Request extends Notification
 
 	//OTHER METHODS
 	public void resetState(){ state = 0; }
-	public void withdraw(){ state = 1; }
-	public void accept(){ state = 2; }
-	public void refuse(){ state = 3; }
+	public boolean withdraw(){ if(state == 0) return false; state = 1; return true;}
+	public boolean accept(){ if(state == 0) return false; state = 2; return true;}
+	public boolean refuse(){ if(state == 0) return false; state = 3; return true;}
 }
