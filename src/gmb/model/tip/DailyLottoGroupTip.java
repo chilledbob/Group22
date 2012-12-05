@@ -1,9 +1,12 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+
 import gmb.model.user.Group;
 
+@Entity
 public class DailyLottoGroupTip extends GroupTip 
-{
+{	
 	@Deprecated
 	protected DailyLottoGroupTip(){}
 

@@ -1,5 +1,5 @@
 package gmb.controller;
-import lotterie.model.user.MyUser;
+import gmb.model.user.*;
 
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
@@ -28,7 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 			@RequestParam("content_active") Boolean contentActive){
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("user/employee");
-		MyUser user = pManager.get(MyUser.class, uid);
+		Member user = pManager.get(Member.class, uid);
 		modelAndView.addObject("currentUser",user);
 		modelAndView.addObject("sub_navi_active",true);
 		modelAndView.addObject("top_navi_name",topNaviName);

@@ -11,24 +11,47 @@ import gmb.model.tip.WeeklyLottoSTT;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import org.salespointframework.core.user.Capability;
 
-
+@Entity
 public class Customer extends Member 
 {
+
+	@OneToOne(mappedBy="owner")
+	@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
 	protected LotteryBankAccount lotteryBankAccount;
+	@ManyToMany(mappedBy="groupMembers")
 	protected LinkedList<Group> groups;
 	
-	protected LinkedList<WeeklyLottoSTT> weeklyLottoSTTs;
-	protected LinkedList<DailyLottoSTT> dailyLottoSTTs;
-	protected LinkedList<TotoSTT> totoSTTs;
-	protected LinkedList<WeeklyLottoPTT> weeklyLottoPTTs;
-	protected LinkedList<DailyLottoPTT> dailyLottoPTTs;
+	@OneToMany(mappedBy="owner")
+	protected List<WeeklyLottoSTT> weeklyLottoSTTs;
+	@OneToMany(mappedBy="owner")
+	protected List<DailyLottoSTT> dailyLottoSTTs;
+	@OneToMany(mappedBy="owner")
+	protected List<TotoSTT> totoSTTs;
+	@OneToMany(mappedBy="owner")
+	protected List<WeeklyLottoPTT> weeklyLottoPTTs;
+	@OneToMany(mappedBy="owner")
+	protected List<DailyLottoPTT> dailyLottoPTTs;
 	
-	protected LinkedList<GroupInvitation> groupInvitations;
-	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
-	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
+	@OneToMany
+	protected List<GroupInvitation> groupInvitations;
+	@OneToMany
+	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
+	@OneToMany
+	protected List<GroupMembershipApplication> groupMembershipApplications;
+	
+
+	@Deprecated
+	protected Customer(){}
 	
 	public Customer(String nickName, String password, MemberData memberData, LotteryBankAccount lotteryBankAccount)
 	{
@@ -71,13 +94,13 @@ public class Customer extends Member
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
  	public LinkedList<Group> getGroups(){ return groups; }
  	
-	public LinkedList<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return weeklyLottoSTTs; }
-	public LinkedList<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }
-	public LinkedList<TotoSTT> getTotoSTTs(){ return totoSTTs; }
-	public LinkedList<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
-	public LinkedList<DailyLottoPTT> getDailyLottoPTT(){ return dailyLottoPTTs; }
+	public List<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return weeklyLottoSTTs; }
+	public List<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }
+	public List<TotoSTT> getTotoSTTs(){ return totoSTTs; }
+	public List<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
+	public List<DailyLottoPTT> getDailyLottoPTT(){ return dailyLottoPTTs; }
 	
-	public LinkedList<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
-	public LinkedList<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public LinkedList<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
+	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
+	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 }

@@ -7,20 +7,39 @@ import gmb.model.user.Customer;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.ElementCollection;
 
+@Entity
 public class LotteryBankAccount 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int lotteryBankAccountId;
+	
+	@OneToOne 
+    @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier") 
 	protected Customer owner;
 	protected BigDecimal credit;	
+	@OneToOne 
+    @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
-	
-	protected LinkedList<TicketPurchase> ticketPurchases;
-	protected LinkedList<Winnings> winnings;
-	protected LinkedList<ExternalTransaction> externalTransactions;
-
-	protected LinkedList<ExternalTransactionRequest> externalTransactionRequests;	
-	protected LinkedList<RealAccountDataUpdateRequest> realAccountDataUpdateRequests;
+	@ElementCollection
+	protected List<TicketPurchase> ticketPurchases;
+	@ElementCollection
+	protected List<Winnings> winnings;
+	@ElementCollection
+	protected List<ExternalTransaction> externalTransactions;
+	@ElementCollection
+	protected List<ExternalTransactionRequest> externalTransactionRequests;	
+	@ElementCollection
+	protected List<RealAccountDataUpdateRequest> realAccountDataUpdateRequests;
 	
 	@Deprecated
 	protected LotteryBankAccount(){}
@@ -114,10 +133,10 @@ public class LotteryBankAccount
 	public Customer getOwner(){ return owner; }
 	public RealAccountData getRealAccountData(){ return realAccountData; }
 	
-	public LinkedList<TicketPurchase> getTicketPurchases(){ return ticketPurchases; }
-	public LinkedList<ExternalTransaction> getExternalTransactions(){ return externalTransactions; }	
-	public LinkedList<Winnings> getWinnings(){ return winnings; }
+	public List<TicketPurchase> getTicketPurchases(){ return ticketPurchases; }
+	public List<ExternalTransaction> getExternalTransactions(){ return externalTransactions; }	
+	public List<Winnings> getWinnings(){ return winnings; }
 	
-	public LinkedList<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
-	public LinkedList<RealAccountDataUpdateRequest> getRealAccountDataUpdateRequest(){ return realAccountDataUpdateRequests; }
+	public List<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
+	public List<RealAccountDataUpdateRequest> getRealAccountDataUpdateRequest(){ return realAccountDataUpdateRequests; }
 }

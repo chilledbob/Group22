@@ -2,6 +2,12 @@ package gmb.model.tip;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import gmb.model.Lottery;
 import gmb.model.financial.TicketPurchase;
 import gmb.model.user.Customer;
@@ -9,10 +15,17 @@ import gmb.model.user.Customer;
 
 import org.joda.time.DateTime;
 
-
+@Entity
 public abstract class TipTicket 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int tipTicketId;
+	
+	//TemporalType nur Date,Time oder Timestamp
+	//@Temporal(value = TemporalType.DATE)
 	protected DateTime purchaseDate;
+	
+	@ManyToOne
 	protected Customer owner;
 	protected int drawType;
 	

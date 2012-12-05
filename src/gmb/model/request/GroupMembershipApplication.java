@@ -1,8 +1,11 @@
 package gmb.model.request;
 
 import gmb.model.user.Customer;
+import javax.persistence.Entity;
+
 import gmb.model.user.Group;
 
+@Entity
 public class GroupMembershipApplication extends GroupRequest 
 {
 	@Deprecated

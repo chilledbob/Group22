@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import gmb.model.Lottery;
 import gmb.model.user.Customer;
 
+import javax.persistence.Entity;
+
+@Entity
 public class DailyLottoPTT extends PermaTT 
 {
 	@Deprecated

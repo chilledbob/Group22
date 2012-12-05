@@ -3,8 +3,11 @@ package gmb.model.tip;
 import java.math.BigDecimal;
 
 import gmb.model.Lottery;
+import javax.persistence.Entity;
+
 import gmb.model.user.Customer;
 
+@Entity
 public class WeeklyLottoSTT extends SingleTT 
 {
 	//CONSTRUCTORS

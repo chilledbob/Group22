@@ -1,12 +1,17 @@
 package gmb.model.financial;
 
+import javax.persistence.Embeddable;
+import javax.persistence.OneToOne;
+
 import java.math.BigDecimal;
 
 import gmb.model.Lottery;
 import gmb.model.tip.SingleTip;
 
+@Embeddable
 public class Winnings extends InternalTransaction
 {
+	@OneToOne
 	protected SingleTip tip;
 
 	@Deprecated

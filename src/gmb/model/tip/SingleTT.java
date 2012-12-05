@@ -1,9 +1,12 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+
 import gmb.model.user.Customer;
 
+@Entity
 public abstract class SingleTT extends TipTicket
-{
+{	
 	protected SingleTip tip = null;
 
 	@Deprecated

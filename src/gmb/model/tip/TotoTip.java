@@ -1,5 +1,8 @@
 package gmb.model.tip;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class TotoTip extends SingleTip 
 {
 	@Deprecated

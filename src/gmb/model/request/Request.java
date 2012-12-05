@@ -2,9 +2,11 @@ package gmb.model.request;
 import org.joda.time.DateTime;
 
 import gmb.model.Lottery;
+import javax.persistence.Entity;
+
 import gmb.model.user.Member;
 
-
+@Entity
 public abstract class Request extends Notification
 { 
 	protected Member member;

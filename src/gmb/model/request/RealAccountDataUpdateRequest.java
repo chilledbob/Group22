@@ -1,8 +1,11 @@
 package gmb.model.request;
 
+import javax.persistence.Embeddable;
+
 import gmb.model.financial.RealAccountData;
 import gmb.model.user.Customer;
 
+@Embeddable
 public class RealAccountDataUpdateRequest extends Request 
 {	
 	protected RealAccountData updatedData;

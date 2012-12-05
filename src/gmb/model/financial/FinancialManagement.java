@@ -4,6 +4,7 @@ import gmb.model.request.RealAccountDataUpdateRequest;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class FinancialManagement 
@@ -17,12 +18,12 @@ public class FinancialManagement
 	protected TipTicketPrices tipTicketPrices;
 	protected ReceiptsDistribution receiptsDistribution;
 	
-	protected LinkedList<TicketPurchase> ticketPurchases;
-	protected LinkedList<Winnings> winnings;
-	protected LinkedList<ExternalTransaction> externalTransactions;
+	protected List<TicketPurchase> ticketPurchases;
+	protected List<Winnings> winnings;
+	protected List<ExternalTransaction> externalTransactions;
 
-	protected LinkedList<ExternalTransactionRequest> externalTransactionRequests;	
-	protected LinkedList<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
+	protected List<ExternalTransactionRequest> externalTransactionRequests;	
+	protected List<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 
 	@Deprecated
 	protected FinancialManagement(){}
@@ -109,10 +110,10 @@ public class FinancialManagement
 	public TipTicketPrices getTipTicketPrices() { return tipTicketPrices; }
 	public ReceiptsDistribution getReceiptsDistribution() { return receiptsDistribution; }
 	
-	public LinkedList<ExternalTransaction> getExternalTransactions() { return externalTransactions; }	
-	public LinkedList<TicketPurchase> getTicketPurchases() { return ticketPurchases; }
-	public LinkedList<Winnings> getWinnings() { return winnings; }
+	public List<ExternalTransaction> getExternalTransactions() { return externalTransactions; }	
+	public List<TicketPurchase> getTicketPurchases() { return ticketPurchases; }
+	public List<Winnings> getWinnings() { return winnings; }
 	
-	public LinkedList<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
-	public LinkedList<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
+	public List<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
+	public List<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
 }
