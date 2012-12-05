@@ -3,6 +3,7 @@ package gmb.model.tip;
 import gmb.model.Lottery;
 import gmb.model.financial.Winnings;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +23,8 @@ public abstract class Draw
 	protected int drawId;
 	
 	protected boolean evaluated = false;
-	protected DateTime planedEvaluationDate;	
-	protected DateTime actualEvaluationDate = null;	
+	protected Date planedEvaluationDate;	
+	protected Date actualEvaluationDate = null;	
 	
 	protected List<Winnings> winnings;
 	
@@ -37,7 +38,7 @@ public abstract class Draw
 	
 	protected Draw(DateTime planedEvaluationDate)
 	{
-		this.planedEvaluationDate = planedEvaluationDate;
+		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		winnings =  new LinkedList<Winnings>();
 		
 		singleTips = new LinkedList<SingleTip>();
@@ -46,7 +47,7 @@ public abstract class Draw
 
 	public boolean evaluate()
 	{
-		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime();
+		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		evaluated = true;
 
 		return true;
@@ -68,7 +69,7 @@ public abstract class Draw
 	 */
 	public boolean isTimeLeftUntilEvaluation()
 	{
-		Duration duration = new Duration(planedEvaluationDate, Lottery.getInstance().getTimer().getDateTime());
+		Duration duration = new Duration(new DateTime(planedEvaluationDate), Lottery.getInstance().getTimer().getDateTime());
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 	
@@ -164,8 +165,8 @@ public abstract class Draw
 	public boolean getEvaluated(){ return evaluated; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	
-	public DateTime getPlanedEvaluationDate(){ return planedEvaluationDate; }
-	public DateTime getActualEvaluationDate(){ return actualEvaluationDate; }
+	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
+	public DateTime getActualEvaluationDate(){ return new DateTime(actualEvaluationDate); }
 	
 	public abstract int[] getResult();
 }

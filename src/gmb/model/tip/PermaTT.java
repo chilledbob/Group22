@@ -19,7 +19,7 @@ public abstract class PermaTT extends TipTicket
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
 	//@Temporal(value = TemporalType.DATE)
-	protected DateTime durationDate;
+//	protected Date durationDate;
 	
 	protected boolean expired = false;
 
@@ -39,17 +39,8 @@ public abstract class PermaTT extends TipTicket
 	public boolean isExpired()
 	{
 		if(!expired)
-		{	
-			Duration duration;
-			
-			switch(durationType)
-			{
-			case 1 : duration = new Duration(millisecondsOfDay*182);
-			case 2 : duration = new Duration(millisecondsOfDay*365);
-			default : duration = new Duration(millisecondsOfDay*30);
-			}
-			
-			DateTime durationDate = purchaseDate.plus(duration);
+		{				
+			DateTime durationDate = this.getDurationDate();
 			
 			if(durationDate.isBeforeNow())
 				expired = true;
@@ -58,6 +49,20 @@ public abstract class PermaTT extends TipTicket
 		}
 		else
 			return true;
+	}
+	
+	public DateTime getDurationDate()
+	{
+		Duration duration;
+		
+		switch(durationType)
+		{
+		case 1 : duration = new Duration(millisecondsOfDay*182);
+		case 2 : duration = new Duration(millisecondsOfDay*365);
+		default : duration = new Duration(millisecondsOfDay*30);
+		}
+		
+		return new DateTime(purchaseDate).plus(duration);
 	}
 	
 	public boolean removeTip(SingleTip tip)

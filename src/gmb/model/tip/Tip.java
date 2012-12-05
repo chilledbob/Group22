@@ -1,5 +1,7 @@
 package gmb.model.tip;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,7 +20,7 @@ public abstract class Tip
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipId;
 	
-	protected DateTime submissionDate;
+	protected Date submissionDate;
 	@ManyToOne
 	protected Draw draw;
 	
@@ -29,7 +31,7 @@ public abstract class Tip
 	{
 		this.draw = draw;
 		
-		submissionDate = Lottery.getInstance().getTimer().getDateTime();
+		submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
 	public Draw getDraw(){ return draw; }
@@ -41,4 +43,6 @@ public abstract class Tip
 		else
 			return 0;
 	}	
+	
+	public DateTime getSubmissionDate(){ return new DateTime(submissionDate); }
 }

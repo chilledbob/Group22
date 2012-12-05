@@ -1,5 +1,7 @@
 package gmb.model.user;
 
+import java.util.Date;
+
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +24,7 @@ public class MemberData
 	protected String firstName;
 	protected String lastName;
 	@Temporal(value = TemporalType.DATE)
-	protected DateTime birthDate;
+	protected Date birthDate;
 	protected String phoneNumber;
 	protected String eMail;
 	@OneToOne 
@@ -33,20 +35,19 @@ public class MemberData
 	@Deprecated
 	protected MemberData(){}
 	
-	public MemberData(String memberFirstName, String memberLastName, DateTime memberBirthDate, String memberPhoneNumber, String memberEMail, Adress memberAdress)
+	public MemberData(String firstName, String lastName, DateTime birthDate, String phoneNumber, String eMail, Adress adress)
 	{	
-		firstName = memberFirstName;
-		lastName = memberLastName;
-		birthDate = memberBirthDate;
-		phoneNumber = memberPhoneNumber;
-		eMail = memberEMail;
-		adress = memberAdress;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate.toDate();
+		this.phoneNumber = phoneNumber;
+		this.eMail = eMail;
+		this.adress = adress;
 	}
 	
-	//GET METHODS
 	public String getFirstName(){ return firstName; }
 	public String getLastName(){ return lastName; }
-	public DateTime getBirthDate(){ return birthDate; }
+	public DateTime getBirthDate(){ return new DateTime(birthDate); }
 	public String getPhoneNumber(){ return phoneNumber; }
 	public String getEMail(){ return eMail; }
 	public Adress getAdress(){ return adress; }

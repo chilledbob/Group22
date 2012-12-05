@@ -3,6 +3,8 @@ import gmb.model.Lottery;
 import gmb.model.user.Customer;
 
 import java.math.BigDecimal;
+import java.util.Date;
+
 import org.joda.time.DateTime;
 
 import javax.persistence.Entity;
@@ -26,7 +28,7 @@ public abstract class Transaction
 	protected Customer affectedCustomer; 
 	protected BigDecimal amount;
 	@Temporal(value = TemporalType.DATE)
-	protected DateTime date;
+	protected Date date;
 	
 	@Deprecated
 	protected Transaction(){}
@@ -35,12 +37,12 @@ public abstract class Transaction
 	{
 		this.affectedCustomer = affectedCustomer;
 		this.amount = amount;
-		this.date = Lottery.getInstance().getTimer().getDateTime();
+		this.date = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
 	public Customer getAffectedCustomer(){ return affectedCustomer; }
 	public BigDecimal getAmount(){ return amount; }
-	public DateTime getDate(){ return date; }
+	public DateTime getDate(){ return new DateTime(date); }
 	
 	public void init()
 	{

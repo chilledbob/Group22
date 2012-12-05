@@ -24,12 +24,11 @@ import org.salespointframework.core.user.Capability;
 @Entity
 public class Customer extends Member 
 {
-
 	@OneToOne(mappedBy="owner")
 	@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
 	protected LotteryBankAccount lotteryBankAccount;
 	@ManyToMany(mappedBy="groupMembers")
-	protected LinkedList<Group> groups;
+	protected List<Group> groups;
 	
 	@OneToMany(mappedBy="owner")
 	protected List<WeeklyLottoSTT> weeklyLottoSTTs;
@@ -92,7 +91,7 @@ public class Customer extends Member
 
 
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
- 	public LinkedList<Group> getGroups(){ return groups; }
+ 	public List<Group> getGroups(){ return groups; }
  	
 	public List<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return weeklyLottoSTTs; }
 	public List<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }

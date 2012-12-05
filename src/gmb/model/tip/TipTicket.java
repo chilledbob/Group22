@@ -1,6 +1,7 @@
 package gmb.model.tip;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -23,7 +24,7 @@ public abstract class TipTicket
 	
 	//TemporalType nur Date,Time oder Timestamp
 	//@Temporal(value = TemporalType.DATE)
-	protected DateTime purchaseDate;
+	protected Date purchaseDate;
 	
 	@ManyToOne
 	protected Customer owner;
@@ -36,7 +37,7 @@ public abstract class TipTicket
 	{
 		this.owner = owner;
 		
-		purchaseDate = Lottery.getInstance().getTimer().getDateTime();
+		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 
 	/**
@@ -73,7 +74,7 @@ public abstract class TipTicket
 	public int getDrawTypeAsInt(){ return drawType; }
 	
 	public Customer getOwner(){ return owner; }
-	public DateTime getPurchaseDate(){ return purchaseDate; }	
+	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
 	
 	/**
 	 * Return Code:
