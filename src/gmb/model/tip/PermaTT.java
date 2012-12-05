@@ -2,19 +2,24 @@ package gmb.model.tip;
 
 import gmb.model.user.Customer;
 
-import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.OneToMany;
+import javax.persistence.Entity;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-
+@Entity
 public abstract class PermaTT extends TipTicket 
 {
-	protected LinkedList<SingleTip> tips;
+	@OneToMany(mappedBy="permaTT")
+	protected List<SingleTip> tips;
 	
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
-//	protected DateTime durationDate;
+	//@Temporal(value = TemporalType.DATE)
+	protected DateTime durationDate;
 	
 	protected boolean expired = false;
 
@@ -71,15 +76,16 @@ public abstract class PermaTT extends TipTicket
 	 * @param tip
 	 * @return
 	 */
-	public boolean addTip(SingleTip tip)
+	public int addTip(SingleTip tip)
 	{ 
-		if(!isExpired())
+		if(isExpired()) return -1;
+		if(tips.contains(tip)) return 2;
+
 		tips.add(tip); 
-		
-		return !expired;
+		return 0;		
 	}
-	
-	protected boolean addTip(SingleTip tip, Class<?> tipType)
+
+	protected int addTip(SingleTip tip, Class<?> tipType)
 	{ 
 		assert tip.getClass() == tipType : "Wrong type given to PermaTT.addTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		return addTip(tip);
@@ -98,7 +104,7 @@ public abstract class PermaTT extends TipTicket
 	public void setDurationType(int durationType){ this.durationType = durationType; }
 	public void setExpired(boolean expired){ this.expired = expired; }
 	
-	public LinkedList<SingleTip> getTips(){ return tips; }	
+	public List<SingleTip> getTips(){ return tips; }	
 
 	public PTTDuration getDuration()
 	{
