@@ -2,6 +2,9 @@ package gmb.model.tip;
 
 import java.util.*;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class TotoTip extends SingleTip 
 {
 	protected LinkedList<FootballGameResult> tips;

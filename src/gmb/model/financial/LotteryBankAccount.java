@@ -7,15 +7,34 @@ import gmb.model.user.Customer;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.ElementCollection;
 
+@Entity
 public class LotteryBankAccount 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int lotteryBankAccountId;
+	
+	@OneToOne 
+    @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier") 
 	protected Customer owner;
 	protected BigDecimal credit;	
+	@OneToOne 
+    @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
+	@ElementCollection
 	protected LinkedList<InternalTransaction> internalTransactions;
+	@ElementCollection
 	protected LinkedList<ExternalTransaction> externalTransactions;
+	@ElementCollection
 	protected LinkedList<Winnings> winnings;
+	@ElementCollection
 	protected LinkedList<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 	
 	@Deprecated

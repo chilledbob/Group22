@@ -1,6 +1,8 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
 
+@Entity
 public class WeeklyLottoTip extends SingleTip 
 {
 	protected int[] tip;

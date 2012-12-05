@@ -11,26 +11,44 @@ import gmb.model.tip.WeeklyLottoSTT;
 
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+
 import org.salespointframework.core.user.Capability;
 
-
+@Entity
 public class Customer extends Member 
 {
-	//ATTRIBUTES
+	@OneToOne(mappedBy="owner")
+	@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
 	protected LotteryBankAccount lotteryBankAccount;
+	@ManyToMany(mappedBy="groupMembers")
 	protected LinkedList<Group> groups;
 	
+	@OneToMany(mappedBy="owner")
 	protected LinkedList<WeeklyLottoSTT> weeklyLottoSTTs;
+	@OneToMany(mappedBy="owner")
 	protected LinkedList<DailyLottoSTT> dailyLottoSTTs;
+	@OneToMany(mappedBy="owner")
 	protected LinkedList<TotoSTT> totoSTTs;
+	@OneToMany(mappedBy="owner")
 	protected LinkedList<WeeklyLottoPTT> weeklyLottoPTTs;
+	@OneToMany(mappedBy="owner")
 	protected LinkedList<DailyLottoPTT> dailyLottoPTTs;
 	
+	@OneToMany
 	protected LinkedList<GroupInvitation> groupInvitations;
+	@OneToMany
 	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
+	@OneToMany
 	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
 	
-	//CONSTRUCTORS
+	@Deprecated
+	protected Customer(){}
+	
 	public Customer(String nickName, String password, MemberData memberData, LotteryBankAccount lotteryBankAccount)
 	{
 		super(nickName, password, memberData);

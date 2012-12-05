@@ -2,6 +2,9 @@ package gmb.model.tip;
 
 import org.joda.time.DateTime;
 
+import javax.persistence.*;
+
+@Entity
 public class WeeklyLottoDraw extends Draw 
 {
 	protected int[] result = null;

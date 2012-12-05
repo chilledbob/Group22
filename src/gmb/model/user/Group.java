@@ -12,29 +12,47 @@ import gmb.model.tip.WeeklyLottoGroupTip;
 
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
+
 import org.joda.time.DateTime;
 
-
+@Entity
 public class Group 
 {
-	//ATTRIBUTES
+	@Id
+	@GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int groupId;
+	
 	protected String name;
 	protected String infoText;
 	protected DateTime foundingDate;
 	protected Boolean closed = false;
 
+	@OneToOne
 	protected Customer groupAdmin;
+	@ManyToMany
 	protected LinkedList<Customer> groupMembers;
 
+	@OneToMany(mappedBy="group")
 	protected LinkedList<DailyLottoGroupTip> dailyLottoGroupTips;
+	@OneToMany(mappedBy="group")
 	protected LinkedList<WeeklyLottoGroupTip> weeklyLottoGroupTips;
+	@OneToMany(mappedBy="group")
 	protected LinkedList<TotoGroupTip> totoGroupTips;
 
+	@OneToMany(mappedBy="group")
 	protected LinkedList<GroupInvitation> groupInvitations;
+	@OneToMany(mappedBy="group")
 	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
+	@OneToMany(mappedBy="group")
 	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
 
-	//CONSTRUCTORS
 	@Deprecated
 	protected Group(){}
 

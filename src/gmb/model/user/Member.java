@@ -7,20 +7,33 @@ import gmb.model.request.Notification;
 import java.util.Date;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
-
+@Entity
 public class Member extends PersistentUser 
 {
 	//ATTRIBUTES	
 	protected boolean activated = false;
+	@Temporal(value = TemporalType.DATE)
 	protected Date registrationDate;
+	
+	@OneToOne 
+    @JoinColumn(name="memberDataId") 
 	protected MemberData memberData;
+	@OneToMany(mappedBy="member")
 	protected LinkedList<MemberDataUpdateRequest> memberDataUpdateRequest;
+	@OneToMany(mappedBy="member")
+	@JoinColumn(name="member", referencedColumnName="member_ID")
 	protected LinkedList<Notification> notifications;
 	
-	//CONSTRUCTOR
 	@Deprecated
 	protected Member(){}
 	

@@ -1,13 +1,25 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 import gmb.model.Lottery;
 
 
 import org.joda.time.DateTime;
 
+@Entity
 public abstract class Tip 
-{
+{	
+	@Id
+	@GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int tipId;
+	
 	protected DateTime submissionDate;
+	@ManyToOne
 	protected Draw draw;
 	
 	@Deprecated

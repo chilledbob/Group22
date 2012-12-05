@@ -1,14 +1,13 @@
 package gmb.model.request;
+import javax.persistence.Entity;
+
 import gmb.model.user.Member;
 
-
+@Entity
 public class Request extends Notification
 { 
-	//ATTRIBUTES
-	protected Member member;
 	protected int state = 0;//RequestState.UNHANDELED
 	
-	//CONSTRUCTORS
 	@Deprecated
 	protected Request(){}
 	

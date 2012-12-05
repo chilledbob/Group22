@@ -2,6 +2,9 @@ package gmb.model.tip;
 
 import gmb.model.user.Customer;
 
+import javax.persistence.Entity;
+
+@Entity
 public class DailyLottoPTT extends PermaTT 
 {
 	//CONSTRUCTORS

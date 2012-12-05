@@ -1,7 +1,10 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+
 import org.joda.time.DateTime;
 
+@Entity
 public class DailyLottoDraw extends Draw 
 {
 	protected int[] result;

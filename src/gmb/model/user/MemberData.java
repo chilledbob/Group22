@@ -1,20 +1,35 @@
 package gmb.model.user;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+//import org.eclipse.persistence.internal.jpa.parsing.TemporalLiteralNode.TemporalType;
+
+@Entity
 public class MemberData {
 	
 	
-
-	//ATTRIBUTES
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int memberDataId;
+	
 	private String firstName;
 	private String lastName;
+	@Temporal(value = TemporalType.DATE)
 	private Date birthDate;
 	private String phoneNumber;
 	private String eMail;
+	
+	@OneToOne 
+    @JoinColumn(name="adrId") 
 	private Adress adress;
 	
-	//CONSTRUCTOR
 	public MemberData()
 	{		
 	}

@@ -1,8 +1,14 @@
 package gmb.model.tip;
 
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
+@Embeddable
 public class DailyLottoTip extends SingleTip 
 {
+	@ManyToOne
+	protected GroupTip groupTip;
+	
 	protected int[] tip;
 
 	@Deprecated

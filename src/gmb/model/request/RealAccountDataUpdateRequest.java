@@ -1,14 +1,18 @@
 package gmb.model.request;
 
+import javax.persistence.Embeddable;
+
 import gmb.model.financial.RealAccountData;
 import gmb.model.user.Member;
 
+@Embeddable
 public class RealAccountDataUpdateRequest extends Request 
 {	
-	//ATTRIBUTE
 	protected RealAccountData updatedData;
 
-	//CONSTRUCTORS
+	@Deprecated
+	protected RealAccountDataUpdateRequest(){}
+
 	public RealAccountDataUpdateRequest(RealAccountData updatedData, Member member, String note)
 	{
 		super(member, note);

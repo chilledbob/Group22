@@ -1,8 +1,17 @@
 package gmb.model.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Adress {
 	
 	//ATTRIBUTES
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int adrId;
+	
 	private String streetName;
 	private String houseNumber; //STRING ??
 	private String postCode;	// STRING ??

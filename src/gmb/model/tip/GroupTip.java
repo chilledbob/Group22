@@ -5,8 +5,16 @@ import gmb.model.user.Group;
 
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+
+@Entity
 public abstract class GroupTip extends Tip 
 {
+	@ManyToOne
 	protected Group group;
 	protected boolean submitted = false;
 	
@@ -14,8 +22,13 @@ public abstract class GroupTip extends Tip
 	protected int overallMinimumStake;
 	
 	protected int currentOverallMinimumStake = 0;
-
+	
+	@OneToMany(mappedBy="groupTip")
 	protected LinkedList<SingleTip> tips;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="draw_id")
+	private Draw draw;
 	
 	@Deprecated
 	protected GroupTip(){}

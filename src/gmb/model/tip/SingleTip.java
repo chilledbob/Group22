@@ -1,10 +1,16 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
+@Entity
 public abstract class SingleTip extends Tip 
 {
 	protected SingleTT tipTicket;
+	@ManyToOne
 	protected GroupTip groupTip = null;
+	@ManyToOne
+	protected PermaTT permaTT = null;
 	
 	@Deprecated
 	protected SingleTip(){}
@@ -14,6 +20,7 @@ public abstract class SingleTip extends Tip
 		super(groupTip.getDraw());
 		
 		this.tipTicket = tipTicket;
+		
 		this.groupTip = groupTip;
 	}
 

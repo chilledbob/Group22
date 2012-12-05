@@ -5,13 +5,12 @@ import java.util.LinkedList;
 
 import org.salespointframework.core.user.PersistentUserManager;
 
-
 public class MemberManagement extends PersistentUserManager
 {
-	//ATTRIBUTES
 	protected LinkedList<Member> members;
-	protected LinkedList<MemberDataUpdateRequest> requests;
 	
+	protected LinkedList<MemberDataUpdateRequest> requests;
+			
 	//METHODS
 	public void addMember(Member member)
 	{

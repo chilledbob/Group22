@@ -4,17 +4,24 @@ import gmb.model.user.Customer;
 
 import java.util.LinkedList;
 
+import javax.persistence.OneToMany;
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-
+@Entity
 public abstract class PermaTT extends TipTicket 
 {
+	@OneToMany(mappedBy="permaTT")
 	protected LinkedList<SingleTip> tips;
 	
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
-//	protected DateTime durationDate;
+	//@Temporal(value = TemporalType.DATE)
+	protected DateTime durationDate;
 	
 	protected boolean expired = false;
 

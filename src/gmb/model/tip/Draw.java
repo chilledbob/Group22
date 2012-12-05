@@ -5,19 +5,30 @@ import gmb.model.financial.Winnings;
 
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-
+@Entity
 public abstract class Draw 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int drawId;
+	
 	protected boolean evaluated = false;
 	protected DateTime planedEvaluationDate;	
 	protected DateTime actualEvaluationDate = null;	
 	
 	protected LinkedList<Winnings> winnings;
 	
+	@OneToMany
 	protected LinkedList<SingleTip> singleTips;
+	@OneToMany(mappedBy="draw")
 	protected LinkedList<GroupTip> groupTips;
 	
 	@Deprecated

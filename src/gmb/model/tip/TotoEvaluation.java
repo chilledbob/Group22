@@ -1,9 +1,12 @@
 package gmb.model.tip;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+
 import org.joda.time.DateTime;
 
 
+@Entity
 public class TotoEvaluation extends Draw 
 {
 	private LinkedList<FootballGameResult> results;
