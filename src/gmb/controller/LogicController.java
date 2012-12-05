@@ -2,7 +2,7 @@ package gmb.controller;
 
 import javax.servlet.http.HttpSession;
 
-import lotterie.model.user.MyUser;
+import gmb.model.user.*;
 
 import org.salespointframework.core.user.Capability;
 import org.salespointframework.core.user.PersistentUser;
@@ -52,9 +52,9 @@ public class LogicController {
 				}
 				
 				else{
-				MyUser user = new MyUser(uid, pw, vname,nname);
-				user.addCapability(new Capability("customer"));
-				pManager.add(user);	
+				//Customer user = new Customer(uid, pw, vname,nname);
+				//user.addCapability(new Capability("customer"));
+				//pManager.add(user);	
 				modelAndView.setViewName("redirect:/");
 				//modelAndView.addObject("userListe", pManager.find(MyUser.class));
 				}
@@ -69,7 +69,7 @@ public class LogicController {
 		ModelAndView modelAndView = new ModelAndView();
 		pManager.remove(uid);
 		modelAndView.setViewName("prototype");
-		modelAndView.addObject("userListe", pManager.find(MyUser.class));
+		modelAndView.addObject("userListe", pManager.find(Member.class));
 		return modelAndView;
 	}
 
@@ -80,7 +80,7 @@ public class LogicController {
 			@RequestParam("scope") String scope) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("edit");
-		modelAndView.addObject("currentUser",pManager.get(MyUser.class, uid));
+		modelAndView.addObject("currentUser",pManager.get(Member.class, uid));
 		modelAndView.addObject("scope", scope);
 		modelAndView.addObject("userID",uid);
 		return modelAndView;
@@ -97,7 +97,7 @@ public class LogicController {
 		//String confirm = "Ihre Anfrage wurde entgegengenommen...";
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("customer");
-		modelAndView.addObject("currentUser",pManager.get(MyUser.class, uid));
+		modelAndView.addObject("currentUser",pManager.get(Customer.class, uid));
 		//modelAndView.addObject("userID",uid);
 		//modelAndView.addObject("confirm",confirm);
 		modelAndView.addObject("scope", "Customer");
@@ -110,9 +110,9 @@ public class LogicController {
 	         @RequestParam("nname") String newNname,
 	         @RequestParam("uid") UserIdentifier uid,
 	         @RequestParam("scope") String scope) {
-		MyUser tempUser = pManager.get(MyUser.class, uid);
-		tempUser.setVorname(newVname);
-		tempUser.setNachname(newNname);
+		Member tempUser = pManager.get(Member.class, uid);
+		//tempUser.setVorname(newVname);
+		//tempUser.setNachname(newNname);
 		pManager.update(tempUser);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("stuffMember");
@@ -145,7 +145,7 @@ public class LogicController {
 		if(user != null) {
 			if(user.verifyPassword(pw)) {
 				pManager.login(user, session);
-				MyUser foo = pManager.get(MyUser.class, uid);
+				Member foo = pManager.get(Member.class, uid);
 				Capability capManager = new Capability("manager");
 				//Capability capCustomer = new Capability("customer");
 				Capability capStuff = new Capability("stuffMember");
@@ -182,7 +182,7 @@ public class LogicController {
 	public ModelAndView redirectCustomer(@RequestParam("uid") UserIdentifier uid) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("customer");
-		modelAndView.addObject("currentUser", pManager.get(MyUser.class, uid));
+		modelAndView.addObject("currentUser", pManager.get(Customer.class, uid));
 		modelAndView.addObject("scope", "Customer");
 		return modelAndView;
 	}
@@ -194,7 +194,7 @@ public class LogicController {
 			@RequestParam("scope")String scope) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("stuffMember");
-		modelAndView.addObject("currentUser", pManager.get(MyUser.class, uid));
+		modelAndView.addObject("currentUser", pManager.get(Employee.class, uid));
 		modelAndView.addObject("scope", scope);
 		return modelAndView;
 	}

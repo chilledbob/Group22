@@ -11,30 +11,49 @@ import gmb.model.tip.TotoGroupTip;
 import gmb.model.tip.WeeklyLottoGroupTip;
 
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
 
 import org.joda.time.DateTime;
 
-
+@Entity
 public class Group 
 {
-	//ATTRIBUTES
+	@Id
+	@GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int groupId;
+	
 	protected String name;
 	protected String infoText;
 	protected DateTime foundingDate;
 	protected Boolean closed = false;
 
+	@OneToOne
 	protected Customer groupAdmin;
-	protected LinkedList<Customer> groupMembers;
+	@ManyToMany
+	protected List<Customer> groupMembers;
 
-	protected LinkedList<DailyLottoGroupTip> dailyLottoGroupTips;
-	protected LinkedList<WeeklyLottoGroupTip> weeklyLottoGroupTips;
-	protected LinkedList<TotoGroupTip> totoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<DailyLottoGroupTip> dailyLottoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<WeeklyLottoGroupTip> weeklyLottoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<TotoGroupTip> totoGroupTips;
 
-	protected LinkedList<GroupInvitation> groupInvitations;
-	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
-	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
+	@OneToMany(mappedBy="group")
+	protected List<GroupInvitation> groupInvitations;
+	@OneToMany(mappedBy="group")
+	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
+	@OneToMany(mappedBy="group")
+	protected List<GroupMembershipApplication> groupMembershipApplications;
 
-	//CONSTRUCTORS
 	@Deprecated
 	protected Group(){}
 
@@ -95,6 +114,20 @@ public class Group
 		this.groupAdminRightsTransfereOfferings.add(offering);
 	}
 
+	public boolean switchGroupAdmin(Customer groupMember)
+	{
+		if(groupMembers.contains(groupMember))
+		{
+			groupMembers.add(groupAdmin);
+			groupAdmin = groupMember;
+			groupMembers.remove(groupMember);
+			
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	/**
 	 * resign the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
 	 * sending a "Notification" to the member and removing him from the "groupMembers" list.
@@ -173,18 +206,18 @@ public class Group
 	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; }
 	public void addGroupMember(Customer customer){ groupMembers.add(customer); }
 
-	public LinkedList<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public LinkedList<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
-	public LinkedList<GroupMembershipApplication> getGroupMemberShipApplications(){ return groupMembershipApplications; }	
+	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
+	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipApplication> getGroupMemberShipApplications(){ return groupMembershipApplications; }	
 
 	//GET METHODS
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
 	public DateTime getFoundingDate(){ return foundingDate; }
 
-	public LinkedList<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
-	public LinkedList<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
-	public LinkedList<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
+	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
+	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
+	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
 
 	public void addDailyLottoGroupTip(DailyLottoGroupTip tip){ dailyLottoGroupTips.add(tip); }	
 	public void addWeeklyLottoGroupTip(WeeklyLottoGroupTip tip){ weeklyLottoGroupTips.add(tip); }	

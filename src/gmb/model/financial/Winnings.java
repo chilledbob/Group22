@@ -1,24 +1,39 @@
 package gmb.model.financial;
 
+import javax.persistence.Embeddable;
+import javax.persistence.OneToOne;
+
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
+import gmb.model.Lottery;
+import gmb.model.tip.SingleTip;
 
-import gmb.model.tip.Tip;
-import gmb.model.user.Customer;
-
+@Embeddable
 public class Winnings extends InternalTransaction
 {
-	protected Tip tip;
+	@OneToOne
+	protected SingleTip tip;
 
 	@Deprecated
 	protected Winnings(){}
 
-	public Winnings(Tip tip, Customer affectedCustomer, BigDecimal amount, DateTime date)
+	/**
+	 * initializes an internal transaction
+	 * a reference to the transaction will be added to the FinancialManagement and the affected user
+	 * the credit of the customer will be updated
+	 * the credit and prize amount of the lottery will be updated
+	 * @param transaction
+	 */
+	public Winnings(SingleTip tip, BigDecimal amount)
 	{
-		super( affectedCustomer,  amount,  date);
+		super(tip.getTipTicket().getOwner(),  amount);
 		this.tip = tip;
+		
+		super.init();//update user credit		
+		Lottery.getInstance().getFinancialManagement().updateCredit(this);
+		
+//		tip.getTipTicket().getOwner().addNotification(new Notification(""));
 	}
-
-	public Tip getTip(){ return tip; }
+	
+	public SingleTip getTip(){ return tip; }
 }

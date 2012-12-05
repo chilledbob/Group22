@@ -4,21 +4,33 @@ import gmb.model.Lottery;
 import gmb.model.financial.Winnings;
 
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-
+@Entity
 public abstract class Draw 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int drawId;
+	
 	protected boolean evaluated = false;
 	protected DateTime planedEvaluationDate;	
 	protected DateTime actualEvaluationDate = null;	
 	
-	protected LinkedList<Winnings> winnings;
+	protected List<Winnings> winnings;
 	
-	protected LinkedList<SingleTip> singleTips;
-	protected LinkedList<GroupTip> groupTips;
+	@OneToMany
+	protected List<SingleTip> singleTips;
+	@OneToMany(mappedBy="draw")
+	protected List<GroupTip> groupTips;
 	
 	@Deprecated
 	protected Draw(){}
@@ -39,6 +51,16 @@ public abstract class Draw
 
 		return true;
 	}
+	
+	/**
+	 * Return Code:
+	 * 0 - successful
+	 *-2 - not enough time left until the planned evaluation of the draw
+	 *-1 - the duration of the "PermaTT" has expired
+	 * 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 */
+	public abstract int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip);
 	
 	/**
 	 * returns true if there is still time to submit or "unsubmit" tips, otherwise false
@@ -136,12 +158,14 @@ public abstract class Draw
 	//===============================================================================//
 	///////////////////////////////////////////////////////////////////////////////////
 
-	public LinkedList<SingleTip> getWeeklyLottoTips(){ return singleTips; }
-	public LinkedList<GroupTip> getWeeklyLottoGroupTips(){ return groupTips; }
+	public List<SingleTip> getWeeklyLottoTips(){ return singleTips; }
+	public List<GroupTip> getWeeklyLottoGroupTips(){ return groupTips; }
 	
 	public boolean getEvaluated(){ return evaluated; }
-	public LinkedList<Winnings> getWinnings(){ return winnings; }
+	public List<Winnings> getWinnings(){ return winnings; }
 	
 	public DateTime getPlanedEvaluationDate(){ return planedEvaluationDate; }
 	public DateTime getActualEvaluationDate(){ return actualEvaluationDate; }
+	
+	public abstract int[] getResult();
 }

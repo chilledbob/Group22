@@ -2,16 +2,16 @@ package gmb.model.user;
 import gmb.model.request.MemberDataUpdateRequest;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.salespointframework.core.user.PersistentUserManager;
 
-
 public class MemberManagement extends PersistentUserManager
 {
-	//ATTRIBUTES
-	protected LinkedList<Member> members;
-	protected LinkedList<MemberDataUpdateRequest> requests;
+	protected List<Member> members;
 	
+	protected List<MemberDataUpdateRequest> requests;
+			
 //	@Deprecated
 //	protected MemberManagement(){}
 	
@@ -42,5 +42,5 @@ public class MemberManagement extends PersistentUserManager
 	
 	public void addMemberDataUpdateRequest(MemberDataUpdateRequest newRequest){ requests.add(newRequest); }
 	
-	public LinkedList<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return requests; }
+	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return requests; }
 }

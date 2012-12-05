@@ -5,22 +5,36 @@ import gmb.model.request.MemberDataUpdateRequest;
 import gmb.model.request.Notification;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.joda.time.DateTime;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
-
+@Entity
 public abstract class Member extends PersistentUser 
 {
 	//ATTRIBUTES	
 	protected boolean activated = false;
+	@Temporal(value = TemporalType.DATE)
 	protected DateTime registrationDate;
-	protected MemberData memberData;
-	protected LinkedList<MemberDataUpdateRequest> memberDataUpdateRequest;
-	protected LinkedList<Notification> notifications;
 	
-	//CONSTRUCTOR
+	@OneToOne 
+    @JoinColumn(name="memberDataId") 
+	protected MemberData memberData;
+	@OneToMany(mappedBy="member")
+	protected List<MemberDataUpdateRequest> memberDataUpdateRequest;
+	@OneToMany(mappedBy="member")
+	@JoinColumn(name="member", referencedColumnName="member_ID")
+	protected List<Notification> notifications;
+	
 	@Deprecated
 	protected Member(){}
 	
@@ -43,8 +57,8 @@ public abstract class Member extends PersistentUser
 	public MemberData getMemberData(){ return memberData; }	
 	public DateTime getRegistrationDate(){ return registrationDate; }
 	
-	public LinkedList<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
-	public LinkedList<Notification> getNotifications(){ return notifications; }
+	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
+	public List<Notification> getNotifications(){ return notifications; }
 
 
 	//OTHERS METHODS

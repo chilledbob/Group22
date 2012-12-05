@@ -32,7 +32,7 @@ public class Lottery
 		this.timer = new DefaultTime();
 	}
 	
-	public void Instanciate(FinancialManagement financialManagement, MemberManagement memberManagement, GroupManagement groupManagement, TipManagement tipManagement)
+	public static void Instanciate(FinancialManagement financialManagement, MemberManagement memberManagement, GroupManagement groupManagement, TipManagement tipManagement)
 	{
 		if(INSTANCE != null) return;
 		

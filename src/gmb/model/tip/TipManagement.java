@@ -1,14 +1,15 @@
 package gmb.model.tip;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.joda.time.Duration;
 
 
 public class TipManagement 
 {
-	protected LinkedList<WeeklyLottoDraw> weeklyLottoDrawings;
-	protected LinkedList<DailyLottoDraw> dailyLottoDrawings;
-	protected LinkedList<TotoEvaluation> totoEvaluations;
+	protected List<WeeklyLottoDraw> weeklyLottoDrawings;
+	protected List<DailyLottoDraw> dailyLottoDrawings;
+	protected List<TotoEvaluation> totoEvaluations;
 	
 	protected Duration tipSubmissionTimeLimit;
 	
@@ -30,9 +31,9 @@ public class TipManagement
 	
 	public void setTipSubmissionTimeLimit(Duration tipSubmissionTimeLimit){  this.tipSubmissionTimeLimit = tipSubmissionTimeLimit; }
 	
-	public LinkedList<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
-	public LinkedList<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
-	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
+	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
+	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
+	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
 	
 	public Duration getTipSubmissionTimeLimit(){ return tipSubmissionTimeLimit; }
 }
