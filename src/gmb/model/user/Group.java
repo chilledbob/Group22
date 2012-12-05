@@ -95,6 +95,20 @@ public class Group
 		this.groupAdminRightsTransfereOfferings.add(offering);
 	}
 
+	public boolean switchGroupAdmin(Customer groupMember)
+	{
+		if(groupMembers.contains(groupMember))
+		{
+			groupMembers.add(groupAdmin);
+			groupAdmin = groupMember;
+			groupMembers.remove(groupMember);
+			
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	/**
 	 * resign the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
 	 * sending a "Notification" to the member and removing him from the "groupMembers" list.

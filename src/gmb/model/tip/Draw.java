@@ -41,6 +41,16 @@ public abstract class Draw
 	}
 	
 	/**
+	 * Return Code:
+	 * 0 - successful
+	 *-2 - not enough time left until the planned evaluation of the draw
+	 *-1 - the duration of the "PermaTT" has expired
+	 * 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 */
+	public abstract int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip);
+	
+	/**
 	 * returns true if there is still time to submit or "unsubmit" tips, otherwise false
 	 * @return
 	 */
@@ -144,4 +154,6 @@ public abstract class Draw
 	
 	public DateTime getPlanedEvaluationDate(){ return planedEvaluationDate; }
 	public DateTime getActualEvaluationDate(){ return actualEvaluationDate; }
+	
+	public abstract int[] getResult();
 }

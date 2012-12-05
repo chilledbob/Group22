@@ -34,4 +34,35 @@ public class DailyLottoDraw extends Draw
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, DailyLottoGroupTip.class); }
 	
 	public int[] getResult(){ return result; }
+	
+	/**
+	 * Return Code:
+	 * 0 - successful
+	 *-2 - not enough time left until the planned evaluation of the draw
+	 *-1 - the duration of the "PermaTT" has expired
+	 * 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 */
+	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	{
+		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoSTT!";
+		
+		if(this.isTimeLeftUntilEvaluation())
+		{
+			DailyLottoTip tip = new DailyLottoTip((DailyLottoSTT)ticket, this, tipTip);
+			int result = ticket.addTip(tip);
+			
+			if(result == 0)
+			{
+				ticket.getOwner().addTipTicket((DailyLottoSTT)ticket);
+				singleTips.add(tip);
+				
+				return 0;
+			}
+			else 
+				return result;
+		}
+		else
+			return -1;
+	}
 }

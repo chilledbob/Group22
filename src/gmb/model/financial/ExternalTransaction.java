@@ -5,22 +5,20 @@ import gmb.model.user.Customer;
 
 import java.math.BigDecimal;
 
-import org.joda.time.DateTime;
-
 public class ExternalTransaction extends Transaction 
 {
 	@Deprecated
 	protected ExternalTransaction(){}
 	
-	public ExternalTransaction(Customer affectedCustomer, BigDecimal amount, DateTime date)
+	public ExternalTransaction(Customer affectedCustomer, BigDecimal amount)
 	{
-		super( affectedCustomer,  amount,  date);
+		super( affectedCustomer,  amount);
 	}
 	
 	/**
-	 * initializes an external transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
-	 * the credit of the customer will be updated
+	 * Initializes an "ExternalTransaction".
+	 * A reference to the "ExternalTransaction" will be added to the "FinancialManagement"'s list and the "affectedCustomer"'s list.
+	 * The "credit" of the "affectedCustomer"'s "LotterybankAccount" will be updated
 	 * @param transaction
 	 */
 	public void init()

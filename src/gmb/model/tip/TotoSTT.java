@@ -1,19 +1,25 @@
 package gmb.model.tip;
 
+import java.math.BigDecimal;
+
+import gmb.model.Lottery;
 import gmb.model.user.Customer;
 
 
 public class TotoSTT extends SingleTT 
 {
-	//CONSTRUCTORS
 	@Deprecated
 	protected TotoSTT(){}
 
 	public TotoSTT(Customer owner)
 	{
 		super(owner);
+		drawType = 2;
 	}
 
+	public void addToOwner(){ owner.addTipTicket(this); }
+	
 	public void setTip(SingleTip tip){ super.setTip(tip, TotoTip.class); }
-	public boolean addTip(SingleTip tip){ super.setTip(tip, TotoTip.class); return true; }
+	
+	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getTotoSTTPrice(); }
 }

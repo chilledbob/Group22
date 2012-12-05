@@ -1,7 +1,7 @@
 package gmb.model.request;
 
+import gmb.model.user.Customer;
 import gmb.model.user.Group;
-import gmb.model.user.Member;
 
 public abstract class GroupRequest extends Request 
 {
@@ -10,7 +10,7 @@ public abstract class GroupRequest extends Request
 	@Deprecated
 	protected GroupRequest(){}
 	
-	public GroupRequest(Group group, Member member, String note)
+	public GroupRequest(Group group, Customer member, String note)
 	{
 		super(member, note);
 		this.group = group;

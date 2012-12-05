@@ -71,15 +71,16 @@ public abstract class PermaTT extends TipTicket
 	 * @param tip
 	 * @return
 	 */
-	public boolean addTip(SingleTip tip)
+	public int addTip(SingleTip tip)
 	{ 
-		if(!isExpired())
+		if(isExpired()) return -1;
+		if(tips.contains(tip)) return 2;
+
 		tips.add(tip); 
-		
-		return !expired;
+		return 0;		
 	}
-	
-	protected boolean addTip(SingleTip tip, Class<?> tipType)
+
+	protected int addTip(SingleTip tip, Class<?> tipType)
 	{ 
 		assert tip.getClass() == tipType : "Wrong type given to PermaTT.addTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		return addTip(tip);

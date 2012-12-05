@@ -1,4 +1,5 @@
 package gmb.model.financial;
+import gmb.model.Lottery;
 import gmb.model.user.Customer;
 
 import java.math.BigDecimal;
@@ -15,11 +16,11 @@ public abstract class Transaction
 	@Deprecated
 	protected Transaction(){}
 	
-	public Transaction(Customer affectedCustomer, BigDecimal amount, DateTime date)
+	public Transaction(Customer affectedCustomer, BigDecimal amount)
 	{
 		this.affectedCustomer = affectedCustomer;
 		this.amount = amount;
-		this.date = date;
+		this.date = Lottery.getInstance().getTimer().getDateTime();
 	}
 	
 	public Customer getAffectedCustomer(){ return affectedCustomer; }

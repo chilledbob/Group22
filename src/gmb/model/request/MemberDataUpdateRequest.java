@@ -5,19 +5,32 @@ import gmb.model.user.MemberData;
 
 public class MemberDataUpdateRequest extends Request 
 {
-	//ATTRIBUTE
 	protected MemberData updatedData;
 
 	@Deprecated
 	protected MemberDataUpdateRequest(){}
 	
-	//CONSTRUCTORS
 	public MemberDataUpdateRequest(MemberData updatedData, Member member, String note)
 	{
 		super(member, note);
 		this.updatedData = updatedData;
 	}
 	
-	//GET METHODS
+	/**
+	 * Return codes:
+	 * 0 - successful
+	 * 1 - failed because state was not "UNHANDLED"
+	 */
+	public int accept()
+	{
+		if(super.accept() == 0)
+			{
+				member.setMemberData(updatedData);
+				return 0;
+			}
+		else
+			return 1;
+	}
+	
 	public MemberData getUpdatedData(){ return updatedData; }
 }

@@ -1,16 +1,14 @@
 package gmb.model.financial;
 
-import java.math.BigDecimal;
-
 import gmb.model.Lottery;
-import gmb.model.tip.SingleTip;
+import gmb.model.tip.TipTicket;
 
-public class Winnings extends InternalTransaction
+public class TicketPurchase extends InternalTransaction
 {
-	protected SingleTip tip;
+	protected TipTicket ticket;
 
 	@Deprecated
-	protected Winnings(){}
+	protected TicketPurchase(){}
 
 	/**
 	 * initializes an internal transaction
@@ -19,16 +17,14 @@ public class Winnings extends InternalTransaction
 	 * the credit and prize amount of the lottery will be updated
 	 * @param transaction
 	 */
-	public Winnings(SingleTip tip, BigDecimal amount)
+	public TicketPurchase(TipTicket ticket)
 	{
-		super(tip.getTipTicket().getOwner(),  amount);
-		this.tip = tip;
+		super(ticket.getOwner(),  ticket.getPrice().negate());
+		this.ticket = ticket;
 		
 		super.init();//update user credit		
 		Lottery.getInstance().getFinancialManagement().updateCredit(this);
-		
-//		tip.getTipTicket().getOwner().addNotification(new Notification(""));
 	}
 	
-	public SingleTip getTip(){ return tip; }
+	public TipTicket getTipTicket(){ return ticket; }
 }

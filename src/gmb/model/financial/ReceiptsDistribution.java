@@ -2,10 +2,10 @@ package gmb.model.financial;
 
 public class ReceiptsDistribution 
 {
-	private int winnersDue;
-	private int treasuryDue;
-	private int lotteryTaxDue;
-	private int managementDue;
+	protected int winnersDue;
+	protected int treasuryDue;
+	protected int lotteryTaxDue;
+	protected int managementDue;
 	
 	@Deprecated
 	protected ReceiptsDistribution(){}

@@ -9,6 +9,7 @@ import gmb.model.tip.TotoSTT;
 import gmb.model.tip.WeeklyLottoPTT;
 import gmb.model.tip.WeeklyLottoSTT;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 import org.salespointframework.core.user.Capability;
@@ -16,7 +17,6 @@ import org.salespointframework.core.user.Capability;
 
 public class Customer extends Member 
 {
-	//ATTRIBUTES
 	protected LotteryBankAccount lotteryBankAccount;
 	protected LinkedList<Group> groups;
 	
@@ -30,7 +30,6 @@ public class Customer extends Member
 	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
 	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
 	
-	//CONSTRUCTORS
 	public Customer(String nickName, String password, MemberData memberData, LotteryBankAccount lotteryBankAccount)
 	{
 		super(nickName, password, memberData);
@@ -50,7 +49,13 @@ public class Customer extends Member
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 	}
 	
-	//SET/ADD METHODS 
+	public boolean hasEnoughMoneyToPurchase(BigDecimal price)
+	{
+		return lotteryBankAccount.getCredit().compareTo(price) > -1;
+	}
+	
+//	public void setLotteryBankAccount(LotteryBankAccount lotteryBankAccount){ this.lotteryBankAccount = lotteryBankAccount; }
+	
 	public void addTipTicket(WeeklyLottoSTT ticket){ weeklyLottoSTTs.add(ticket); }
 	public void addTipTicket(DailyLottoSTT ticket){ dailyLottoSTTs.add(ticket); }
 	public void addTipTicket(TotoSTT ticket){ totoSTTs.add(ticket); }
@@ -62,7 +67,7 @@ public class Customer extends Member
 	public void addGroupMembershipApplication(GroupMembershipApplication application){ groupMembershipApplications.add(application); }
 	public void addGroup(Group group){ groups.add(group); }
 
-	//GET METHODS
+
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
  	public LinkedList<Group> getGroups(){ return groups; }
  	
