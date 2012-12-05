@@ -10,6 +10,7 @@ import gmb.model.tip.DailyLottoGroupTip;
 import gmb.model.tip.TotoGroupTip;
 import gmb.model.tip.WeeklyLottoGroupTip;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class Group
 	
 	protected String name;
 	protected String infoText;
-	protected DateTime foundingDate;
+	protected Date foundingDate;
 	protected Boolean closed = false;
 
 	@OneToOne
@@ -61,7 +62,7 @@ public class Group
 	{
 		this.name = name;
 		this.infoText = infoText;
-		foundingDate = Lottery.getInstance().getTimer().getDateTime();
+		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
 		groupMembers =  new LinkedList<Customer>();
@@ -200,8 +201,7 @@ public class Group
 		
 		resign(groupAdmin);
 	}
-
-	//SET/ADD METHODS 
+ 
 	public void SetInfoText(String infoText){ this.infoText = infoText; }	
 	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; }
 	public void addGroupMember(Customer customer){ groupMembers.add(customer); }
@@ -210,10 +210,10 @@ public class Group
 	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMemberShipApplications(){ return groupMembershipApplications; }	
 
-	//GET METHODS
+	
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
-	public DateTime getFoundingDate(){ return foundingDate; }
+	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }
 
 	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
 	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	

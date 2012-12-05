@@ -10,7 +10,6 @@ import gmb.model.user.Customer;
 @Entity
 public class WeeklyLottoSTT extends SingleTT 
 {
-	//CONSTRUCTORS
 	@Deprecated
 	protected WeeklyLottoSTT(){}
 

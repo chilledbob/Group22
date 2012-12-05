@@ -10,7 +10,6 @@ import gmb.model.user.Customer;
 @Entity
 public class WeeklyLottoPTT extends PermaTT 
 {
-	//CONSTRUCTORS
 	@Deprecated
 	protected WeeklyLottoPTT(){}
 

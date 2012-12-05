@@ -4,6 +4,7 @@ import gmb.model.Lottery;
 import gmb.model.request.MemberDataUpdateRequest;
 import gmb.model.request.Notification;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,10 +22,9 @@ import org.salespointframework.core.user.UserIdentifier;
 @Entity
 public abstract class Member extends PersistentUser 
 {
-	//ATTRIBUTES	
 	protected boolean activated = false;
 	@Temporal(value = TemporalType.DATE)
-	protected DateTime registrationDate;
+	protected Date registrationDate;
 	
 	@OneToOne 
     @JoinColumn(name="memberDataId") 
@@ -43,25 +43,23 @@ public abstract class Member extends PersistentUser
 		super(new UserIdentifier(nickName), password);
 		this.memberData = memberData;
 		
-		registrationDate = Lottery.getInstance().getTimer().getDateTime();
+		registrationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		memberDataUpdateRequest = new LinkedList<MemberDataUpdateRequest>();
 		notifications = new LinkedList<Notification>();
 	}	
 	
-	//SET/ADD METHODS
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
 	
-	//GET METHODS
+
 	public MemberData getMemberData(){ return memberData; }	
-	public DateTime getRegistrationDate(){ return registrationDate; }
+	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
 	
 	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
 	public List<Notification> getNotifications(){ return notifications; }
 
 
-	//OTHERS METHODS
 	public void activateAccount(){ activated = true; }
 	
 	/**

@@ -8,7 +8,6 @@ import javax.persistence.Id;
 @Entity
 public class Adress 
 {	
-	//ATTRIBUTES
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int adrId;
 	
@@ -17,7 +16,6 @@ public class Adress
 	protected String postCode;	
 	protected String townName;
 	
-	//CONSTRUCTORS
 	@Deprecated
 	public Adress(){}
 	
@@ -29,13 +27,11 @@ public class Adress
 		this.townName = townName;
 	}
 	
-	//GET METHODS
  	public String getStreetName(){ return streetName; }
 	public String getHouseNumber(){ return houseNumber; }
 	public String getPostCode(){ return postCode; }
 	public String getTownName(){ return townName; }
 	
-	//SET METHODS
 //	public void setStreetName(String newSName){ streetName = newSName; }
 //	public void setHouseNumber(String newHNumber){ houseNumber = newHNumber; }
 //	public void setPostCode(String newPCode){ postCode = newPCode; }

@@ -8,8 +8,7 @@ import org.salespointframework.core.user.PersistentUserManager;
 
 public class MemberManagement extends PersistentUserManager
 {
-	protected List<Member> members;
-	
+	protected List<Member> members;	
 	protected List<MemberDataUpdateRequest> requests;
 			
 //	@Deprecated
@@ -21,7 +20,6 @@ public class MemberManagement extends PersistentUserManager
 		requests = new LinkedList<MemberDataUpdateRequest>();
 	}
 	
-	//METHODS
 	public void addMember(Member member)
 	{
 		members.add(member); // the member is added to the list

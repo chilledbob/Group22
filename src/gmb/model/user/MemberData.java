@@ -15,7 +15,6 @@ import javax.persistence.TemporalType;
 //import org.eclipse.persistence.internal.jpa.parsing.TemporalLiteralNode.TemporalType;
 
 @Entity
-
 public class MemberData 
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
