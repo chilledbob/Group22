@@ -7,14 +7,14 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 
 @Entity
-public class WeeklyLottoDraw extends Draw 
+public class WeeklyLottoDraw extends Draw
 {
 	protected int[] result = null;
 	
 	@Deprecated
 	protected WeeklyLottoDraw(){}
 	
-	protected WeeklyLottoDraw(DateTime planedEvaluationDate)
+	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
 	}
@@ -64,16 +64,15 @@ public class WeeklyLottoDraw extends Draw
 	 */
 	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
-		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoSTT!";
+		assert ticket instanceof WeeklyLottoTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoTT!";
 		
 		if(this.isTimeLeftUntilEvaluation())
 		{
-			WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoSTT)ticket, this, tipTip);
+			WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoTT)ticket, this, tipTip);
 			int result = ticket.addTip(tip);
 			
 			if(result == 0)
 			{
-				ticket.getOwner().addTipTicket((WeeklyLottoSTT)ticket);
 				singleTips.add(tip);
 				
 				return 0;
@@ -82,6 +81,6 @@ public class WeeklyLottoDraw extends Draw
 				return result;
 		}
 		else
-			return -1;
+			return -2;
 	}
 }

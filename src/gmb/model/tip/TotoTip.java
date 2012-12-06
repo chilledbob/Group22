@@ -10,14 +10,14 @@ public class TotoTip extends SingleTip
 
 	public TotoTip(TotoSTT tipTicket, TotoEvaluation eval, int[] tip)
 	{
-		super((SingleTT)tipTicket, eval, tip);
+		super(tipTicket, eval, tip);
 
 		assert eval.getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
 	}
 	
 	public TotoTip(TotoSTT tipTicket, GroupTip groupTip, int[] tip)
 	{
-		super((SingleTT)tipTicket, groupTip, tip);
+		super(tipTicket, groupTip, tip);
 
 		assert ((TotoEvaluation)groupTip.getDraw()).getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
 	}

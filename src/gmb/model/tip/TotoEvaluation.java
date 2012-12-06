@@ -15,9 +15,10 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	protected TotoEvaluation(DateTime planedEvaluationDate)
+	public TotoEvaluation(DateTime planedEvaluationDate, FootballGameResult[] results)
 	{
 		super(planedEvaluationDate);
+		this.results = results;
 	}
 	
 	public boolean evaluate() 
@@ -83,7 +84,6 @@ public class TotoEvaluation extends Draw
 			
 			if(result == 0)
 			{
-				ticket.getOwner().addTipTicket((TotoSTT)ticket);
 				singleTips.add(tip);
 				
 				return 0;

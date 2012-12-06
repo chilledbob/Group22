@@ -81,7 +81,7 @@ public abstract class Draw
 	 */
 	public boolean isTimeLeftUntilEvaluation()
 	{
-		Duration duration = new Duration(new DateTime(planedEvaluationDate), Lottery.getInstance().getTimer().getDateTime());
+		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), new DateTime(planedEvaluationDate));
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 	
@@ -171,8 +171,8 @@ public abstract class Draw
 	//===============================================================================//
 	///////////////////////////////////////////////////////////////////////////////////
 
-	public List<SingleTip> getWeeklyLottoTips(){ return singleTips; }
-	public List<GroupTip> getWeeklyLottoGroupTips(){ return groupTips; }
+	public List<SingleTip> getSingleTips(){ return singleTips; }
+	public List<GroupTip> getGroupTips(){ return groupTips; }
 	
 	public boolean getEvaluated(){ return evaluated; }
 	public List<Winnings> getWinnings(){ return winnings; }

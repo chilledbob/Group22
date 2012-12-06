@@ -17,7 +17,7 @@ import gmb.model.user.Customer;
 import org.joda.time.DateTime;
 
 @Entity
-public abstract class TipTicket 
+public abstract class TipTicket  implements GenericTT
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
@@ -31,15 +31,10 @@ public abstract class TipTicket
 	protected Customer owner;
 	protected int drawType;
 	
-	@Deprecated
-	protected TipTicket(){}
+//	@Deprecated
+//	protected TipTicket(){}
 	
-	public TipTicket(Customer owner)
-	{
-		this.owner = owner;
-		paidPurchasePrice = getPrice();
-		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
-	}
+	public TipTicket(){}
 
 	/**
 	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
@@ -50,6 +45,10 @@ public abstract class TipTicket
 	 */
 	public boolean purchase(Customer customer)
 	{
+		this.owner = customer;
+		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		paidPurchasePrice = getPrice();
+		
 		if(customer.hasEnoughMoneyToPurchase(this.getPrice()))
 		{
 			paidPurchasePrice = getPrice();//we need this information since the price can change over time

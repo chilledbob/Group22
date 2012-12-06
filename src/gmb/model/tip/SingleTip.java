@@ -15,22 +15,22 @@ public class SingleTip extends Tip
 	@Deprecated
 	protected SingleTip(){}
 	
-	public SingleTip(TipTicket tipTicket, GroupTip groupTip, int[] tip) 
+	public SingleTip(GenericTT tipTicket, GroupTip groupTip, int[] tip) 
 	{
 		super(groupTip.getDraw());
 		
 		this.tip = tip;
-		this.tipTicket = tipTicket;
+		this.tipTicket = (TipTicket)tipTicket;
 		
 		this.groupTip = groupTip;
 	}
 
-	public SingleTip(TipTicket tipTicket, Draw draw, int[] tip) 
+	public SingleTip(GenericTT tipTicket, Draw draw, int[] tip) 
 	{
 		super(draw);
 		
 		this.tip = tip;
-		this.tipTicket = tipTicket;
+		this.tipTicket = (TipTicket)tipTicket;
 	}
 	
 	public int withdraw()

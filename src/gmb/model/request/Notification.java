@@ -33,4 +33,5 @@ public class Notification
 	}
 	
 	public DateTime getDate(){ return new DateTime(date); }
+	public String getNote(){ return note; }
 }

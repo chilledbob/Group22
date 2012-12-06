@@ -18,7 +18,16 @@ import gmb.model.request.MemberDataUpdateRequest;
 import gmb.model.request.Notification;
 import gmb.model.request.RealAccountDataUpdateRequest;
 import gmb.model.request.RequestState;
+import gmb.model.tip.DailyLottoDraw;
+import gmb.model.tip.DailyLottoPTT;
+import gmb.model.tip.DailyLottoSTT;
+import gmb.model.tip.PTTDuration;
 import gmb.model.tip.TipManagement;
+import gmb.model.tip.TotoEvaluation;
+import gmb.model.tip.TotoSTT;
+import gmb.model.tip.WeeklyLottoDraw;
+import gmb.model.tip.WeeklyLottoPTT;
+import gmb.model.tip.WeeklyLottoSTT;
 import gmb.model.user.Admin;
 import gmb.model.user.Adress;
 import gmb.model.user.Customer;
@@ -28,6 +37,7 @@ import gmb.model.user.MemberData;
 import gmb.model.user.MemberManagement;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -264,8 +274,138 @@ public class Test01
 		
 		printCurrentTimeToConsol("2 new groups and some applications + invitations.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
 		
-		//=========================================================================================================================//TIP TESTs NO 2
+		//=========================================================================================================================//TIPTICKET TESTs NO 1
 		
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		WeeklyLottoSTT ticket0 = new WeeklyLottoSTT();
+		WeeklyLottoSTT ticket1 = new WeeklyLottoSTT();
+		DailyLottoSTT ticket2 = new DailyLottoSTT();
+		BigDecimal oriCredit1 = cus1.getBankAccount().getCredit();
+		ticket0.purchase(cus1);
+		ticket1.purchase(cus1);
+		ticket2.purchase(cus1);
+		
+		TotoSTT ticket3 = new TotoSTT();
+		DailyLottoPTT ticket4 = new DailyLottoPTT(PTTDuration.MONTH);
+		BigDecimal oriCredit2 = cus2.getBankAccount().getCredit();
+		ticket3.purchase(cus2);
+		ticket4.purchase(cus2);
+		
+		WeeklyLottoPTT ticket5 = new WeeklyLottoPTT(PTTDuration.YEAR);
+		DailyLottoPTT ticket6 = new DailyLottoPTT(PTTDuration.HALFYEAR);
+		BigDecimal oriCredit3 = cus3.getBankAccount().getCredit();
+		ticket5.purchase(cus3);
+		ticket6.purchase(cus3);
+		
+		WeeklyLottoSTT ticket7 = new WeeklyLottoSTT();
+		BigDecimal oriCredit4 = cus4.getBankAccount().getCredit();
+		ticket7.purchase(cus4);
+		
+		WeeklyLottoPTT ticket8 = new WeeklyLottoPTT(PTTDuration.YEAR);
+		DailyLottoPTT ticket9 = new DailyLottoPTT(PTTDuration.YEAR);
+		boolean tp_res1 = ticket8.purchase(cus5);
+		ticket9.purchase(cus5);
+		
+		TipTicketPrices prices = new TipTicketPrices();
+		
+		assertEquals(0, ticket4.getDurationType());
+		assertEquals(2, ticket5.getDurationType());
+		assertEquals(1, ticket6.getDurationType());
+		assertEquals(2, ticket8.getDurationType());
+		assertEquals(2, ticket9.getDurationType());
+		
+		assertEquals(1, cus1.getDailyLottoSTTs().size());
+		assertEquals(2, cus1.getWeeklyLottoSTTs().size());
+		assertEquals(oriCredit1.subtract(prices.getWeeklyLottoSTTPrice()).subtract(prices.getWeeklyLottoSTTPrice()).subtract(prices.getDailyLottoSTTPrice()), cus1.getBankAccount().getCredit());
+		
+		assertEquals(1, cus2.getTotoSTTs().size());
+		assertEquals(1, cus2.getDailyLottoPTTs().size());
+		assertEquals(oriCredit2.subtract(prices.getDailyLottoPTTPrice_Month()).subtract(prices.getTotoSTTPrice()), cus2.getBankAccount().getCredit());
+		
+		assertEquals(1, cus3.getWeeklyLottoPTTs().size());
+		assertEquals(1, cus3.getDailyLottoPTTs().size());
+		assertEquals(oriCredit3.subtract(prices.getWeeklyLottoPTTPrice_Year()).subtract(prices.getDailyLottoPTTPrice_HalfYear()), cus3.getBankAccount().getCredit());
+		
+		assertEquals(1, cus4.getWeeklyLottoSTTs().size());
+		assertEquals(oriCredit4.subtract(prices.getWeeklyLottoSTTPrice()), cus4.getBankAccount().getCredit());
+		
+		assertFalse(tp_res1);
+		
+		assertEquals(0, cus5.getWeeklyLottoPTTs().size());
+		assertEquals(0, cus5.getDailyLottoPTTs().size());
+		assertEquals(new BigDecimal(0), cus5.getBankAccount().getCredit());
+		
+		assertEquals(8, Lottery.getInstance().getFinancialManagement().getTicketPurchases().size());
+		
+		printCurrentTimeToConsol("Some people purchased TipTickets.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//DRAW AND SINGLETIP TESTs No 1
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		WeeklyLottoDraw draw1 = new WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
+		int[] draw1Results = new int[7];
+		draw1Results[0] = 9; draw1Results[1] = 2; draw1Results[2] = 7; draw1Results[3] = 6; draw1Results[4] = 7; draw1Results[5] = 4; draw1Results[6] = 7;
+		
+//		DailyLottoDraw draw2 = new DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
+//		TotoEvaluation eval1 = new TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
+		
+		//cus1:
+		int[] tipTip1 = new int[7];
+		tipTip1[0] = 1; tipTip1[1] = 2; tipTip1[2] = 3; tipTip1[3] = 4; tipTip1[4] = 5; tipTip1[5] = 6; tipTip1[6] = 7;
+		int rcode1 = draw1.createAndSubmitSingleTip(ticket1, tipTip1);
+		
+		//cus3:
+		int[] tipTip2 = new int[7];
+		tipTip2[0] = 1; tipTip2[1] = 2; tipTip2[2] = 3; tipTip2[3] = 4; tipTip2[4] = 5; tipTip2[5] = 6; tipTip2[6] = 7;
+		int rcode2 = draw1.createAndSubmitSingleTip(ticket5, tipTip2);
+		
+		assertEquals(0, rcode1);
+		assertEquals(0, rcode2);
+		assertEquals(2, draw1.getSingleTips().size());
+		
+		assertEquals(true, (ticket1.getTip() != null));
+		assertEquals(1, ticket5.getTips().size());
+		
+		printCurrentTimeToConsol("Two people submitted tips to a WeeklyLottoDraw (draw1).");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		Lottery.getInstance().getTimer().addDays(7);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		Lottery.getInstance().getTimer().addMinutes(-4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		//cus4:
+		int[] tipTip3 = new int[7];
+		tipTip3[0] = 1; tipTip3[1] = 2; tipTip3[2] = 3; tipTip3[3] = 4; tipTip3[4] = 5; tipTip3[5] = 6; tipTip3[6] = 7;
+		int rcode3 = draw1.createAndSubmitSingleTip(ticket7, tipTip3);
+
+		assertEquals(-2, rcode3);
+		
+		printCurrentTimeToConsol("Another customer tried to submit but was too late.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		draw1.setResult(draw1Results);
+		draw1.evaluate();
+		
+		int findNoti = 0;
+		for(Notification notification : cus1.getNotifications())
+			if(notification.getNote().matches("Sadly there is no evaluation code for the drawings so you never really had a chance to win something."))
+				++findNoti;
+		
+		assertEquals(1, findNoti);
+		
+		findNoti = 0;
+		for(Notification notification : cus3.getNotifications())
+			if(notification.getNote().matches("Sadly there is no evaluation code for the drawings so you never really had a chance to win something."))
+				++findNoti;
+		
+		assertEquals(1, findNoti);
+
+		BigDecimal pricePotential = ticket1.getPaidPurchasePrice().add(ticket5.getPaidPurchasePrice());
+		assertEquals(
+				pricePotential.multiply(new BigDecimal(Lottery.getInstance().getFinancialManagement().getReceiptsDistribution().getWinnersDue())).divide(new BigDecimal(100)) 
+				,Lottery.getInstance().getFinancialManagement().getWeeklyLottoPrize());
+		
+		printCurrentTimeToConsol("WeeklyLottoDraw (draw1) has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 	}
 
 	//	@After

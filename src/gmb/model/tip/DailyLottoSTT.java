@@ -5,23 +5,21 @@ import java.math.BigDecimal;
 import gmb.model.Lottery;
 import javax.persistence.Entity;
 
-import gmb.model.user.Customer;
-
 @Entity
-public class DailyLottoSTT extends SingleTT 
+public class DailyLottoSTT extends SingleTT implements DailyLottoTT 
 {	
-	@Deprecated
-	protected DailyLottoSTT(){}
+//	@Deprecated
+//	protected DailyLottoSTT(){}
 
-	public DailyLottoSTT(Customer owner)
+	public DailyLottoSTT()
 	{
-		super(owner);
+		super();
 		drawType = 1;
 	}
 
 	public void addToOwner(){ owner.addTipTicket(this); }
 	
-	public void setTip(SingleTip tip){ super.setTip(tip, DailyLottoTip.class); }
+	public int addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
 	
 	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoSTTPrice(); }
 }

@@ -27,7 +27,6 @@ public abstract class Request extends Notification
 	}
 
 	public Member getMember(){ return member; }
-	public String getNote(){ return note; }
 
 	public RequestState getState()
 	{

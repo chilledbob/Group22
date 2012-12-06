@@ -14,7 +14,7 @@ public class DailyLottoDraw extends Draw
 	@Deprecated
 	protected DailyLottoDraw(){}
 
-	protected DailyLottoDraw(DateTime planedEvaluationDate)
+	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
 	}
@@ -33,7 +33,7 @@ public class DailyLottoDraw extends Draw
 		for(GroupTip groupTip : groupTips)
 			for(SingleTip tip :  groupTip.getTips())
 				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-		
+
 		Lottery.getInstance().getFinancialManagement().setDailyLottoPrize(prizePotential);//everything for the lottery!
 		//////////////////////////
 
@@ -64,16 +64,15 @@ public class DailyLottoDraw extends Draw
 	 */
 	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
-		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoSTT!";
+		assert ticket instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoTT!";
 
 	if(this.isTimeLeftUntilEvaluation())
 	{
-		DailyLottoTip tip = new DailyLottoTip((DailyLottoSTT)ticket, this, tipTip);
+		DailyLottoTip tip = new DailyLottoTip((DailyLottoTT)ticket, this, tipTip);
 		int result = ticket.addTip(tip);
 
 		if(result == 0)
 		{
-			ticket.getOwner().addTipTicket((DailyLottoSTT)ticket);
 			singleTips.add(tip);
 
 			return 0;
@@ -82,6 +81,6 @@ public class DailyLottoDraw extends Draw
 			return result;
 	}
 	else
-		return -1;
+		return -2;
 	}
 }
