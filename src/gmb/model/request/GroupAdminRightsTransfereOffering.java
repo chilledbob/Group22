@@ -1,12 +1,37 @@
 package gmb.model.request;
 
-import gmb.model.user.Group;
-import gmb.model.user.Member;
+import gmb.model.user.Customer;
+import javax.persistence.Entity;
 
+import gmb.model.user.Group;
+
+@Entity
 public class GroupAdminRightsTransfereOffering extends GroupRequest 
 {
-	public GroupAdminRightsTransfereOffering(Group group, Member member, String note)
+	@Deprecated
+	protected GroupAdminRightsTransfereOffering(){}
+
+	public GroupAdminRightsTransfereOffering(Group group, Customer member, String note)
 	{
 		super(group, member, note);
+	}
+
+	/**
+	 * Return codes:
+	 * 0 - successful
+	 * 1 - failed because state was not "UNHANDLED"
+	 * 2 - failed because "member" is not in "group"'s list of members
+	 */
+	public int accept()
+	{
+		if(super.accept() == 0)
+			if(group.switchGroupAdmin((Customer) member)){ return 0; }
+			else
+			{
+				state = 3;
+				return 2;
+			}
+		else
+			return 1;
 	}
 }

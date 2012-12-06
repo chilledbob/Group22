@@ -1,28 +1,31 @@
 package gmb.model.tip;
 
-import java.util.*;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class TotoTip extends SingleTip 
 {
-	protected LinkedList<FootballGameResult> tips;
-	
 	@Deprecated
 	protected TotoTip(){}
 
-	public TotoTip(TotoSTT tipTicket, GroupTip groupTip, LinkedList<FootballGameResult> tips)
+	public TotoTip(TotoSTT tipTicket, TotoEvaluation eval, int[] tip)
 	{
-		super((SingleTT)tipTicket, groupTip);
+		super(tipTicket, eval, tip);
 
-		this.tips = tips;
+		assert eval.getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
 	}
 	
-	public boolean setTip(LinkedList<FootballGameResult> tips)
+	public TotoTip(TotoSTT tipTicket, GroupTip groupTip, int[] tip)
+	{
+		super(tipTicket, groupTip, tip);
+
+		assert ((TotoEvaluation)groupTip.getDraw()).getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
+	}
+	
+	public boolean setTip(int[] tip)
 	{ 	
-		//check the date before continue! five minutes limit before evaluation of the draw!
-		this.tips = tips; 
+		if(!draw.isTimeLeftUntilEvaluation()) return false;
 		
-		return true;
+		return super.setTip(tip);
 	}
-	
-	public LinkedList<FootballGameResult> getTips(){ return tips; }
 }

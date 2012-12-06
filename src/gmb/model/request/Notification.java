@@ -1,13 +1,26 @@
 package gmb.model.request;
 
+import java.util.Date;
+
 import gmb.model.Lottery;
+import gmb.model.user.Member;
 
 import org.joda.time.DateTime;
 
+import javax.persistence.*;
+
+@Entity
 public class Notification 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int notificationId;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier")
+	protected Member member;
+	
 	protected String note;
-	protected DateTime date;
+	protected Date date;
 
 	@Deprecated
 	protected Notification(){}
@@ -16,8 +29,9 @@ public class Notification
 	{
 		this.note = note;
 		
-		date = Lottery.getInstance().getTimer().getDateTime();
+		date = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
-	public DateTime getDate(){ return date; }
+	public DateTime getDate(){ return new DateTime(date); }
+	public String getNote(){ return note; }
 }

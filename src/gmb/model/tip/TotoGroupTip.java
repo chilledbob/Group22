@@ -1,7 +1,10 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+
 import gmb.model.user.Group;
 
+@Entity
 public class TotoGroupTip extends GroupTip 
 {
 	@Deprecated
@@ -10,8 +13,13 @@ public class TotoGroupTip extends GroupTip
 	public TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw, group, minimumStake, overallMinimumStake);
+		group.addTotoGroupTip(this);
 	}
 	
+	/**
+	 * tries to withdraw the "GroupTip" and removes all existing references in the system.
+	 * returns 0 if successful.
+	 */
 	public int withdraw()
 	{
 		int result = super.withdraw();	

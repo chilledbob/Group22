@@ -1,18 +1,29 @@
 package gmb.model.financial;
+import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.request.RealAccountDataUpdateRequest;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class FinancialManagement 
 {	
 	protected BigDecimal credit;
+	protected BigDecimal weeklyLottoPrize;
+	protected BigDecimal dailyLottoPrize;
+	protected BigDecimal totoPrize;
+	protected BigDecimal[] prizes;//use this field to implicitly access the prizes using the integer representation of DrawType (0 = WeeklyLotto, 1 = DailyLotto, 2 = Toto)
+	
 	protected TipTicketPrices tipTicketPrices;
 	protected ReceiptsDistribution receiptsDistribution;
-	protected LinkedList<InternalTransaction> internalTransactions;
-	protected LinkedList<ExternalTransaction> externalTransactions;
-	protected LinkedList<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
+	
+	protected List<TicketPurchase> ticketPurchases;
+	protected List<Winnings> winnings;
+	protected List<ExternalTransaction> externalTransactions;
+
+	protected List<ExternalTransactionRequest> externalTransactionRequests;	
+	protected List<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 
 	@Deprecated
 	protected FinancialManagement(){}
@@ -20,59 +31,103 @@ public class FinancialManagement
 	public FinancialManagement(TipTicketPrices tipTicketPrices, ReceiptsDistribution receiptsDistribution)
 	{
 		credit = new BigDecimal(0);
+		weeklyLottoPrize = new BigDecimal(0);
+		dailyLottoPrize = new BigDecimal(0);
+		totoPrize = new BigDecimal(0);
+		
+		prizes = new BigDecimal[3];
+		prizes[0] = weeklyLottoPrize;
+		prizes[1] = dailyLottoPrize;
+		prizes[2] = totoPrize;
+		
 		this.tipTicketPrices = tipTicketPrices;
 		this.receiptsDistribution = receiptsDistribution;
-		internalTransactions = new LinkedList<InternalTransaction>();
+		
+		ticketPurchases = new LinkedList<TicketPurchase>();
+		winnings = new LinkedList<Winnings>();
 		externalTransactions = new LinkedList<ExternalTransaction>();
+	
+		externalTransactionRequests = new LinkedList<ExternalTransactionRequest>();
 		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
 	}
-
+	
+	public BigDecimal distributeDrawReceipts(BigDecimal receipts)
+	{
+		BigDecimal prizePotential = receipts.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(new BigDecimal(100));
+		BigDecimal revenue = receipts.multiply(new BigDecimal(receiptsDistribution.getManagementDue())).divide(new BigDecimal(100));	
+		
+		credit = credit.add(revenue);
+		
+		return prizePotential;
+	}
+	
 	/**
-	 * initializes an internal transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
-	 * @param transaction
+	 * Updates the "credit" and the "prizes". 
+	 * Adds the purchase to the list.
+	 * @param purchase
 	 */
-	public void initTransaction(InternalTransaction transaction)
+	public void updateCredit(TicketPurchase purchase)
 	{
-
-		addInternalTransaction(transaction);
-//		transaction.getAffectedCustomer().getBankAccount().
+//		BigDecimal ticketPrice = purchase.getAmount().abs();
+//		BigDecimal toPrize = ticketPrice.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(new BigDecimal(100));
+//		BigDecimal revenue = ticketPrice.subtract(toPrize);		
+//		
+//		prizes[purchase.getTipTicket().getDrawTypeAsInt()] = prizes[purchase.getTipTicket().getDrawTypeAsInt()].add(toPrize);
+//		credit = credit.add(revenue);
+		
+		ticketPurchases.add(purchase);
 	}
-
+	
 	/**
-	 * initializes an external transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
-	 * @param transaction
+	 * Updates the "prizes". 
+	 * Adds the winnings to the list.
+	 * @param winnings
 	 */
-	public void initTransaction(ExternalTransaction transaction)
+	public void updateCredit(Winnings winnings)
 	{
-
+//		prizes[winnings.getTip().getTipTicket().getDrawTypeAsInt()] = prizes[winnings.getTip().getTipTicket().getDrawTypeAsInt()].subtract(winnings.getAmount());
+		this.winnings.add(winnings);
 	}
+	
+	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); }
+	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request); }
 
-	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request)
-	{
-		realAccounDataUpdateRequests.add(request);
+	public void addTransaction(TicketPurchase transaction){ ticketPurchases.add(transaction); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
+	
+	//delegate method:
+	public void addTransaction(Transaction transaction)
+	{ 
+		if(transaction instanceof Winnings)
+			addTransaction((Winnings)transaction);
+		else
+		if(transaction instanceof InternalTransaction)
+			addTransaction((TicketPurchase)transaction);
+		else
+			addTransaction((ExternalTransaction)transaction);		
 	}
-
-	public void addInternalTransaction(InternalTransaction transaction)
-	{
-		internalTransactions.add(transaction);
-	}
-
-	public void addExternalTransaction(ExternalTransaction transaction)
-	{
-		externalTransactions.add(transaction);
-	}
-
+	
 	public void setCredit(BigDecimal credit){ this.credit = credit; }
+	public void setWeeklyLottoPrize(BigDecimal weeklyLottoPrize){ this.weeklyLottoPrize = weeklyLottoPrize; }
+	public void setDailyLottoPrize(BigDecimal dailyLottoPrize){ this.dailyLottoPrize = dailyLottoPrize; }
+	public void setTotoPrize(BigDecimal totoPrize){ this.totoPrize = totoPrize; }
+	
 	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; }
 	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; }
 
 	public BigDecimal getCredit(){ return credit; }
+	public BigDecimal getWeeklyLottoPrize(){ return weeklyLottoPrize; }
+	public BigDecimal getDailyLottoPrize(){ return dailyLottoPrize; }
+	public BigDecimal getTotoPrize(){ return totoPrize; }
+	
 	public TipTicketPrices getTipTicketPrices() { return tipTicketPrices; }
 	public ReceiptsDistribution getReceiptsDistribution() { return receiptsDistribution; }
 	
-	public LinkedList<ExternalTransaction> getExternalTransactions() { return externalTransactions; }	
-	public LinkedList<InternalTransaction> getInternalTransactions() { return internalTransactions; }
-	public LinkedList<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
+	public List<ExternalTransaction> getExternalTransactions() { return externalTransactions; }	
+	public List<TicketPurchase> getTicketPurchases() { return ticketPurchases; }
+	public List<Winnings> getWinnings() { return winnings; }
+	
+	public List<ExternalTransactionRequest> getExternalTransactionRequests() { return externalTransactionRequests; }
+	public List<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
 }

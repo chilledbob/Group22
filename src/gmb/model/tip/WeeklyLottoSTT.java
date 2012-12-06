@@ -1,18 +1,26 @@
 package gmb.model.tip;
 
-import gmb.model.user.Customer;
+import java.math.BigDecimal;
 
-public class WeeklyLottoSTT extends SingleTT 
+import gmb.model.Lottery;
+import javax.persistence.Entity;
+
+
+@Entity
+public class WeeklyLottoSTT extends SingleTT  implements WeeklyLottoTT
 {
-	//CONSTRUCTORS
-	@Deprecated
-	protected WeeklyLottoSTT(){}
+//	@Deprecated
+//	protected WeeklyLottoSTT(){}
 
-	public WeeklyLottoSTT(Customer owner)
+	public WeeklyLottoSTT()
 	{
-		super(owner);
+		super();
+		drawType = 0;
 	}
 
-	@Override
-	public void setTip(SingleTip tip){ super.setTip(tip, WeeklyLottoTip.class);}
+	public void addToOwner(){ owner.addTipTicket(this); }
+	
+	public int addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
+	
+	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoSTTPrice(); }
 }

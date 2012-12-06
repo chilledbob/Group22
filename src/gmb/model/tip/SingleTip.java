@@ -1,27 +1,36 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
-public abstract class SingleTip extends Tip 
+@Entity
+public class SingleTip extends Tip 
 {
-	protected SingleTT tipTicket;
+	protected int[] tip;
+	protected TipTicket tipTicket;
+	@ManyToOne
 	protected GroupTip groupTip = null;
+
 	
 	@Deprecated
 	protected SingleTip(){}
 	
-	public SingleTip(SingleTT tipTicket, GroupTip groupTip) 
+	public SingleTip(GenericTT tipTicket, GroupTip groupTip, int[] tip) 
 	{
 		super(groupTip.getDraw());
 		
-		this.tipTicket = tipTicket;
+		this.tip = tip;
+		this.tipTicket = (TipTicket)tipTicket;
+		
 		this.groupTip = groupTip;
 	}
 
-	public SingleTip(SingleTT tipTicket, Draw draw) 
+	public SingleTip(GenericTT tipTicket, Draw draw, int[] tip) 
 	{
 		super(draw);
 		
-		this.tipTicket = tipTicket;
+		this.tip = tip;
+		this.tipTicket = (TipTicket)tipTicket;
 	}
 	
 	public int withdraw()
@@ -36,6 +45,7 @@ public abstract class SingleTip extends Tip
 		if(groupTip == null)
 		{
 			draw.removeTip(this);
+			tipTicket.removeTip(this);
 			
 			return 0;
 		}
@@ -44,6 +54,19 @@ public abstract class SingleTip extends Tip
 			return groupTip.removeSingleTip(this);
 		}
 	}
+	
+	public boolean setTip(int[] tip)
+	{ 		
+		if(draw.isTimeLeftUntilEvaluation())
+		{
+			this.tip = tip;
+			return true;
+		}
+		else
+		return false;
+	}
+	
+	public int[] getTip(){ return tip; }
 	
 	public TipTicket getTipTicket(){ return tipTicket; }
 	public GroupTip getGroupTip(){ return groupTip; }

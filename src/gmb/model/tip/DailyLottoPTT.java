@@ -1,18 +1,34 @@
 package gmb.model.tip;
 
-import gmb.model.user.Customer;
+import java.math.BigDecimal;
 
-public class DailyLottoPTT extends PermaTT 
+import gmb.model.Lottery;
+
+import javax.persistence.Entity;
+
+@Entity
+public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 {
-	//CONSTRUCTORS
 	@Deprecated
 	protected DailyLottoPTT(){}
 
-	public DailyLottoPTT(Customer owner, PTTDuration duration)
+	public DailyLottoPTT(PTTDuration duration)
 	{
-		 super(owner, duration);
+		super(duration);
+		drawType = 1;
 	}
 
-	@Override
-	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
+	public int addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
+
+	public void addToOwner(){ owner.addTipTicket(this); }
+	
+	public BigDecimal getPrice()
+	{ 
+		switch(durationType)
+		{
+		case 1: return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoPTTPrice_HalfYear(); 
+		case 2: return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoPTTPrice_Year(); 
+		default : return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoPTTPrice_Month(); 
+		}
+	}
 }

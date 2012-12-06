@@ -1,21 +1,39 @@
 package gmb.model.financial;
 
-import gmb.model.tip.Tip;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToOne;
 
-public class Winnings 
+import java.math.BigDecimal;
+
+import gmb.model.Lottery;
+import gmb.model.tip.SingleTip;
+
+@Embeddable
+public class Winnings extends InternalTransaction
 {
-	protected Tip tip;
-	protected InternalTransaction transaction;
+	@OneToOne
+	protected SingleTip tip;
 
 	@Deprecated
 	protected Winnings(){}
 
-	public Winnings(Tip tip, InternalTransaction transaction)
+	/**
+	 * initializes an internal transaction
+	 * a reference to the transaction will be added to the FinancialManagement and the affected user
+	 * the credit of the customer will be updated
+	 * the credit and prize amount of the lottery will be updated
+	 * @param transaction
+	 */
+	public Winnings(SingleTip tip, BigDecimal amount)
 	{
+		super(tip.getTipTicket().getOwner(),  amount);
 		this.tip = tip;
-		this.transaction = transaction;
+		
+		super.init();//update user credit		
+		Lottery.getInstance().getFinancialManagement().updateCredit(this);
+		
+//		tip.getTipTicket().getOwner().addNotification(new Notification(""));
 	}
-
-	public Tip getTip(){ return tip; }
-	public InternalTransaction getTransaction(){ return transaction; }
+	
+	public SingleTip getTip(){ return tip; }
 }

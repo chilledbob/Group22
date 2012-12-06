@@ -1,19 +1,25 @@
 package gmb.model.tip;
 
-import gmb.model.user.Customer;
+import java.math.BigDecimal;
 
+import gmb.model.Lottery;
+import javax.persistence.Entity;
 
+@Entity
 public class TotoSTT extends SingleTT 
 {
-	//CONSTRUCTORS
-	@Deprecated
-	protected TotoSTT(){}
+//	@Deprecated
+//	protected TotoSTT(){}
 
-	public TotoSTT(Customer owner)
+	public TotoSTT()
 	{
-		super(owner);
+		super();
+		drawType = 2;
 	}
 
-	@Override
-	public void setTip(SingleTip tip){ super.setTip(tip, TotoTip.class);}
+	public void addToOwner(){ owner.addTipTicket(this); }
+	
+	public int addTip(SingleTip tip){ return super.addTip(tip, TotoTip.class); }
+	
+	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getTotoSTTPrice(); }
 }
