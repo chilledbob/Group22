@@ -12,19 +12,18 @@ public class TipTicketPrices
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketPricesId;
 	
-	protected BigDecimal weeklyLottoSTTPrice;
-	protected BigDecimal totoSTTPrice;
-	protected BigDecimal dailyLottoSTTPrice;
+	protected BigDecimal weeklyLottoSTTPrice = new BigDecimal(0.75);
+	protected BigDecimal totoSTTPrice = new BigDecimal(0.50);
+	protected BigDecimal dailyLottoSTTPrice = new BigDecimal(0.50);
 	
-	protected BigDecimal weeklyLottoPTTPrice_Month;
-	protected BigDecimal dailyLottoPTTPrice_Month;
-	protected BigDecimal weeklyLottoPTTPrice_HalfYear;
-	protected BigDecimal dailyLottoPTTPrice_HalfYear;
-	protected BigDecimal weeklyLottoPTTPrice_Year;
-	protected BigDecimal dailyLottoPTTPrice_Year;
+	protected BigDecimal weeklyLottoPTTPrice_Month = new BigDecimal(2.75);
+	protected BigDecimal dailyLottoPTTPrice_Month = new BigDecimal(1.75);
+	protected BigDecimal weeklyLottoPTTPrice_HalfYear = new BigDecimal(14);
+	protected BigDecimal dailyLottoPTTPrice_HalfYear = new BigDecimal(9);
+	protected BigDecimal weeklyLottoPTTPrice_Year = new BigDecimal(25);
+	protected BigDecimal dailyLottoPTTPrice_Year = new BigDecimal(15);
 	
-	@Deprecated
-	protected TipTicketPrices(){}
+	public TipTicketPrices(){}
 	
 	public TipTicketPrices(BigDecimal weeklyLottoSTTPrice, BigDecimal totoSTTPrice, BigDecimal dailyLottoSTTPrice, 
 			BigDecimal weeklyLottoPTTPrice_Month, BigDecimal dailyLottoPTTPrice_Month,

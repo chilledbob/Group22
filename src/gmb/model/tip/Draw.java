@@ -3,6 +3,7 @@ package gmb.model.tip;
 import gmb.model.Lottery;
 import gmb.model.financial.Winnings;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ public abstract class Draw
 	protected Date planedEvaluationDate;	
 	protected Date actualEvaluationDate = null;	
 	
+	protected BigDecimal prizePotential;	
 	protected List<Winnings> winnings;
 	
 	@OneToMany
@@ -36,20 +38,30 @@ public abstract class Draw
 	@Deprecated
 	protected Draw(){}
 	
-	protected Draw(DateTime planedEvaluationDate)
+	public Draw(DateTime planedEvaluationDate)
 	{
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		winnings =  new LinkedList<Winnings>();
 		
 		singleTips = new LinkedList<SingleTip>();
 		groupTips = new LinkedList<GroupTip>();
+		
+		prizePotential = new BigDecimal(0);
 	}
 
 	public boolean evaluate()
 	{
 		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		evaluated = true;
-
+		
+		//accumulate the amount of spent money:
+		for(SingleTip tip : singleTips)
+			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+		
+		for(GroupTip groupTip : groupTips)
+			for(SingleTip tip :  groupTip.getTips())
+			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+		
 		return true;
 	}
 	

@@ -11,18 +11,16 @@ public class TipManagement
 	protected List<DailyLottoDraw> dailyLottoDrawings;
 	protected List<TotoEvaluation> totoEvaluations;
 	
-	protected long tipSubmissionTimeLimitInMilliSeconds;
+	protected long tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
 	
-	@Deprecated
-	protected TipManagement(){}
+//	@Deprecated
+//	protected TipManagement(){}
 	
-	public TipManagement(long tipSubmissionTimeLimitInMilliSeconds)
+	public TipManagement()
 	{
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
 		dailyLottoDrawings = new LinkedList<DailyLottoDraw>();
 		totoEvaluations = new LinkedList<TotoEvaluation>();
-		
-		this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds;
 	}
 	
 	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); }

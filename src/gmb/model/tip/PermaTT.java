@@ -1,5 +1,6 @@
 package gmb.model.tip;
 
+import gmb.model.Lottery;
 import gmb.model.user.Customer;
 
 import java.util.List;
@@ -39,10 +40,8 @@ public abstract class PermaTT extends TipTicket
 	public boolean isExpired()
 	{
 		if(!expired)
-		{				
-			DateTime durationDate = this.getDurationDate();
-			
-			if(durationDate.isBeforeNow())
+		{						
+			if(this.getDurationDate().isBefore(Lottery.getInstance().getTimer().getDateTime()))
 				expired = true;
 			
 			return expired;

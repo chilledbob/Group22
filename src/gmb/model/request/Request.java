@@ -67,7 +67,7 @@ public abstract class Request extends Notification
 
 	public boolean withdraw()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return false; 
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
@@ -77,7 +77,7 @@ public abstract class Request extends Notification
 
 	public int accept()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return 1; 
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
@@ -87,7 +87,7 @@ public abstract class Request extends Notification
 
 	public boolean refuse()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return false; 
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();

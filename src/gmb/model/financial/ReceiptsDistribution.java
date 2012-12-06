@@ -11,13 +11,12 @@ public class ReceiptsDistribution
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int receiptsDistributionId;
 	
-	protected int winnersDue;
-	protected int treasuryDue;
-	protected int lotteryTaxDue;
-	protected int managementDue;
+	protected int winnersDue = 50;
+	protected int treasuryDue = 27;
+	protected int lotteryTaxDue = 20;
+	protected int managementDue = 3;
 	
-	@Deprecated
-	protected ReceiptsDistribution(){}
+	public ReceiptsDistribution(){}
 	
 	public ReceiptsDistribution(int winnersDue, int treasuryDue, int lotteryTaxDue, int managementDue)
 	{

@@ -58,6 +58,8 @@ public class Customer extends Member
 		this.addCapability(new Capability("customer"));
 		
 		this.lotteryBankAccount = lotteryBankAccount;
+		lotteryBankAccount.setOwner(this);
+		
 		groups = new LinkedList<Group>();
 		
 		weeklyLottoSTTs = new LinkedList<WeeklyLottoSTT>();

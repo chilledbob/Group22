@@ -51,6 +51,16 @@ public class FinancialManagement
 		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
 	}
 	
+	public BigDecimal distributeDrawReceipts(BigDecimal receipts)
+	{
+		BigDecimal prizePotential = receipts.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(new BigDecimal(100));
+		BigDecimal revenue = receipts.multiply(new BigDecimal(receiptsDistribution.getManagementDue())).divide(new BigDecimal(100));	
+		
+		credit = credit.add(revenue);
+		
+		return prizePotential;
+	}
+	
 	/**
 	 * Updates the "credit" and the "prizes". 
 	 * Adds the purchase to the list.
@@ -58,12 +68,12 @@ public class FinancialManagement
 	 */
 	public void updateCredit(TicketPurchase purchase)
 	{
-		BigDecimal ticketPrice = purchase.getAmount().abs();
-		BigDecimal toPrize = ticketPrice.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(new BigDecimal(100));
-		BigDecimal revenue = ticketPrice.subtract(toPrize);		
-		
-		prizes[purchase.getTipTicket().getDrawTypeAsInt()].add(toPrize);
-		credit.add(revenue);
+//		BigDecimal ticketPrice = purchase.getAmount().abs();
+//		BigDecimal toPrize = ticketPrice.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(new BigDecimal(100));
+//		BigDecimal revenue = ticketPrice.subtract(toPrize);		
+//		
+//		prizes[purchase.getTipTicket().getDrawTypeAsInt()] = prizes[purchase.getTipTicket().getDrawTypeAsInt()].add(toPrize);
+//		credit = credit.add(revenue);
 		
 		ticketPurchases.add(purchase);
 	}
@@ -75,7 +85,7 @@ public class FinancialManagement
 	 */
 	public void updateCredit(Winnings winnings)
 	{
-		prizes[winnings.getTip().getTipTicket().getDrawTypeAsInt()].subtract(winnings.getAmount());
+//		prizes[winnings.getTip().getTipTicket().getDrawTypeAsInt()] = prizes[winnings.getTip().getTipTicket().getDrawTypeAsInt()].subtract(winnings.getAmount());
 		this.winnings.add(winnings);
 	}
 	
@@ -99,6 +109,10 @@ public class FinancialManagement
 	}
 	
 	public void setCredit(BigDecimal credit){ this.credit = credit; }
+	public void setWeeklyLottoPrize(BigDecimal weeklyLottoPrize){ this.weeklyLottoPrize = weeklyLottoPrize; }
+	public void setDailyLottoPrize(BigDecimal dailyLottoPrize){ this.dailyLottoPrize = dailyLottoPrize; }
+	public void setTotoPrize(BigDecimal totoPrize){ this.totoPrize = totoPrize; }
+	
 	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; }
 	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; }
 
@@ -114,6 +128,6 @@ public class FinancialManagement
 	public List<TicketPurchase> getTicketPurchases() { return ticketPurchases; }
 	public List<Winnings> getWinnings() { return winnings; }
 	
-	public List<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
+	public List<ExternalTransactionRequest> getExternalTransactionRequests() { return externalTransactionRequests; }
 	public List<RealAccountDataUpdateRequest> getRealAccounDataUpdateRequests() { return realAccounDataUpdateRequests; }
 }

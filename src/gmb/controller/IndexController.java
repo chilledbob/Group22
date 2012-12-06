@@ -29,7 +29,7 @@ import gmb.model.user.MemberManagement;
 		public ModelAndView home() {
 			ModelAndView mav = new ModelAndView();
 			MemberManagement mm = new MemberManagement();
-			mav.addObject("userListe", mm.find(Admin.class));
+//			mav.addObject("userListe", mm.find(Admin.class));
 			mav.setViewName("index");
 			return mav;
 	    }

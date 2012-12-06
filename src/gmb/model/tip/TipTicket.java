@@ -25,6 +25,7 @@ public abstract class TipTicket
 	//TemporalType nur Date,Time oder Timestamp
 	//@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
+	protected BigDecimal paidPurchasePrice;
 	
 	@ManyToOne
 	protected Customer owner;
@@ -36,13 +37,14 @@ public abstract class TipTicket
 	public TipTicket(Customer owner)
 	{
 		this.owner = owner;
-		
+		paidPurchasePrice = getPrice();
 		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 
 	/**
 	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
 	 * will be added to the "customers" list and "true" will be returned, otherwise "false".
+	 * Also the actually paid price will be saved in "paidPurchasePrice".
 	 * @param customer
 	 * @return
 	 */
@@ -50,8 +52,10 @@ public abstract class TipTicket
 	{
 		if(customer.hasEnoughMoneyToPurchase(this.getPrice()))
 		{
+			paidPurchasePrice = getPrice();//we need this information since the price can change over time
+			
 			new TicketPurchase(this);
-			addToOwner();
+			this.addToOwner();
 			
 			return true;
 		}
@@ -75,6 +79,7 @@ public abstract class TipTicket
 	
 	public Customer getOwner(){ return owner; }
 	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
+	public BigDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
 	
 	/**
 	 * Return Code:

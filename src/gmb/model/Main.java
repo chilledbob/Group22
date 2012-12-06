@@ -51,8 +51,8 @@ public class Main {
 		
 		Lottery.Instanciate(null,mm,null,null);
 		
-		Lottery.getInstance().getMemberManagement().add(user);
-		Lottery.getInstance().getMemberManagement().update(user);
+//		Lottery.getInstance().getMemberManagement().add(user);
+//		Lottery.getInstance().getMemberManagement().update(user);
 		
 
 		}

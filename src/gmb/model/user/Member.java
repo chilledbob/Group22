@@ -51,7 +51,7 @@ public abstract class Member extends PersistentUser
 	
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
-	
+	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
 
 	public MemberData getMemberData(){ return memberData; }	
 	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
@@ -68,7 +68,7 @@ public abstract class Member extends PersistentUser
 	 * @param note
 	 * @param updatedData
 	 */
-	public void sendDataUpdateRequest(String note, MemberData updatedData)	
+	public void sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
 		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
 
