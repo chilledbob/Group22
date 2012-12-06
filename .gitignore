@@ -34,3 +34,11 @@ WebContent/META-INF/
 WebContent/WEB-INF/
 src/META-INF/
 login.properties
+
+.settings/
+.classpath
+.project
+WebContent/META-INF/
+WebContent/WEB-INF/
+src/META-INF/
+login.properties

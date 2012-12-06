@@ -2,9 +2,14 @@ package gmb.model.user;
 
 import org.salespointframework.core.user.Capability;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Employee extends Member 
 {
-	//CONSTRUCTORS
+	@Deprecated
+	protected Employee(){}
+	
 	public Employee(String nickName, String password, MemberData memberData)
 	{
 		super(nickName, password, memberData);

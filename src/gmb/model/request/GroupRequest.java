@@ -1,13 +1,21 @@
 package gmb.model.request;
 
-import gmb.model.user.Group;
-import gmb.model.user.Member;
+import gmb.model.user.Customer;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
-public class GroupRequest extends Request 
+import gmb.model.user.Group;
+
+@Entity
+public abstract class GroupRequest extends Request 
 {
+	@ManyToOne
 	protected  Group group;
 	
-	public GroupRequest(Group group, Member member, String note)
+	@Deprecated
+	protected GroupRequest(){}
+	
+	public GroupRequest(Group group, Customer member, String note)
 	{
 		super(member, note);
 		this.group = group;

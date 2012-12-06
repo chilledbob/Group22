@@ -10,31 +10,51 @@ import gmb.model.tip.DailyLottoGroupTip;
 import gmb.model.tip.TotoGroupTip;
 import gmb.model.tip.WeeklyLottoGroupTip;
 
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
 
 import org.joda.time.DateTime;
 
-
+@Entity
 public class Group 
 {
-	//ATTRIBUTES
+	@Id
+	@GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int groupId;
+	
 	protected String name;
 	protected String infoText;
-	protected DateTime foundingDate;
+	protected Date foundingDate;
 	protected Boolean closed = false;
 
+	@OneToOne
 	protected Customer groupAdmin;
-	protected LinkedList<Customer> groupMembers;
+	@ManyToMany
+	protected List<Customer> groupMembers;
 
-	protected LinkedList<DailyLottoGroupTip> dailyLottoGroupTips;
-	protected LinkedList<WeeklyLottoGroupTip> weeklyLottoGroupTips;
-	protected LinkedList<TotoGroupTip> totoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<DailyLottoGroupTip> dailyLottoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<WeeklyLottoGroupTip> weeklyLottoGroupTips;
+	@OneToMany(mappedBy="group")
+	protected List<TotoGroupTip> totoGroupTips;
 
-	protected LinkedList<GroupInvitation> groupInvitations;
-	protected LinkedList<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
-	protected LinkedList<GroupMembershipApplication> groupMembershipApplications;
+	@OneToMany(mappedBy="group")
+	protected List<GroupInvitation> groupInvitations;
+	@OneToMany(mappedBy="group")
+	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
+	@OneToMany(mappedBy="group")
+	protected List<GroupMembershipApplication> groupMembershipApplications;
 
-	//CONSTRUCTORS
 	@Deprecated
 	protected Group(){}
 
@@ -42,31 +62,37 @@ public class Group
 	{
 		this.name = name;
 		this.infoText = infoText;
+		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		
 		this.groupAdmin = groupAdmin;
-
-		foundingDate = Lottery.getInstance().getTimer().getDateTime();
-
+		this.groupAdmin.addGroup(this);
+		
+		groupMembers =  new LinkedList<Customer>();
+		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
 		totoGroupTips = new LinkedList<TotoGroupTip>();
 
-		groupMembers =  new LinkedList<Customer>();
 		groupInvitations = new LinkedList<GroupInvitation>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
+		
+		Lottery.getInstance().getGroupManagement().addGroup(this);
 	}
-
+	
 	/**
 	 * creates a "GroupMembershipApplication" and adds it to the "customer" and this group
 	 * @param customer
 	 * @param note
 	 */
-	public void applyForMembership(Customer customer, String note)
+	public GroupMembershipApplication applyForMembership(Customer customer, String note)
 	{
 		GroupMembershipApplication application = new GroupMembershipApplication(this, customer, note);
 
-		customer.getGroupMembershipApplications().add(application);
+		customer.addGroupMembershipApplication(application);
 		this.groupMembershipApplications.add(application);
+		
+		return application;
 	}
 
 	/**
@@ -74,12 +100,14 @@ public class Group
 	 * @param customer
 	 * @param note
 	 */
-	public void sendGroupInvitation(Customer customer, String note)
+	public GroupInvitation sendGroupInvitation(Customer customer, String note)
 	{
-		GroupInvitation application = new GroupInvitation(this, customer, note);
+		GroupInvitation invitation = new GroupInvitation(this, customer, note);
 
-		customer.getGroupInvitations().add(application);
-		this.groupInvitations.add(application);
+		customer.addGroupInvitation(invitation);
+		this.groupInvitations.add(invitation);
+		
+		return invitation;
 	}
 
 	/**
@@ -87,27 +115,56 @@ public class Group
 	 * @param groupMember
 	 * @param note
 	 */
-	public void sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
+	public GroupAdminRightsTransfereOffering sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
-		GroupAdminRightsTransfereOffering application = new GroupAdminRightsTransfereOffering(this, groupMember, note);
+		GroupAdminRightsTransfereOffering offering = new GroupAdminRightsTransfereOffering(this, groupMember, note);
 
-		groupMember.getGroupAdminRightsTransfereOfferings().add(application);
-		this.groupAdminRightsTransfereOfferings.add(application);
+		groupMember.addGroupAdminRightsTransfereOffering(offering);
+		this.groupAdminRightsTransfereOfferings.add(offering);
+		
+		return offering;
 	}
 
+	public boolean switchGroupAdmin(Customer groupMember)
+	{
+		if(groupMembers.contains(groupMember))
+		{
+			groupMembers.add(groupAdmin);
+			groupAdmin = groupMember;
+			groupMembers.remove(groupMember);
+			
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	/**
-	 * resigning a "groupMember" by withdrawing all unhandled group related requests in "groupMember",
-	 * sending a "Notification" to the member and removing it from the "groupMembers" list 
+	 * resign the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
+	 * sending a "Notification" to the member and removing him from the "groupMembers" list.
+	 * if it's the "groupAdmin" who resigns "close" the group. 
 	 * @param groupMember
 	 */
 	public void resign(Customer groupMember)
 	{	
+		if(groupMember == groupAdmin)
+		{
+			close();
+			
+			withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
+			groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
+			
+			groupAdmin.getGroups().remove(this);
+		}
+		else
 		if(groupMembers.contains(groupMember))
 		{
 			withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
 
 			groupMember.addNotification(new Notification("You have been resigned from Group " + name + "."));
 			groupMembers.remove(groupMember);
+			
+			groupMember.getGroups().remove(this);
 		}
 	}
 
@@ -141,6 +198,10 @@ public class Group
 	 */
 	public void close()
 	{
+		if(closed == true) return;
+		
+		closed = true;
+		
 		for(Customer groupMember : groupMembers)
 		{
 			if(groupMembers.contains(groupMember))
@@ -149,32 +210,31 @@ public class Group
 				groupMember.addNotification(new Notification("The group " + name + " has been closed. You will be automatically resigned."));
 			}
 		}
-		
-		groupMembers.clear();
-		
-		withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
-		groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
-
-		closed = true;
+				
+		resign(groupAdmin);
 	}
-
-	//SET/ADD METHODS 
+ 
+	public void addGroupMember(Customer customer)
+	{ 
+		groupMembers.add(customer); 
+		customer.addGroup(this);
+	}
+	
 	public void SetInfoText(String infoText){ this.infoText = infoText; }	
 	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; }
-	public void addGroupMember(Customer customer){ groupMembers.add(customer); }
 
-	public LinkedList<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public LinkedList<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
-	public LinkedList<GroupMembershipApplication> getGroupMemberShipApplications(){ return groupMembershipApplications; }	
+	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
+	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
-	//GET METHODS
+	public List<Customer> getGroupMembers(){ return groupMembers; }
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
-	public DateTime getFoundingDate(){ return foundingDate; }
+	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }
 
-	public LinkedList<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
-	public LinkedList<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
-	public LinkedList<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
+	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
+	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
+	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
 
 	public void addDailyLottoGroupTip(DailyLottoGroupTip tip){ dailyLottoGroupTips.add(tip); }	
 	public void addWeeklyLottoGroupTip(WeeklyLottoGroupTip tip){ weeklyLottoGroupTips.add(tip); }	

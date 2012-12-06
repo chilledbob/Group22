@@ -1,14 +1,22 @@
 package gmb.model.financial;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class ReceiptsDistribution 
 {
-	private int winnersDue;
-	private int treasuryDue;
-	private int lotteryTaxDue;
-	private int managementDue;
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int receiptsDistributionId;
 	
-	@Deprecated
-	protected ReceiptsDistribution(){}
+	protected int winnersDue = 50;
+	protected int treasuryDue = 27;
+	protected int lotteryTaxDue = 20;
+	protected int managementDue = 3;
+	
+	public ReceiptsDistribution(){}
 	
 	public ReceiptsDistribution(int winnersDue, int treasuryDue, int lotteryTaxDue, int managementDue)
 	{

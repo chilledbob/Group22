@@ -1,30 +1,35 @@
 package gmb.model.tip;
 
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
+@Embeddable
 public class DailyLottoTip extends SingleTip 
 {
-	protected int[] tip;
-
+	@ManyToOne
+	protected GroupTip groupTip;
+	
 	@Deprecated
 	protected DailyLottoTip(){}
 
-	public DailyLottoTip(DailyLottoSTT tipTicket, GroupTip groupTip, int[] tip)
+	public DailyLottoTip(DailyLottoTT tipTicket, DailyLottoDraw draw, int[] tip)
 	{
-		super((SingleTT)tipTicket, groupTip);
+		super(tipTicket, draw, tip);
 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip!";
-		this.tip = tip;
+	}
+	
+	public DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip, int[] tip)
+	{
+		super(tipTicket, groupTip, tip);
+
+		assert tip.length == 7 : "Wrong tip length (!=10) given to DailyLottoTip!";
 	}
 	
 	public boolean setTip(int[] tip)
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
 		
-		//check the date before continue! five minutes limit before evaluation of the draw!
-		this.tip = tip; 
-		
-		return true;
+		return super.setTip(tip);
 	}
-	
-	public int[] getTip(){ return tip; }
 }

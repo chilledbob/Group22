@@ -1,38 +1,37 @@
 package gmb.model.tip;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.joda.time.Duration;
 
 
 public class TipManagement 
 {
-	protected LinkedList<WeeklyLottoDraw> weeklyLottoDrawings;
-	protected LinkedList<DailyLottoDraw> dailyLottoDrawings;
-	protected LinkedList<TotoEvaluation> totoEvaluations;
+	protected List<WeeklyLottoDraw> weeklyLottoDrawings;
+	protected List<DailyLottoDraw> dailyLottoDrawings;
+	protected List<TotoEvaluation> totoEvaluations;
 	
-	protected Duration tipSubmissionTimeLimit;
+	protected long tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
 	
-	@Deprecated
-	protected TipManagement(){}
+//	@Deprecated
+//	protected TipManagement(){}
 	
-	public TipManagement(long tipSubmissionTimeLimitInMilliSeconds)
+	public TipManagement()
 	{
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
 		dailyLottoDrawings = new LinkedList<DailyLottoDraw>();
 		totoEvaluations = new LinkedList<TotoEvaluation>();
-		
-		tipSubmissionTimeLimit = new Duration(tipSubmissionTimeLimitInMilliSeconds);
 	}
 	
 	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); }
 	public void addDraw(DailyLottoDraw draw){ dailyLottoDrawings.add(draw); }
 	public void addDraw(TotoEvaluation draw){ totoEvaluations.add(draw); }
 	
-	public void setTipSubmissionTimeLimit(Duration tipSubmissionTimeLimit){  this.tipSubmissionTimeLimit = tipSubmissionTimeLimit; }
+	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; }
 	
-	public LinkedList<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
-	public LinkedList<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
-	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
+	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
+	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
+	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
 	
-	public Duration getTipSubmissionTimeLimit(){ return tipSubmissionTimeLimit; }
+	public Duration getTipSubmissionTimeLimit(){ return new Duration(tipSubmissionTimeLimitInMilliSeconds); }
 }

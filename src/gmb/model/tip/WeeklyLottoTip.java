@@ -1,30 +1,31 @@
 package gmb.model.tip;
 
+import javax.persistence.Entity;
 
+@Entity
 public class WeeklyLottoTip extends SingleTip 
 {
-	protected int[] tip;
-
 	@Deprecated
 	protected WeeklyLottoTip(){}
 
-	public WeeklyLottoTip(WeeklyLottoSTT tipTicket, GroupTip groupTip, int[] tip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw, int[] tip)
 	{
-		super((SingleTT)tipTicket, groupTip);
+		super(tipTicket, draw, tip);
 
-		assert tip.length == 9 : "Wrong tip length (!=9) given to WeeklyLottoTip!";
-		this.tip = tip;
+		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
+	}
+	
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip, int[] tip)
+	{
+		super(tipTicket, groupTip, tip);
+
+		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
 	}
 
 	public boolean setTip(int[] tip)
 	{ 
-		assert tip.length == 9 : "Wrong tip length (!=9) given to DailyLottoTip.setTip(int[] tip)!";
+		assert tip.length == 7 : "Wrong tip length (!=7) given to DailyLottoTip.setTip(int[] tip)!";
 		
-		//check the date before continue! five minutes limit before evaluation of the draw!
-		this.tip = tip; 
-		
-		return true;
+		return super.setTip(tip);
 	}
-	
-	public int[] getTip(){ return tip; }
 }

@@ -6,21 +6,35 @@ import gmb.model.request.Notification;
 
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
-
-public class Member extends PersistentUser 
+@Entity
+public abstract class Member extends PersistentUser 
 {
-	//ATTRIBUTES	
 	protected boolean activated = false;
+	@Temporal(value = TemporalType.DATE)
 	protected Date registrationDate;
-	protected MemberData memberData;
-	protected LinkedList<MemberDataUpdateRequest> memberDataUpdateRequest;
-	protected LinkedList<Notification> notifications;
 	
-	//CONSTRUCTOR
+	@OneToOne 
+    @JoinColumn(name="memberDataId") 
+	protected MemberData memberData;
+	@OneToMany(mappedBy="member")
+	protected List<MemberDataUpdateRequest> memberDataUpdateRequest;
+	@OneToMany(mappedBy="member")
+	@JoinColumn(name="member", referencedColumnName="member_ID")
+	protected List<Notification> notifications;
+	
 	@Deprecated
 	protected Member(){}
 	
@@ -28,24 +42,33 @@ public class Member extends PersistentUser
 	{
 		super(new UserIdentifier(nickName), password);
 		this.memberData = memberData;
+		
+		registrationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		
+		memberDataUpdateRequest = new LinkedList<MemberDataUpdateRequest>();
+		notifications = new LinkedList<Notification>();
 	}	
 	
-	//SET/ADD METHODS
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
-	
-	//GET METHODS
+	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
+
 	public MemberData getMemberData(){ return memberData; }	
-	public Date getRegistrationDate(){ return registrationDate; }
+	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
 	
-	public LinkedList<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
-	public LinkedList<Notification> getNotifications(){ return notifications; }
+	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
+	public List<Notification> getNotifications(){ return notifications; }
 
 
-	//OTHERS METHODS
 	public void activateAccount(){ activated = true; }
 	
-	public void sendDataUpdateRequest(String note, MemberData updatedData)	
+	/**
+	 * create a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
+	 * and the "Member" himself
+	 * @param note
+	 * @param updatedData
+	 */
+	public void sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
 		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
 

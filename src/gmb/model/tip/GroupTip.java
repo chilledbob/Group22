@@ -4,9 +4,18 @@ import gmb.model.user.Customer;
 import gmb.model.user.Group;
 
 import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+
+@Entity
 public abstract class GroupTip extends Tip 
 {
+	@ManyToOne
 	protected Group group;
 	protected boolean submitted = false;
 	
@@ -14,8 +23,13 @@ public abstract class GroupTip extends Tip
 	protected int overallMinimumStake;
 	
 	protected int currentOverallMinimumStake = 0;
-
-	protected LinkedList<SingleTip> tips;
+	
+	@OneToMany(mappedBy="groupTip")
+	protected List<SingleTip> tips;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="draw_id")
+	private Draw draw;
 	
 	@Deprecated
 	protected GroupTip(){}
@@ -26,11 +40,13 @@ public abstract class GroupTip extends Tip
 		this.group = group;
 		this.minimumStake = minimumStake;
 		this.overallMinimumStake = overallMinimumStake;
-
+		
+		tips = new LinkedList<SingleTip>();
 	}
 	
 	/**
 	 * submit "groupTip" to "draw" if all criterias were met
+	 * return false if submission failed, otherwise true
 	 * @return
 	 */
 	public boolean submit()
@@ -112,6 +128,7 @@ public abstract class GroupTip extends Tip
 					return 2;
 			}
 			
+			tip.getTipTicket().removeTip(tip);
 			tips.remove(tip);
 			--currentOverallMinimumStake;
 			
@@ -198,4 +215,5 @@ public abstract class GroupTip extends Tip
 	
 	public Group getGroup(){ return group; }	
 	public boolean getSubmitted(){ return submitted; }
+	public List<SingleTip> getTips(){ return tips; }
 }
