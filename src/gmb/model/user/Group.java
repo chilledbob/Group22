@@ -12,6 +12,7 @@ import gmb.model.tip.WeeklyLottoGroupTip;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
@@ -32,8 +36,12 @@ public class Group
 	
 	protected String name;
 	protected String infoText;
-	protected DateTime foundingDate;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date foundingDate;
 	protected Boolean closed = false;
+	
+	@ManyToOne
+	protected GroupManagement groupManagementId;
 
 	@OneToOne
 	protected Customer groupAdmin;
@@ -61,7 +69,7 @@ public class Group
 	{
 		this.name = name;
 		this.infoText = infoText;
-		foundingDate = Lottery.getInstance().getTimer().getDateTime();
+		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
 		groupMembers =  new LinkedList<Customer>();
@@ -213,7 +221,7 @@ public class Group
 	//GET METHODS
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
-	public DateTime getFoundingDate(){ return foundingDate; }
+	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }
 
 	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
 	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	

@@ -5,12 +5,15 @@ import gmb.model.financial.Winnings;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -22,8 +25,10 @@ public abstract class Draw
 	protected int drawId;
 	
 	protected boolean evaluated = false;
-	protected DateTime planedEvaluationDate;	
-	protected DateTime actualEvaluationDate = null;	
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date planedEvaluationDate;	
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date actualEvaluationDate = null;	
 	
 	protected List<Winnings> winnings;
 	
@@ -37,7 +42,7 @@ public abstract class Draw
 	
 	protected Draw(DateTime planedEvaluationDate)
 	{
-		this.planedEvaluationDate = planedEvaluationDate;
+		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		winnings =  new LinkedList<Winnings>();
 		
 		singleTips = new LinkedList<SingleTip>();
@@ -46,7 +51,7 @@ public abstract class Draw
 
 	public boolean evaluate()
 	{
-		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime();
+		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		evaluated = true;
 
 		return true;
@@ -68,7 +73,7 @@ public abstract class Draw
 	 */
 	public boolean isTimeLeftUntilEvaluation()
 	{
-		Duration duration = new Duration(planedEvaluationDate, Lottery.getInstance().getTimer().getDateTime());
+		Duration duration = new Duration(new DateTime(planedEvaluationDate), Lottery.getInstance().getTimer().getDateTime());
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 	
@@ -164,8 +169,8 @@ public abstract class Draw
 	public boolean getEvaluated(){ return evaluated; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	
-	public DateTime getPlanedEvaluationDate(){ return planedEvaluationDate; }
-	public DateTime getActualEvaluationDate(){ return actualEvaluationDate; }
+	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
+	public DateTime getActualEvaluationDate(){ return new DateTime(actualEvaluationDate); }
 	
 	public abstract int[] getResult();
 }

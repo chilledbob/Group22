@@ -3,9 +3,12 @@ package gmb.model.tip;
 import gmb.model.user.Customer;
 
 import java.util.List;
+import java.util.Date;
 
 import javax.persistence.OneToMany;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -18,8 +21,8 @@ public abstract class PermaTT extends TipTicket
 	
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
-	//@Temporal(value = TemporalType.DATE)
-	protected DateTime durationDate;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date durationDate;
 	
 	protected boolean expired = false;
 
@@ -49,9 +52,11 @@ public abstract class PermaTT extends TipTicket
 			default : duration = new Duration(millisecondsOfDay*30);
 			}
 			
-			DateTime durationDate = purchaseDate.plus(duration);
+			DateTime pD = new DateTime(purchaseDate);
+			DateTime durationDate1 = pD.plus(duration);
+			durationDate = durationDate1.toDate();
 			
-			if(durationDate.isBeforeNow())
+			if(durationDate1.isBeforeNow())
 				expired = true;
 			
 			return expired;

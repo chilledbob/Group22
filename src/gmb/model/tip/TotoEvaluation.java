@@ -1,6 +1,7 @@
 package gmb.model.tip;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
@@ -9,6 +10,9 @@ import org.joda.time.DateTime;
 public class TotoEvaluation extends Draw 
 {
 	protected FootballGameResult[] results;
+	
+	@ManyToOne
+	protected TipManagement tipManagementId;
 	
 	@Deprecated
 	protected TotoEvaluation(){}

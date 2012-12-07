@@ -4,12 +4,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ReceiptsDistribution 
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int receiptsDistributionId;
+	
+	@OneToOne
+	protected FinancialManagement financialManagementId;
 	
 	protected int winnersDue;
 	protected int treasuryDue;

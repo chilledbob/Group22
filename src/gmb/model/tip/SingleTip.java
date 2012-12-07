@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 public class SingleTip extends Tip 
 {
 	protected int[] tip;
+	@ManyToOne
+	protected PermaTT permaTT;
 	protected TipTicket tipTicket;
 	@ManyToOne
 	protected GroupTip groupTip = null;

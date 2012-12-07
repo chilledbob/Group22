@@ -5,10 +5,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import gmb.model.Lottery;
 
-
+import java.util.Date;
 import org.joda.time.DateTime;
 
 @Entity
@@ -18,7 +20,8 @@ public abstract class Tip
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipId;
 	
-	protected DateTime submissionDate;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date submissionDate;
 	@ManyToOne
 	protected Draw draw;
 	
@@ -29,7 +32,7 @@ public abstract class Tip
 	{
 		this.draw = draw;
 		
-		submissionDate = Lottery.getInstance().getTimer().getDateTime();
+		submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
 	public Draw getDraw(){ return draw; }

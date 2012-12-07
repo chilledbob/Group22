@@ -6,6 +6,7 @@ import gmb.model.request.Notification;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Date;
 
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
@@ -14,6 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
@@ -21,10 +24,13 @@ import org.salespointframework.core.user.UserIdentifier;
 @Entity
 public abstract class Member extends PersistentUser 
 {
-	//ATTRIBUTES	
+	@Column(name="activated")
 	protected boolean activated = false;
-	@Temporal(value = TemporalType.DATE)
-	protected DateTime registrationDate;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	protected Date registrationDate;
+	
+	@ManyToOne
+	protected MemberManagement memberManagementID;
 	
 	@OneToOne 
     @JoinColumn(name="memberDataId") 
@@ -43,7 +49,7 @@ public abstract class Member extends PersistentUser
 		super(new UserIdentifier(nickName), password);
 		this.memberData = memberData;
 		
-		registrationDate = Lottery.getInstance().getTimer().getDateTime();
+		registrationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		memberDataUpdateRequest = new LinkedList<MemberDataUpdateRequest>();
 		notifications = new LinkedList<Notification>();
@@ -55,7 +61,7 @@ public abstract class Member extends PersistentUser
 	
 	//GET METHODS
 	public MemberData getMemberData(){ return memberData; }	
-	public DateTime getRegistrationDate(){ return registrationDate; }
+	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
 	
 	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
 	public List<Notification> getNotifications(){ return notifications; }

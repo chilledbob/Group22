@@ -2,10 +2,24 @@ package gmb.model.request;
 
 import gmb.model.financial.ExternalTransaction;
 import gmb.model.user.Member;
+import gmb.model.financial.LotteryBankAccount;
+import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.Entity;
+import javax.persistence.Embedded;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class ExternalTransactionRequest extends Request 
 {
+	@Embedded
 	protected ExternalTransaction transaction;
+	
+	@ManyToOne
+	protected LotteryBankAccount lotteryBankAccount;
+	
+	@ManyToOne
+	protected FinancialManagement financialManagementId;
 
 	@Deprecated
 	protected ExternalTransactionRequest(){}

@@ -7,12 +7,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.OneToOne;
 
 import gmb.model.Lottery;
 import gmb.model.financial.TicketPurchase;
 import gmb.model.user.Customer;
 
-
+import java.util.Date;
 import org.joda.time.DateTime;
 
 @Entity
@@ -21,9 +24,11 @@ public abstract class TipTicket
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
 	
-	//TemporalType nur Date,Time oder Timestamp
-	//@Temporal(value = TemporalType.DATE)
-	protected DateTime purchaseDate;
+	@Temporal(value = TemporalType.DATE)
+	protected Date purchaseDate;
+	
+	@OneToOne(mappedBy="ticket")
+	protected TicketPurchase ticketPurchaseId;
 	
 	@ManyToOne
 	protected Customer owner;
@@ -36,7 +41,7 @@ public abstract class TipTicket
 	{
 		this.owner = owner;
 		
-		purchaseDate = Lottery.getInstance().getTimer().getDateTime();
+		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 
 	/**
@@ -73,7 +78,7 @@ public abstract class TipTicket
 	public int getDrawTypeAsInt(){ return drawType; }
 	
 	public Customer getOwner(){ return owner; }
-	public DateTime getPurchaseDate(){ return purchaseDate; }	
+	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
 	
 	/**
 	 * Return Code:
