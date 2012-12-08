@@ -14,14 +14,10 @@ public class Timer extends DefaultTime
 		super();
 	}
 	
-//	public boolean isBeforeNow(DateTime date)
-//	{
-//		return date.isBefore(this.getDateTime()); 
-//	}
-	
 	public void setReferenceDate(DateTime refDate)
 	{
 		offset1 = new Duration(super.getDateTime(), refDate);
+		offset2 = new Duration(0);
 	}
 	
 	public void addMinutes(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60 * minuteCount)); }
@@ -29,7 +25,7 @@ public class Timer extends DefaultTime
 	public void addDays(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24 * minuteCount)); }
 	public void addWeeks(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*7 * minuteCount)); }
 	public void addMonths(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*30 * minuteCount)); }
-	public void addYears(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*356 * minuteCount)); }
+	public void addYears(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*365 * minuteCount)); }
 	
 	public void addToOffset(Duration offset){ this.offset2 = this.offset2.plus(offset); }
 	

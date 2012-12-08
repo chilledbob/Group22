@@ -1,8 +1,8 @@
 package gmb.model.request;
 
-import gmb.model.financial.ExternalTransaction;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.FinancialManagement;
+import gmb.model.financial.transaction.ExternalTransaction;
 
 import javax.persistence.Entity;
 import javax.persistence.Embedded;

@@ -9,14 +9,14 @@ import org.salespointframework.core.user.UserIdentifier;
 import org.springframework.stereotype.Component;
 import org.salespointframework.core.shop.Shop;
 
-import gmb.model.user.MemberManagement;
 import gmb.model.Lottery;
-import gmb.model.user.Adress;
-import gmb.model.user.Admin;
-import gmb.model.user.MemberData;
-import gmb.model.user.Group;
-import gmb.model.user.GroupManagement;
-import gmb.model.user.Member;
+import gmb.model.group.Group;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.Admin;
+import gmb.model.member.Member;
+import gmb.model.member.MemberManagement;
+import gmb.model.member.container.Adress;
+import gmb.model.member.container.MemberData;
 
 
 

@@ -1,9 +1,9 @@
 package gmb.model;
 
-import gmb.model.user.Member;
-import gmb.model.user.MemberManagement;
-import gmb.model.user.GroupManagement;
 import gmb.model.financial.FinancialManagement;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.Member;
+import gmb.model.member.MemberManagement;
 import gmb.model.tip.TipManagement;
 
 import javax.persistence.EntityManager;

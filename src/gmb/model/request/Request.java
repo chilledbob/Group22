@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import gmb.model.Lottery;
 import javax.persistence.Entity;
 
-import gmb.model.user.Member;
+import gmb.model.member.Member;
 
 @Entity
 public abstract class Request extends Notification

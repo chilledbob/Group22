@@ -1,6 +1,13 @@
 package gmb.model.financial;
+import gmb.model.financial.container.ReceiptsDistribution;
+import gmb.model.financial.container.TipTicketPrices;
+import gmb.model.financial.transaction.ExternalTransaction;
+import gmb.model.financial.transaction.InternalTransaction;
+import gmb.model.financial.transaction.TicketPurchase;
+import gmb.model.financial.transaction.Transaction;
+import gmb.model.financial.transaction.Winnings;
 import gmb.model.request.ExternalTransactionRequest;
-import gmb.model.request.RealAccountDataUpdateRequest;
+import gmb.model.request.data.RealAccountDataUpdateRequest;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -28,8 +35,6 @@ public class FinancialManagement
 	protected TipTicketPrices tipTicketPrices;
 	@OneToOne(mappedBy="financialManagementId")
 	protected ReceiptsDistribution receiptsDistribution;
-	
-
 	
 	@OneToMany(mappedBy="financialManagementId")
 	protected List<TicketPurchase> ticketPurchases;

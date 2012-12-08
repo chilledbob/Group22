@@ -3,7 +3,7 @@ package gmb.model.request;
 import java.util.Date;
 
 import gmb.model.Lottery;
-import gmb.model.user.Member;
+import gmb.model.member.Member;
 
 import org.joda.time.DateTime;
 
