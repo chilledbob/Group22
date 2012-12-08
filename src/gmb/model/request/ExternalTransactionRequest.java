@@ -1,7 +1,6 @@
 package gmb.model.request;
 
 import gmb.model.financial.ExternalTransaction;
-import gmb.model.user.Member;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.FinancialManagement;
 
@@ -24,9 +23,9 @@ public class ExternalTransactionRequest extends Request
 	@Deprecated
 	protected ExternalTransactionRequest(){}
 	
-	public ExternalTransactionRequest(ExternalTransaction transaction, Member member, String note)
+	public ExternalTransactionRequest(ExternalTransaction transaction, String note)
 	{
-		super(member, note);
+		super(transaction.getAffectedCustomer(), note);
 		this.transaction = transaction;
 	}
 	

@@ -3,9 +3,10 @@ package gmb.model.tip;
 import gmb.model.Lottery;
 import gmb.model.financial.Winnings;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ public abstract class Draw
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date actualEvaluationDate = null;	
 	
+	protected BigDecimal prizePotential;	
 	protected List<Winnings> winnings;
 	
 	@OneToMany
@@ -40,20 +42,30 @@ public abstract class Draw
 	@Deprecated
 	protected Draw(){}
 	
-	protected Draw(DateTime planedEvaluationDate)
+	public Draw(DateTime planedEvaluationDate)
 	{
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		winnings =  new LinkedList<Winnings>();
 		
 		singleTips = new LinkedList<SingleTip>();
 		groupTips = new LinkedList<GroupTip>();
+		
+		prizePotential = new BigDecimal(0);
 	}
 
 	public boolean evaluate()
 	{
 		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		evaluated = true;
-
+		
+		//accumulate the amount of spent money:
+		for(SingleTip tip : singleTips)
+			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+		
+		for(GroupTip groupTip : groupTips)
+			for(SingleTip tip :  groupTip.getTips())
+			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+		
 		return true;
 	}
 	
@@ -73,7 +85,7 @@ public abstract class Draw
 	 */
 	public boolean isTimeLeftUntilEvaluation()
 	{
-		Duration duration = new Duration(new DateTime(planedEvaluationDate), Lottery.getInstance().getTimer().getDateTime());
+		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), new DateTime(planedEvaluationDate));
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 	
@@ -163,8 +175,8 @@ public abstract class Draw
 	//===============================================================================//
 	///////////////////////////////////////////////////////////////////////////////////
 
-	public List<SingleTip> getWeeklyLottoTips(){ return singleTips; }
-	public List<GroupTip> getWeeklyLottoGroupTips(){ return groupTips; }
+	public List<SingleTip> getSingleTips(){ return singleTips; }
+	public List<GroupTip> getGroupTips(){ return groupTips; }
 	
 	public boolean getEvaluated(){ return evaluated; }
 	public List<Winnings> getWinnings(){ return winnings; }

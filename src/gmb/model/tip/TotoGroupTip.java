@@ -13,6 +13,7 @@ public class TotoGroupTip extends GroupTip
 	public TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw, group, minimumStake, overallMinimumStake);
+		group.addTotoGroupTip(this);
 	}
 	
 	/**

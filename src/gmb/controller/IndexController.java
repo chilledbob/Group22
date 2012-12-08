@@ -28,7 +28,7 @@ import gmb.model.user.MemberManagement;
 	    public ModelAndView index() {
 			ModelAndView mav = new ModelAndView();
 
-			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMember());
+			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
 			mav.setViewName("index");
 			return mav;
 	    }
@@ -39,8 +39,8 @@ import gmb.model.user.MemberManagement;
 			EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
 			EntityManager em = emf.createEntityManager();
 			
-			MemberManagement mm = new MemberManagement("Troll");
-			GroupManagement gm = new GroupManagement();
+			MemberManagement mm = new MemberManagement(0);
+			GroupManagement gm = new GroupManagement(0);
 			
 			Lottery.Instanciate(null,mm,gm,null);
 			
@@ -66,7 +66,7 @@ import gmb.model.user.MemberManagement;
 		@RequestMapping("/home")
 		public ModelAndView home() {
 			ModelAndView mav = new ModelAndView();
-			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMember());
+			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
 			mav.setViewName("index");
 			return mav;
 	    }

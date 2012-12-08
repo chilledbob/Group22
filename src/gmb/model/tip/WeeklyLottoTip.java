@@ -8,16 +8,16 @@ public class WeeklyLottoTip extends SingleTip
 	@Deprecated
 	protected WeeklyLottoTip(){}
 
-	public WeeklyLottoTip(WeeklyLottoSTT tipTicket, WeeklyLottoDraw draw, int[] tip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw, int[] tip)
 	{
-		super((SingleTT)tipTicket, draw, tip);
+		super(tipTicket, draw, tip);
 
 		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
 	}
 	
-	public WeeklyLottoTip(WeeklyLottoSTT tipTicket, GroupTip groupTip, int[] tip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip, int[] tip)
 	{
-		super((SingleTT)tipTicket, groupTip, tip);
+		super(tipTicket, groupTip, tip);
 
 		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
 	}

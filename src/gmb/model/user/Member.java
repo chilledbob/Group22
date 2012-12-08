@@ -4,9 +4,9 @@ import gmb.model.Lottery;
 import gmb.model.request.MemberDataUpdateRequest;
 import gmb.model.request.Notification;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Date;
 
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
@@ -55,11 +55,10 @@ public abstract class Member extends PersistentUser
 		notifications = new LinkedList<Notification>();
 	}	
 	
-	//SET/ADD METHODS
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
-	
-	//GET METHODS
+	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
+
 	public MemberData getMemberData(){ return memberData; }	
 	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
 	
@@ -67,7 +66,6 @@ public abstract class Member extends PersistentUser
 	public List<Notification> getNotifications(){ return notifications; }
 
 
-	//OTHERS METHODS
 	public void activateAccount(){ activated = true; }
 	
 	/**
@@ -76,7 +74,7 @@ public abstract class Member extends PersistentUser
 	 * @param note
 	 * @param updatedData
 	 */
-	public void sendDataUpdateRequest(String note, MemberData updatedData)	
+	public void sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
 		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
 

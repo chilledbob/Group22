@@ -24,7 +24,6 @@ import org.salespointframework.core.user.Capability;
 @Entity
 public class Customer extends Member 
 {
-
 	@OneToOne(mappedBy="owner")
 	@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
 	protected LotteryBankAccount lotteryBankAccount;
@@ -59,6 +58,8 @@ public class Customer extends Member
 		this.addCapability(new Capability("customer"));
 		
 		this.lotteryBankAccount = lotteryBankAccount;
+		lotteryBankAccount.setOwner(this);
+		
 		groups = new LinkedList<Group>();
 		
 		weeklyLottoSTTs = new LinkedList<WeeklyLottoSTT>();
@@ -98,7 +99,7 @@ public class Customer extends Member
 	public List<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }
 	public List<TotoSTT> getTotoSTTs(){ return totoSTTs; }
 	public List<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
-	public List<DailyLottoPTT> getDailyLottoPTT(){ return dailyLottoPTTs; }
+	public List<DailyLottoPTT> getDailyLottoPTTs(){ return dailyLottoPTTs; }
 	
 	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }

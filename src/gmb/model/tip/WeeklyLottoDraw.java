@@ -1,11 +1,13 @@
 package gmb.model.tip;
 
+import gmb.model.Lottery;
+
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
 @Entity
-public class WeeklyLottoDraw extends Draw 
+public class WeeklyLottoDraw extends Draw
 {
 	protected int[] result = null;
 	
@@ -15,15 +17,29 @@ public class WeeklyLottoDraw extends Draw
 	@Deprecated
 	protected WeeklyLottoDraw(){}
 	
-	protected WeeklyLottoDraw(DateTime planedEvaluationDate)
+	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
 	}
 	
 	public boolean evaluate() 
 	{
-		super.evaluate();//set actualEvaluationDate
+		super.evaluate();//set actualEvaluationDate and init prizePotential 
+
+		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getWeeklyLottoPrize());
+		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
+
+		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
+		for(SingleTip tip : singleTips)
+			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+
+		for(GroupTip groupTip : groupTips)
+			for(SingleTip tip :  groupTip.getTips())
+				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
 		
+		Lottery.getInstance().getFinancialManagement().setWeeklyLottoPrize(prizePotential);//everything for the lottery!
+		//////////////////////////
+
 		return false;
 	}
 	
@@ -51,16 +67,15 @@ public class WeeklyLottoDraw extends Draw
 	 */
 	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
-		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoSTT!";
+		assert ticket instanceof WeeklyLottoTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoTT!";
 		
 		if(this.isTimeLeftUntilEvaluation())
 		{
-			WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoSTT)ticket, this, tipTip);
+			WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoTT)ticket, this, tipTip);
 			int result = ticket.addTip(tip);
 			
 			if(result == 0)
 			{
-				ticket.getOwner().addTipTicket((WeeklyLottoSTT)ticket);
 				singleTips.add(tip);
 				
 				return 0;
@@ -69,6 +84,6 @@ public class WeeklyLottoDraw extends Draw
 				return result;
 		}
 		else
-			return -1;
+			return -2;
 	}
 }

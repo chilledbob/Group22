@@ -5,18 +5,16 @@ import java.math.BigDecimal;
 import gmb.model.Lottery;
 import javax.persistence.Entity;
 
-import gmb.model.user.Customer;
 
 @Entity
-public class WeeklyLottoPTT extends PermaTT 
+public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 {
-	//CONSTRUCTORS
-	@Deprecated
-	protected WeeklyLottoPTT(){}
+//	@Deprecated
+//	protected WeeklyLottoPTT(){}
 
-	public WeeklyLottoPTT(Customer owner, PTTDuration duration)
+	public WeeklyLottoPTT(PTTDuration duration)
 	{
-		super(owner, duration);
+		super(duration);
 		drawType = 0;
 	}
 

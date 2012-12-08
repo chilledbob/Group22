@@ -1,5 +1,7 @@
 package gmb.model.request;
 
+import java.util.Date;
+
 import gmb.model.Lottery;
 import gmb.model.user.Member;
 
@@ -18,7 +20,7 @@ public class Notification
 	protected Member member;
 	
 	protected String note;
-	protected DateTime date;
+	protected Date date;
 
 	@Deprecated
 	protected Notification(){}
@@ -27,8 +29,9 @@ public class Notification
 	{
 		this.note = note;
 		
-		date = Lottery.getInstance().getTimer().getDateTime();
+		date = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
-	public DateTime getDate(){ return date; }
+	public DateTime getDate(){ return new DateTime(date); }
+	public String getNote(){ return note; }
 }
