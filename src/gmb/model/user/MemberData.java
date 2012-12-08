@@ -15,7 +15,6 @@ import javax.persistence.TemporalType;
 //import org.eclipse.persistence.internal.jpa.parsing.TemporalLiteralNode.TemporalType;
 
 @Entity
-
 public class MemberData 
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
@@ -23,6 +22,7 @@ public class MemberData
 
 	protected String firstName;
 	protected String lastName;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date birthDate;
 	protected String phoneNumber;
@@ -35,17 +35,16 @@ public class MemberData
 	@Deprecated
 	protected MemberData(){}
 	
-	public MemberData(String memberFirstName, String memberLastName, DateTime memberBirthDate, String memberPhoneNumber, String memberEMail, Adress memberAdress)
+	public MemberData(String firstName, String lastName, DateTime birthDate, String phoneNumber, String eMail, Adress adress)
 	{	
-		firstName = memberFirstName;
-		lastName = memberLastName;
-		birthDate = memberBirthDate.toDate();
-		phoneNumber = memberPhoneNumber;
-		eMail = memberEMail;
-		adress = memberAdress;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate.toDate();
+		this.phoneNumber = phoneNumber;
+		this.eMail = eMail;
+		this.adress = adress;
 	}
 	
-	//GET METHODS
 	public String getFirstName(){ return firstName; }
 	public String getLastName(){ return lastName; }
 	public DateTime getBirthDate(){ return new DateTime(birthDate); }

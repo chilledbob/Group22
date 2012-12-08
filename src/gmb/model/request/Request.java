@@ -1,4 +1,6 @@
 package gmb.model.request;
+import java.util.Date;
+
 import org.joda.time.DateTime;
 
 import gmb.model.Lottery;
@@ -11,7 +13,7 @@ public abstract class Request extends Notification
 { 
 	protected Member member;
 	protected int state = 0;//RequestState.UNHANDELED
-	protected DateTime lastStateChangeDate;
+	protected Date lastStateChangeDate;
 
 	@Deprecated
 	protected Request(){}
@@ -21,11 +23,10 @@ public abstract class Request extends Notification
 		super(note);
 		this.member = member;
 
-		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime();
+		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 
 	public Member getMember(){ return member; }
-	public String getNote(){ return note; }
 
 	public RequestState getState()
 	{
@@ -60,36 +61,38 @@ public abstract class Request extends Notification
 	public void resetState()
 	{ 
 		state = 0; 
-		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime(); 
+		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate(); 
 	}
 
 	public boolean withdraw()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return false; 
 
-		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime();
+		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 1; 
 		return true;
 	}
 
 	public int accept()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return 1; 
 
-		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime();
+		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 2; 
 		return 0;
 	}
 
 	public boolean refuse()
 	{ 
-		if(state == 0) 
+		if(state != 0) 
 			return false; 
 
-		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime();
+		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 3; 
 		return true;
 	}
+	
+	public DateTime getLastStateChangeDate(){ return new DateTime(lastStateChangeDate); }
 }

@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 @Entity
 public class Notary extends Member 
 {	
-	//CONSTRUCTORS
 	@Deprecated
 	protected Notary(){}
 	

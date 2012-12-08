@@ -6,7 +6,6 @@ import gmb.model.tip.TipManagement;
 import gmb.model.user.GroupManagement;
 import gmb.model.user.MemberManagement;
 
-import org.salespointframework.core.time.DefaultTime;
 
 public class Lottery 
 {
@@ -17,7 +16,7 @@ public class Lottery
 	protected GroupManagement groupManagement;
 	protected TipManagement tipManagement;
 	
-	protected DefaultTime timer;
+	protected Timer timer;
 	
 	@Deprecated
 	protected Lottery(){}
@@ -29,7 +28,7 @@ public class Lottery
 		this.groupManagement = groupManagement;
 		this.tipManagement = tipManagement;
 		
-		this.timer = new DefaultTime();
+		this.timer = new Timer();
 	}
 	
 	public static void Instanciate(FinancialManagement financialManagement, MemberManagement memberManagement, GroupManagement groupManagement, TipManagement tipManagement)
@@ -50,5 +49,5 @@ public class Lottery
 	public GroupManagement getGroupManagement(){ return groupManagement; }
 	public TipManagement getTipManagement(){ return tipManagement; }
 	
-	public DefaultTime getTimer(){ return timer; }
+	public Timer getTimer(){ return timer; }
 }

@@ -2,19 +2,17 @@ package gmb.model.tip;
 
 import javax.persistence.Entity;
 
-import gmb.model.user.Customer;
-
 @Entity
 public abstract class SingleTT extends TipTicket
 {	
 	protected SingleTip tip = null;
 
-	@Deprecated
-	protected SingleTT(){}
+//	@Deprecated
+//	protected SingleTT(){}
 	
-	public SingleTT(Customer owner)
+	public SingleTT()
 	{
-		super(owner);
+		super();
 	}
 	
 	public boolean removeTip(SingleTip tip)
@@ -30,22 +28,16 @@ public abstract class SingleTT extends TipTicket
 	
 	public SingleTip getTip(){ return tip; }
 	
-	public abstract void setTip(SingleTip tip);
-	
-	public int addTip(SingleTip tip)
-	{
+	protected int addTip(SingleTip tip, Class<?> tipType)
+	{ 
+		assert tip.getClass() == tipType : "Wrong type given to SingleTT.setTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
+		
 		if(tip != null)
 		{
-			setTip(tip);
+			this.tip = tip;
 			return 0;
 		}
 		else
 		return 1;
-	}
-	
-	protected void setTip(SingleTip tip, Class<?> tipType)
-	{ 
-		assert tip.getClass() == tipType : "Wrong type given to SingleTT.setTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
-		setTip(tip);
 	}
 }

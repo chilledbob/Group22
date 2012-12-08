@@ -13,6 +13,7 @@ public class WeeklyLottoGroupTip extends GroupTip
 	public WeeklyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw, group, minimumStake, overallMinimumStake);
+		group.addWeeklyLottoGroupTip(this);
 	}
 	
 	/**

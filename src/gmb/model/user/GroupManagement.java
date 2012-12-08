@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.salespointframework.core.database.Database;
-
 @Entity
 public class GroupManagement 
 {
@@ -18,17 +16,17 @@ public class GroupManagement
 	@OneToMany(mappedBy="groupManagementId")
 	protected List<Group> groups;
 	
-	@SuppressWarnings("unchecked")
-	public GroupManagement()
+	@Deprecated
+	protected GroupManagement(){}
+	
+	public GroupManagement(int dummy)
 	{
-
+ 		groups = new LinkedList<Group>();
 	}
-		
+	
 	public boolean removeGroup(Group group){ return groups.remove(group); }
 	
-	public void addGroup(Group group){ 
-		groups.add(group);
-	}
+	public void addGroup(Group group){ groups.add(group); }
 	
 	public List<Group> getGroups(){ return groups; }
 }

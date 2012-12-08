@@ -1,5 +1,7 @@
 package gmb.model.tip;
 
+import gmb.model.Lottery;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -17,15 +19,30 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	protected TotoEvaluation(DateTime planedEvaluationDate)
+	public TotoEvaluation(DateTime planedEvaluationDate, FootballGameResult[] results)
 	{
 		super(planedEvaluationDate);
+		this.results = results;
 	}
 	
 	public boolean evaluate() 
 	{
-		super.evaluate();//set actualEvaluationDate
+		super.evaluate();//set actualEvaluationDate and init prizePotential 
+
+		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getTotoPrize());
+		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
+
+		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
+		for(SingleTip tip : singleTips)
+			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+
+		for(GroupTip groupTip : groupTips)
+			for(SingleTip tip :  groupTip.getTips())
+				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
 		
+		Lottery.getInstance().getFinancialManagement().setTotoPrize(prizePotential);//everything for the lottery!
+		//////////////////////////
+
 		return false;
 	}
 	
@@ -71,7 +88,6 @@ public class TotoEvaluation extends Draw
 			
 			if(result == 0)
 			{
-				ticket.getOwner().addTipTicket((TotoSTT)ticket);
 				singleTips.add(tip);
 				
 				return 0;
