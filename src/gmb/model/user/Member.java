@@ -15,6 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
@@ -22,9 +24,13 @@ import org.salespointframework.core.user.UserIdentifier;
 @Entity
 public abstract class Member extends PersistentUser 
 {
+	@Column(name="activated")
 	protected boolean activated = false;
-	@Temporal(value = TemporalType.DATE)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date registrationDate;
+	
+	@ManyToOne
+	protected MemberManagement memberManagementID;
 	
 	@OneToOne 
     @JoinColumn(name="memberDataId") 

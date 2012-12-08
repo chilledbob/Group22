@@ -15,7 +15,7 @@ public class FootballGameResult
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int footballGameResultId;
-	@Temporal(value = TemporalType.DATE)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date matchDay;
 	protected PartialResult homeResult;
 	protected PartialResult visitorResult;

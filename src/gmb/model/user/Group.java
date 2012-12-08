@@ -21,6 +21,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
@@ -33,8 +36,12 @@ public class Group
 	
 	protected String name;
 	protected String infoText;
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date foundingDate;
 	protected Boolean closed = false;
+	
+	@ManyToOne
+	protected GroupManagement groupManagementId;
 
 	@OneToOne
 	protected Customer groupAdmin;

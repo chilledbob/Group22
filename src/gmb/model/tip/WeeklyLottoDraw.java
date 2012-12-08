@@ -11,6 +11,9 @@ public class WeeklyLottoDraw extends Draw
 {
 	protected int[] result = null;
 	
+	@ManyToOne
+	protected TipManagement tipManagementId;
+	
 	@Deprecated
 	protected WeeklyLottoDraw(){}
 	

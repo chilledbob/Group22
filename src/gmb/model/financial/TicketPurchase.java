@@ -1,10 +1,31 @@
 package gmb.model.financial;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+
 import gmb.model.Lottery;
 import gmb.model.tip.TipTicket;
 
+
+@Entity
 public class TicketPurchase extends InternalTransaction
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int ticketPurchaseId;
+	
+	@ManyToOne
+	protected LotteryBankAccount lotteryBankAccount;
+	
+	@ManyToOne
+	protected FinancialManagement financialManagementId;
+	
+	@OneToOne
+	@JoinColumn(name ="tipTicketId")
 	protected TipTicket ticket;
 
 	@Deprecated

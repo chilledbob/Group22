@@ -19,8 +19,6 @@ public abstract class PermaTT extends TipTicket
 
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
-	//@Temporal(value = TemporalType.DATE)
-	//	protected Date durationDate;
 
 	protected boolean expired = false;
 

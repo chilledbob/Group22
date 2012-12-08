@@ -22,7 +22,8 @@ public class MemberData
 
 	protected String firstName;
 	protected String lastName;
-	@Temporal(value = TemporalType.DATE)
+
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date birthDate;
 	protected String phoneNumber;
 	protected String eMail;

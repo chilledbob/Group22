@@ -8,6 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.OneToOne;
 
 import gmb.model.Lottery;
 import gmb.model.financial.TicketPurchase;
@@ -22,17 +25,17 @@ public abstract class TipTicket  implements GenericTT
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
 	
-	//TemporalType nur Date,Time oder Timestamp
-	//@Temporal(value = TemporalType.DATE)
+	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
 	protected BigDecimal paidPurchasePrice;
+	
+	@OneToOne(mappedBy="ticket")
+	protected TicketPurchase ticketPurchaseId;
 	
 	@ManyToOne
 	protected Customer owner;
 	protected int drawType;
 	
-//	@Deprecated
-//	protected TipTicket(){}
 	
 	public TipTicket(){}
 

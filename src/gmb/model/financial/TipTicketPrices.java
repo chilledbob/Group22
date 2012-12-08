@@ -1,16 +1,22 @@
 package gmb.model.financial;
 import java.math.BigDecimal;
 
+import gmb.model.financial.FinancialManagement;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class TipTicketPrices 
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketPricesId;
+	
+	@OneToOne
+	protected FinancialManagement financialManagementId;
 	
 	protected BigDecimal weeklyLottoSTTPrice = new BigDecimal(0.75);
 	protected BigDecimal totoSTTPrice = new BigDecimal(0.50);

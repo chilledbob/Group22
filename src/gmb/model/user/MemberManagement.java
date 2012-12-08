@@ -4,40 +4,33 @@ import gmb.model.request.MemberDataUpdateRequest;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.salespointframework.core.user.PersistentUserManager;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-public class MemberManagement// extends PersistentUserManager
+@Entity
+public class MemberManagement
 {
-	protected List<Member> members;	
+	@Id
+	protected int groupId = 1;
+	
+	@OneToMany(mappedBy="memberManagementID")
+	protected List<Member> members;
+	@OneToMany(mappedBy="memberManagementID")
 	protected List<MemberDataUpdateRequest> requests;
 			
-//	@Deprecated
-//	protected MemberManagement(){}
+	@Deprecated
+	protected MemberManagement(){}
 	
-	public MemberManagement()
+	public MemberManagement(int dummy)
 	{
 		members = new LinkedList<Member>();
 		requests = new LinkedList<MemberDataUpdateRequest>();
 	}
 	
-	public void addMember(Member member)
-	{
-		members.add(member); // the member is added to the list
-//		this.add(member);	//the member is added as a persistent user by the persistentusermanager
-	}
+	public void addMember(Member member){ members.add(member); }
 	
-	public boolean removeMember(Member member)
-	{	
-		//if the member is in the list and the removal from the database was successful
-//		if ( members.contains(member) && remove(member.getIdentifier()) ) 
-		if ( members.contains(member) ) 
-		{
-			members.remove(member);	
-			return true;
-		}
-		else
-			return false;
-	}
+	public boolean removeMember(Member member){	return members.remove(member);}
 	
 	public void addMemberDataUpdateRequest(MemberDataUpdateRequest newRequest){ requests.add(newRequest); }
 	

@@ -3,6 +3,7 @@ package gmb.model.tip;
 import gmb.model.Lottery;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
@@ -10,6 +11,9 @@ import org.joda.time.DateTime;
 public class DailyLottoDraw extends Draw 
 {
 	protected int[] result;
+	
+	@ManyToOne
+	protected TipManagement tipManagementId;
 
 	@Deprecated
 	protected DailyLottoDraw(){}

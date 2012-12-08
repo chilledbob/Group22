@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import gmb.model.Lottery;
 
@@ -20,6 +22,7 @@ public abstract class Tip
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipId;
 	
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date submissionDate;
 	@ManyToOne
 	protected Draw draw;

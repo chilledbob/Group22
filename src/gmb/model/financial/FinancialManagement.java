@@ -6,23 +6,41 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.ElementCollection;
 
+@Entity
 public class FinancialManagement 
 {	
+	@Id
+	protected int finacialManagementId = 1;
+	
 	protected BigDecimal credit;
 	protected BigDecimal weeklyLottoPrize;
 	protected BigDecimal dailyLottoPrize;
 	protected BigDecimal totoPrize;
 	protected BigDecimal[] prizes;//use this field to implicitly access the prizes using the integer representation of DrawType (0 = WeeklyLotto, 1 = DailyLotto, 2 = Toto)
 	
+	@OneToOne(mappedBy="financialManagementId")
 	protected TipTicketPrices tipTicketPrices;
+	@OneToOne(mappedBy="financialManagementId")
 	protected ReceiptsDistribution receiptsDistribution;
 	
+
+	
+	@OneToMany(mappedBy="financialManagementId")
 	protected List<TicketPurchase> ticketPurchases;
+	@ElementCollection
 	protected List<Winnings> winnings;
+	@ElementCollection
 	protected List<ExternalTransaction> externalTransactions;
 
+	@OneToMany(mappedBy="financialManagementId")
 	protected List<ExternalTransactionRequest> externalTransactionRequests;	
+	@ElementCollection
 	protected List<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 
 	@Deprecated

@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
+import javax.persistence.OneToMany;
 
 @Entity
 public class LotteryBankAccount 
@@ -30,13 +31,13 @@ public class LotteryBankAccount
 	@OneToOne 
     @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
-	@ElementCollection
+	@OneToMany(mappedBy="lotteryBankAccount")
 	protected List<TicketPurchase> ticketPurchases;
 	@ElementCollection
 	protected List<Winnings> winnings;
 	@ElementCollection
 	protected List<ExternalTransaction> externalTransactions;
-	@ElementCollection
+	@OneToMany
 	protected List<ExternalTransactionRequest> externalTransactionRequests;	
 	@ElementCollection
 	protected List<RealAccountDataUpdateRequest> realAccountDataUpdateRequests;
