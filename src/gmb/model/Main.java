@@ -28,42 +28,28 @@ public class Main {
 	 */
 	public Main(){
 		Shop.INSTANCE.initializePersistent();
-		GmbPersistenceManager.initLottery();	
+		initData();
+		GmbPersistenceManager.initLottery();
 	}
 
 	
 	//Testdata
 	private void initData() {
-		
-		EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
-		EntityManager em = emf.createEntityManager();
-		
-		MemberManagement mm = new MemberManagement(0);
-		GroupManagement gm = new GroupManagement(0);
-		
-		Lottery.Instanciate(null,mm,gm,null);
+						
+		MemberManagement mm = new MemberManagement(1);
 		
 		Adress a = new Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = new MemberData("a","b",d,"c","d",a);
-		Admin user = new Admin("bob","pw",md);
-		em.getTransaction().begin();
-		em.persist(a);
-		em.getTransaction().commit();
-		em.getTransaction().begin();
-		em.persist(md);
-		em.getTransaction().commit();
+		Admin user = new Admin("bob","pw",md);		
+		mm.addMember(user);
 		
-		Lottery.getInstance().getMemberManagement().addMember(user);
+		GmbPersistenceManager.add(a);
+		GmbPersistenceManager.add(md);
+		GmbPersistenceManager.add(user);
+
+		GmbPersistenceManager.add(mm);
 		
-		for(Member m : Lottery.getInstance().getMemberManagement().getMembers()){
-			if(m.getIdentifier() == user.getIdentifier()){ System.out.printf("läuft", m); break;}
-			else{ System.out.printf("nixläuft :(", user);}
-		}		
-		Class<?> classtest= user.getClass();
-		System.out.printf(classtest.getSimpleName(), user);
-		//Group group = new Group("trolle",null,"ne Gruppe voller Trolle");
-		//Lottery.getInstance().getGroupManagement().addGroup(group);
 		}
 	
 

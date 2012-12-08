@@ -12,7 +12,7 @@ import org.joda.time.Duration;
 public class TipManagement 
 {
 	@Id
-	protected int tipManagementId;
+	protected int tipManagementId = 1;
 	
 	@OneToMany(mappedBy="tipManagementId")
 	protected List<WeeklyLottoDraw> weeklyLottoDrawings;

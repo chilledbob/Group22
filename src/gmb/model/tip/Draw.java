@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.ElementCollection;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -32,6 +33,7 @@ public abstract class Draw
 	protected Date actualEvaluationDate = null;	
 	
 	protected BigDecimal prizePotential;	
+	@ElementCollection
 	protected List<Winnings> winnings;
 	
 	@OneToMany

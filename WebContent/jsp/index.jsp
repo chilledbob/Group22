@@ -45,9 +45,9 @@
 	<div class="main_content">
 		<div class="current_content">
 			<h3 style="text-align:center;">Willkommen bei der gmb-Lotterie</h3>
-						<sp:forEach var="u" items="${userListe}">
+			<!--<sp:forEach var="u" items="${userListe}">
 				${ u.getMemberData().getAdress().getStreetName() }
-			</sp:forEach>
+			</sp:forEach>-->
 		</div>
 	</div>
 </div>

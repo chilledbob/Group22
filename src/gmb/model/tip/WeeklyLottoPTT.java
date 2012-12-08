@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 @Entity
 public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 {
-//	@Deprecated
-//	protected WeeklyLottoPTT(){}
+	@Deprecated
+	protected WeeklyLottoPTT(){}
 
 	public WeeklyLottoPTT(PTTDuration duration)
 	{

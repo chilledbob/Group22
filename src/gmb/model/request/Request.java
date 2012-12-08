@@ -5,6 +5,8 @@ import org.joda.time.DateTime;
 
 import gmb.model.Lottery;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import gmb.model.user.Member;
 
@@ -13,6 +15,7 @@ public abstract class Request extends Notification
 { 
 	protected Member member;
 	protected int state = 0;//RequestState.UNHANDELED
+	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date lastStateChangeDate;
 
 	@Deprecated

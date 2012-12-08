@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 public class GroupManagement 
 {
 	@Id
-	protected int groupManagementId;
+	protected int groupManagementId = 1;
 	
 	@OneToMany(mappedBy="groupManagementId")
 	protected List<Group> groups;
