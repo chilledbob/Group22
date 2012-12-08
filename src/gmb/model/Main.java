@@ -56,7 +56,7 @@ public class Main {
 		
 		Lottery.getInstance().getMemberManagement().addMember(user);
 		
-		for(Member m : Lottery.getInstance().getMemberManagement().getMember()){
+		for(Member m : Lottery.getInstance().getMemberManagement().getMembers()){
 			if(m.getIdentifier() == user.getIdentifier()){ System.out.printf("läuft", m); break;}
 			else{ System.out.printf("nixläuft :(", user);}
 		}		

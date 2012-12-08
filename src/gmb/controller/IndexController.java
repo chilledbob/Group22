@@ -28,7 +28,7 @@ import gmb.model.user.MemberManagement;
 	    public ModelAndView index() {
 			ModelAndView mav = new ModelAndView();
 
-			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMember());
+			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
 			mav.setViewName("index");
 			return mav;
 	    }
@@ -66,7 +66,7 @@ import gmb.model.user.MemberManagement;
 		@RequestMapping("/home")
 		public ModelAndView home() {
 			ModelAndView mav = new ModelAndView();
-			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMember());
+			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
 			mav.setViewName("index");
 			return mav;
 	    }

@@ -81,8 +81,8 @@ public class Test01
 		//=========================================================================================================================//USER TESTs NO 1
 		
 		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());
-		MemberManagement memberManagement = new MemberManagement();
-		GroupManagement groupManagement = new GroupManagement("");
+		MemberManagement memberManagement = new MemberManagement(0);
+		GroupManagement groupManagement = new GroupManagement(0);
 		TipManagement tipManagement = new TipManagement();
 
 		Lottery.Instanciate(financialManagement, memberManagement, groupManagement, tipManagement);
