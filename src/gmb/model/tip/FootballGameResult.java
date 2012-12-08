@@ -1,5 +1,7 @@
 package gmb.model.tip;
 
+import java.util.Date;
+
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import java.util.Date;
 
 @Entity
 public class FootballGameResult 

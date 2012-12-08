@@ -45,10 +45,8 @@ public class LotteryBankAccount
 	@Deprecated
 	protected LotteryBankAccount(){}
 	
-	public LotteryBankAccount(Customer owner, RealAccountData realAccountData)
+	public LotteryBankAccount(RealAccountData realAccountData)
 	{
-		this.owner = owner;
-		
 		credit = new BigDecimal(0);
 		this.realAccountData = realAccountData;
 		ticketPurchases = new LinkedList<TicketPurchase>();
@@ -65,7 +63,7 @@ public class LotteryBankAccount
 	 */
 	public void updateCredit(Transaction transaction)
 	{
-		credit.add(transaction.getAmount());
+		credit = credit.add(transaction.getAmount());
 		this.addTransaction(transaction);
 	}
 	
@@ -75,7 +73,7 @@ public class LotteryBankAccount
 	 * @param note
 	 * @param updatedData
 	 */
-	public void sendDataUpdateRequest(String note, RealAccountData updatedData)
+	public void sendDataUpdateRequest(RealAccountData updatedData, String note)
 	{
 		RealAccountDataUpdateRequest request = new RealAccountDataUpdateRequest(updatedData, owner, note);
 		
@@ -93,11 +91,11 @@ public class LotteryBankAccount
 	 * @param note
 	 * @param updatedData
 	 */
-	public boolean sendExternalTransactionRequest(String note, ExternalTransaction transaction)
+	public boolean sendExternalTransactionRequest(BigDecimal amount, String note)
 	{
-		if(transaction.getAmount().signum() != -1 || owner.hasEnoughMoneyToPurchase(transaction.getAmount()))
+		if(amount.signum() != -1 || owner.hasEnoughMoneyToPurchase(amount))
 		{
-			ExternalTransactionRequest request = new ExternalTransactionRequest(transaction, owner, note);
+			ExternalTransactionRequest request = new ExternalTransactionRequest(new ExternalTransaction(owner, amount), note);
 			
 			externalTransactionRequests.add(request);
 			Lottery.getInstance().getFinancialManagement().addExternalTransactionRequest(request);
@@ -108,6 +106,7 @@ public class LotteryBankAccount
 			return false;
 	}
 	
+	public void setOwner(Customer owner){ this.owner = owner; }
 	public void setCredit(BigDecimal credit){ this.credit = credit; }
 	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; }	
 	

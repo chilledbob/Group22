@@ -4,6 +4,7 @@ import gmb.model.user.Customer;
 
 import java.util.Date;
 import java.math.BigDecimal;
+
 import org.joda.time.DateTime;
 
 import javax.persistence.Embeddable;

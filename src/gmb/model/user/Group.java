@@ -10,9 +10,9 @@ import gmb.model.tip.DailyLottoGroupTip;
 import gmb.model.tip.TotoGroupTip;
 import gmb.model.tip.WeeklyLottoGroupTip;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -72,6 +72,8 @@ public class Group
 		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
+		this.groupAdmin.addGroup(this);
+		
 		groupMembers =  new LinkedList<Customer>();
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
@@ -81,19 +83,23 @@ public class Group
 		groupInvitations = new LinkedList<GroupInvitation>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
+		
+		Lottery.getInstance().getGroupManagement().addGroup(this);
 	}
-
+	
 	/**
 	 * creates a "GroupMembershipApplication" and adds it to the "customer" and this group
 	 * @param customer
 	 * @param note
 	 */
-	public void applyForMembership(Customer customer, String note)
+	public GroupMembershipApplication applyForMembership(Customer customer, String note)
 	{
 		GroupMembershipApplication application = new GroupMembershipApplication(this, customer, note);
 
 		customer.addGroupMembershipApplication(application);
 		this.groupMembershipApplications.add(application);
+		
+		return application;
 	}
 
 	/**
@@ -101,12 +107,14 @@ public class Group
 	 * @param customer
 	 * @param note
 	 */
-	public void sendGroupInvitation(Customer customer, String note)
+	public GroupInvitation sendGroupInvitation(Customer customer, String note)
 	{
-		GroupInvitation application = new GroupInvitation(this, customer, note);
+		GroupInvitation invitation = new GroupInvitation(this, customer, note);
 
-		customer.addGroupInvitation(application);
-		this.groupInvitations.add(application);
+		customer.addGroupInvitation(invitation);
+		this.groupInvitations.add(invitation);
+		
+		return invitation;
 	}
 
 	/**
@@ -114,12 +122,14 @@ public class Group
 	 * @param groupMember
 	 * @param note
 	 */
-	public void sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
+	public GroupAdminRightsTransfereOffering sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
 		GroupAdminRightsTransfereOffering offering = new GroupAdminRightsTransfereOffering(this, groupMember, note);
 
 		groupMember.addGroupAdminRightsTransfereOffering(offering);
 		this.groupAdminRightsTransfereOfferings.add(offering);
+		
+		return offering;
 	}
 
 	public boolean switchGroupAdmin(Customer groupMember)
@@ -150,6 +160,8 @@ public class Group
 			
 			withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
 			groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
+			
+			groupAdmin.getGroups().remove(this);
 		}
 		else
 		if(groupMembers.contains(groupMember))
@@ -158,6 +170,8 @@ public class Group
 
 			groupMember.addNotification(new Notification("You have been resigned from Group " + name + "."));
 			groupMembers.remove(groupMember);
+			
+			groupMember.getGroups().remove(this);
 		}
 	}
 
@@ -203,22 +217,24 @@ public class Group
 				groupMember.addNotification(new Notification("The group " + name + " has been closed. You will be automatically resigned."));
 			}
 		}
-		
-		groupMembers.clear();
-		
+				
 		resign(groupAdmin);
 	}
-
-	//SET/ADD METHODS 
+ 
+	public void addGroupMember(Customer customer)
+	{ 
+		groupMembers.add(customer); 
+		customer.addGroup(this);
+	}
+	
 	public void SetInfoText(String infoText){ this.infoText = infoText; }	
 	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; }
-	public void addGroupMember(Customer customer){ groupMembers.add(customer); }
 
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
 	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
-	public List<GroupMembershipApplication> getGroupMemberShipApplications(){ return groupMembershipApplications; }	
+	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
-	//GET METHODS
+	public List<Customer> getGroupMembers(){ return groupMembers; }
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
 	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }

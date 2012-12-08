@@ -1,5 +1,7 @@
 package gmb.model.tip;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +12,7 @@ import javax.persistence.TemporalType;
 
 import gmb.model.Lottery;
 
-import java.util.Date;
+
 import org.joda.time.DateTime;
 
 @Entity
@@ -44,4 +46,6 @@ public abstract class Tip
 		else
 			return 0;
 	}	
+	
+	public DateTime getSubmissionDate(){ return new DateTime(submissionDate); }
 }

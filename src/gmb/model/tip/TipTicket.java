@@ -1,6 +1,7 @@
 package gmb.model.tip;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -15,17 +16,18 @@ import gmb.model.Lottery;
 import gmb.model.financial.TicketPurchase;
 import gmb.model.user.Customer;
 
-import java.util.Date;
+
 import org.joda.time.DateTime;
 
 @Entity
-public abstract class TipTicket 
+public abstract class TipTicket  implements GenericTT
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
 	
 	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
+	protected BigDecimal paidPurchasePrice;
 	
 	@OneToOne(mappedBy="ticket")
 	protected TicketPurchase ticketPurchaseId;
@@ -34,28 +36,28 @@ public abstract class TipTicket
 	protected Customer owner;
 	protected int drawType;
 	
-	@Deprecated
-	protected TipTicket(){}
 	
-	public TipTicket(Customer owner)
-	{
-		this.owner = owner;
-		
-		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
-	}
+	public TipTicket(){}
 
 	/**
 	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
 	 * will be added to the "customers" list and "true" will be returned, otherwise "false".
+	 * Also the actually paid price will be saved in "paidPurchasePrice".
 	 * @param customer
 	 * @return
 	 */
 	public boolean purchase(Customer customer)
 	{
+		this.owner = customer;
+		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		paidPurchasePrice = getPrice();
+		
 		if(customer.hasEnoughMoneyToPurchase(this.getPrice()))
 		{
+			paidPurchasePrice = getPrice();//we need this information since the price can change over time
+			
 			new TicketPurchase(this);
-			addToOwner();
+			this.addToOwner();
 			
 			return true;
 		}
@@ -79,6 +81,7 @@ public abstract class TipTicket
 	
 	public Customer getOwner(){ return owner; }
 	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
+	public BigDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
 	
 	/**
 	 * Return Code:

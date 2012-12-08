@@ -28,8 +28,7 @@ public class Main {
 	 */
 	public Main(){
 		Shop.INSTANCE.initializePersistent();
-		GmbPersistenceManager.initLottery();
-		
+		GmbPersistenceManager.initLottery();	
 	}
 
 	
@@ -39,8 +38,8 @@ public class Main {
 		EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
 		EntityManager em = emf.createEntityManager();
 		
-		MemberManagement mm = new MemberManagement("Troll");
-		GroupManagement gm = new GroupManagement();
+		MemberManagement mm = new MemberManagement(0);
+		GroupManagement gm = new GroupManagement(0);
 		
 		Lottery.Instanciate(null,mm,gm,null);
 		
@@ -57,7 +56,7 @@ public class Main {
 		
 		Lottery.getInstance().getMemberManagement().addMember(user);
 		
-		for(Member m : Lottery.getInstance().getMemberManagement().getMember()){
+		for(Member m : Lottery.getInstance().getMemberManagement().getMembers()){
 			if(m.getIdentifier() == user.getIdentifier()){ System.out.printf("läuft", m); break;}
 			else{ System.out.printf("nixläuft :(", user);}
 		}		

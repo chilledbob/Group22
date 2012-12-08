@@ -3,19 +3,18 @@ package gmb.model.tip;
 import java.math.BigDecimal;
 
 import gmb.model.Lottery;
-import gmb.model.user.Customer;
 
 import javax.persistence.Entity;
 
 @Entity
-public class DailyLottoPTT extends PermaTT 
+public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 {
 	@Deprecated
 	protected DailyLottoPTT(){}
 
-	public DailyLottoPTT(Customer owner, PTTDuration duration)
+	public DailyLottoPTT(PTTDuration duration)
 	{
-		super(owner, duration);
+		super(duration);
 		drawType = 1;
 	}
 
