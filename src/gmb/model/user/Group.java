@@ -14,7 +14,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -72,7 +74,7 @@ public class Group
 		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
-		this.groupAdmin.addGroup(this);
+		//this.groupAdmin.addGroup(this);
 		
 		groupMembers =  new LinkedList<Customer>();
 		

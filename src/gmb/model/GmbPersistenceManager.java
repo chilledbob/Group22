@@ -48,7 +48,7 @@ public class GmbPersistenceManager
 	{
 		EntityManager em = emf.createEntityManager();
 				
-		em.getTransaction();
+		em.getTransaction().begin();
 		em.merge(obj);
 		em.getTransaction().commit();
 	}

@@ -24,7 +24,6 @@ public class Notification
 	protected int notificationId;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier")
 	protected Member member;
 	
 	protected String note;
