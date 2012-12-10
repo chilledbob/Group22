@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import gmb.model.user.Member;
+import gmb.model.member.Member;
 
 @Entity
 public abstract class Request extends Notification

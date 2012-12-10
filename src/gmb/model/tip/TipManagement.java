@@ -1,4 +1,8 @@
 package gmb.model.tip;
+import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.draw.TotoEvaluation;
+import gmb.model.tip.draw.WeeklyLottoDraw;
+
 import java.util.LinkedList;
 import java.util.List;
 
