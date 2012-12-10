@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 @Entity
 public class WeeklyLottoTip extends SingleTip 
 {
+	protected int superNumber = -1;
+	
 	@Deprecated
 	protected WeeklyLottoTip(){}
 
@@ -32,4 +34,12 @@ public class WeeklyLottoTip extends SingleTip
 		
 		return super.setTip(tip);
 	}
+	
+	/**
+	 * This method is supposed to be used by WeeklyLottoDraw while evaluating the draw only!
+	 * (or in test cases)
+	 * @param superNumber
+	 */
+	public void setSuperNumber(int superNumber){ this.superNumber = superNumber; }	
+	public int getSuperNumber(){ return superNumber; }
 }

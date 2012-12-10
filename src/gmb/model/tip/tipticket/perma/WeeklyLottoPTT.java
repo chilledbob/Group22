@@ -35,4 +35,6 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 		default : return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoPTTPrice_Month(); 
 		}
 	}
+	
+	public BigDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoSTTPrice(); }
 }

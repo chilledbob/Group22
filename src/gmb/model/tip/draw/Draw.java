@@ -59,7 +59,7 @@ public abstract class Draw
 
 		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
-			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+			prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 
 		allSingleTips.addAll(singleTips);
 
@@ -68,9 +68,25 @@ public abstract class Draw
 			allSingleTips.addAll(groupTip.getTips());
 			
 			for(SingleTip tip :  groupTip.getTips())
-				prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+				prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 		}
 
+		prizePotential = drawEvaluationResult.initReceiptsDistributionResult(prizePotential);
+		
+		//treasury must pay for PermaTT discount:
+		for(SingleTip tip : allSingleTips)
+		{
+			BigDecimal currentValue = tip.getTipTicket().getRemainingValue();
+			BigDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
+			tip.getTipTicket().setRemainingValue(updatedValue);
+
+			if(updatedValue.signum() == -1)
+				if(currentValue.signum() > -1)
+					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(updatedValue);
+				else
+					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
+		}
+		
 		return true;
 	}
 

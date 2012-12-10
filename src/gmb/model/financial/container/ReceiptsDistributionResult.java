@@ -20,7 +20,7 @@ public class ReceiptsDistributionResult
 	protected BigDecimal lotteryTaxDue;
 	protected BigDecimal managementDue;
 	
-	protected static final BigDecimal dec100 = new BigDecimal(100);
+	protected static final BigDecimal dec100 = new BigDecimal("100");
 	
 	@Deprecated
 	protected ReceiptsDistributionResult(){}

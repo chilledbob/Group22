@@ -34,4 +34,6 @@ public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 		default : return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoPTTPrice_Month(); 
 		}
 	}
+	
+	public BigDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoSTTPrice(); }
 }

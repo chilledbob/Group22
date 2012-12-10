@@ -17,6 +17,8 @@ public class Winnings extends InternalTransaction
 
 	@Deprecated
 	protected Winnings(){}
+	
+	protected int prizeCategory = 11;
 
 	/**
 	 * initializes an internal transaction
@@ -25,10 +27,11 @@ public class Winnings extends InternalTransaction
 	 * the credit and prize amount of the lottery will be updated
 	 * @param transaction
 	 */
-	public Winnings(Tip tip, BigDecimal amount)
+	public Winnings(Tip tip, BigDecimal amount, int prizeCategory)
 	{
 		super(tip.getOwner(),  amount);
 		this.tip = tip;
+		this.prizeCategory = prizeCategory;
 	}
 
 	public void init()
@@ -45,6 +48,7 @@ public class Winnings extends InternalTransaction
 
 		}
 	}
-
+	
 	public Tip getTip(){ return tip; }
+	public int getPrizeCategory(){ return prizeCategory; }
 }

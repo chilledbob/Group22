@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class SingleTip extends Tip 
+public abstract class SingleTip extends Tip 
 {
 	protected int[] tip;
 	@ManyToOne

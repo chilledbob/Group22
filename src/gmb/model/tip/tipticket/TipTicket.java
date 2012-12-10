@@ -31,6 +31,8 @@ public abstract class TipTicket  implements GenericTT
 	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
 	protected BigDecimal paidPurchasePrice;
+	protected BigDecimal perTicketPaidPurchasePrice;//the price of the corresponding SingleTT (the same like paidPurchasePrice for SingleTTs of course)
+	protected BigDecimal remainingValue;//decrement this by perTicketPaidPurchasePrice for each submitted tip (in the case of PermaTTs the treasury has to pay as soon this one goes under 0)
 	
 	@OneToOne(mappedBy="ticket")
 	protected TicketPurchase ticketPurchaseId;
@@ -57,7 +59,10 @@ public abstract class TipTicket  implements GenericTT
 		
 		if(customer.hasEnoughMoneyToPurchase(this.getPrice()))
 		{
-			paidPurchasePrice = getPrice();//we need this information since the price can change over time
+			paidPurchasePrice = this.getPrice();//we need this information since the price can change over time
+			remainingValue = paidPurchasePrice;
+			
+			perTicketPaidPurchasePrice = this.getPricePerTicket();
 			
 			new TicketPurchase(this);
 			this.addToOwner();
@@ -82,6 +87,11 @@ public abstract class TipTicket  implements GenericTT
 	
 	public int getDrawTypeAsInt(){ return drawType; }
 	
+	public void setRemainingValue(BigDecimal remainingValue){ this.remainingValue = remainingValue; }
+	
+	public BigDecimal getRemainingValue(){ return remainingValue; }
+	public BigDecimal getPerTicketPaidPurchasePrice(){ return perTicketPaidPurchasePrice; }
+	
 	public Customer getOwner(){ return owner; }
 	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
 	public BigDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
@@ -99,4 +109,5 @@ public abstract class TipTicket  implements GenericTT
 	
 	public abstract boolean removeTip(SingleTip tip); 
 	public abstract BigDecimal getPrice();
+	public abstract BigDecimal getPricePerTicket();
 }

@@ -107,7 +107,8 @@ public abstract class PermaTT extends TipTicket
 	public void setExpired(boolean expired){ this.expired = expired; }
 
 	public List<SingleTip> getTips(){ return tips; }	
-
+	public SingleTip getLastTip(){ return ((LinkedList<SingleTip>)tips).getLast(); }
+			
 	public PTTDuration getDuration()
 	{
 		switch(durationType)
