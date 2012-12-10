@@ -26,8 +26,8 @@ import org.salespointframework.core.user.Capability;
 @Entity
 public class Customer extends Member 
 {
-	@OneToOne(mappedBy="owner")
-	@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
+	@OneToOne(cascade=CascadeType.ALL)
+	//@JoinColumn(name="userIdentifier" , referencedColumnName="userIdentifier")
 	protected LotteryBankAccount lotteryBankAccount;
 	@ManyToMany
 	protected List<Group> groups;

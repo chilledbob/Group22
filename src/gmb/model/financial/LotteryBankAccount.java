@@ -27,10 +27,10 @@ public class LotteryBankAccount
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int lotteryBankAccountId;
 	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
 	protected BigDecimal credit;	
-	@OneToOne 
+	@OneToOne (cascade=CascadeType.ALL)
     @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
 	@OneToMany(mappedBy="lotteryBankAccount")

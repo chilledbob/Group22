@@ -61,13 +61,10 @@ public class Main {
 		DateTime db = new DateTime();
 		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
 		
-		GmbPersistenceManager.add(aa);
-		GmbPersistenceManager.add(mda);
-		GmbPersistenceManager.add(rad);
-		GmbPersistenceManager.add(lba);
+		GmbPersistenceManager.add(c);
 		
 		c.sendDataUpdateRequest(mdb, "");
-		GmbPersistenceManager.update(c);
+
 		//Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
 		//GmbPersistenceManager.add(g);
 		//GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());

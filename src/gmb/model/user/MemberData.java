@@ -3,6 +3,8 @@ package gmb.model.user;
 import java.util.Date;
 
 import org.joda.time.DateTime;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +29,7 @@ public class MemberData
 	protected Date birthDate;
 	protected String phoneNumber;
 	protected String eMail;
-	@OneToOne 
+	@OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="adrId") 
 	protected Adress adress;
 	

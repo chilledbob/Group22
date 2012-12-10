@@ -1,5 +1,6 @@
 package gmb.model.user;
 
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.request.MemberDataUpdateRequest;
 import gmb.model.request.Notification;
@@ -9,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -32,7 +35,7 @@ public abstract class Member extends PersistentUser
 	@ManyToOne
 	protected MemberManagement memberManagementID;
 	
-	@OneToOne 
+	@OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="memberDataId") 
 	protected MemberData memberData;
 	@OneToMany(mappedBy="member")
@@ -55,7 +58,7 @@ public abstract class Member extends PersistentUser
 		notifications = new LinkedList<Notification>();
 	}	
 	
-	public void setMemberData(MemberData memberData){ this.memberData = memberData; }
+	public void setMemberData(MemberData memberData){ this.memberData = memberData; GmbPersistenceManager.update(this); }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
 	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
 
