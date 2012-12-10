@@ -84,7 +84,6 @@ public class Test01
 	@Test
 	public void MasterTest()
 	{
-		PersistentUserManager pum = new PersistentUserManager();
 		//=========================================================================================================================//USER TESTs NO 1
 		
 		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());
