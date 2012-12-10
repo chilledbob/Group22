@@ -1,25 +1,19 @@
 package gmb.model;
 
-import java.text.DateFormat;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import org.salespointframework.core.database.*;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.salespointframework.core.shop.Shop;
-import org.salespointframework.core.user.Capability;
-import org.salespointframework.core.user.PersistentUserManager;
-import org.salespointframework.core.user.UserIdentifier;
 
-import java.util.Date;
-
-import gmb.model.user.MemberManagement;
 import gmb.model.Lottery;
-import gmb.model.user.Adress;
-import gmb.model.user.Admin;
-import gmb.model.user.MemberData;
-
-
+import gmb.model.tip.*;
+import gmb.model.financial.*;
+import gmb.model.financial.container.RealAccountData;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.Admin;
+import gmb.model.member.Customer;
+import gmb.model.member.MemberManagement;
+import gmb.model.member.container.Adress;
+import gmb.model.member.container.MemberData;
 
 @Component
 public class Main {
@@ -29,36 +23,61 @@ public class Main {
 	 */
 	public Main(){
 		Shop.INSTANCE.initializePersistent();
+		initMm();
+		GmbPersistenceManager.initLottery();
 		initData();
-		
 	}
 
-	
+
+	//Testdata
+
+	private void initMm(){
+		MemberManagement mm = new MemberManagement(1);
+		//FinancialManagement fm = new FinancialManagement();
+		GmbPersistenceManager.add(new TipManagement());
+		GmbPersistenceManager.add(new GroupManagement(1));
+		GmbPersistenceManager.add(mm);
+	}
 
 	private void initData() {
-		
-		EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
-		EntityManager em = emf.createEntityManager();
-		
-		MemberManagement mm = new MemberManagement();
-		
+
 		Adress a = new Adress("a","b","c","d");
-		Date d = new Date();
+		DateTime d = new DateTime();
 		MemberData md = new MemberData("a","b",d,"c","d",a);
-		em.getTransaction().begin();
-		em.persist(a);
-		em.getTransaction().commit();
-		em.getTransaction().begin();
-		em.persist(md);
-		em.getTransaction().commit();
-		
-		Admin user = new Admin("bob","pw",md);
-		
-		Lottery.Instanciate(null,mm,null,null);
-		
-		Lottery.getInstance().getMemberManagement().add(user);
-		Lottery.getInstance().getMemberManagement().update(user);
-		
+		Admin user = new Admin("bob","bob",md);		
+		Lottery.getInstance().getMemberManagement().addMember(user);
+
+		GmbPersistenceManager.add(a);
+		GmbPersistenceManager.add(md);
+		GmbPersistenceManager.add(user);
+		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
+
+		RealAccountData rad = new RealAccountData("0010","0815");
+		LotteryBankAccount lba = new LotteryBankAccount(rad);
+		Adress aa = new Adress("e","f","g","h");
+		DateTime da = new DateTime();
+		MemberData mda = new MemberData("i","j",da,"k","l",aa);
+
+		Customer c = new Customer("UserTroll","UserTroll",mda,lba);
+		Lottery.getInstance().getMemberManagement().addMember(c);
+		lba.setOwner(c);
+
+		Adress ab = new Adress("ee","f","g","h");
+		DateTime db = new DateTime();
+		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
+
+		GmbPersistenceManager.add(aa);
+		GmbPersistenceManager.add(mda);
+		GmbPersistenceManager.add(rad);
+		GmbPersistenceManager.add(lba);
+
+		c.sendDataUpdateRequest(mdb, "");
+		GmbPersistenceManager.update(c);
+		//Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
+		//GmbPersistenceManager.add(g);
+		//GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
+		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
+
 
 		}
 	

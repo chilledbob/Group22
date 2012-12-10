@@ -1,38 +1,51 @@
 package gmb.model.tip;
+import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.draw.TotoEvaluation;
+import gmb.model.tip.draw.WeeklyLottoDraw;
+
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.joda.time.Duration;
 
-
+@Entity
 public class TipManagement 
 {
-	protected LinkedList<WeeklyLottoDraw> weeklyLottoDrawings;
-	protected LinkedList<DailyLottoDraw> dailyLottoDrawings;
-	protected LinkedList<TotoEvaluation> totoEvaluations;
+	@Id
+	protected int tipManagementId = 1;
 	
-	protected Duration tipSubmissionTimeLimit;
+	@OneToMany(mappedBy="tipManagementId")
+	protected List<WeeklyLottoDraw> weeklyLottoDrawings;
+	@OneToMany(mappedBy="tipManagementId")
+	protected List<DailyLottoDraw> dailyLottoDrawings;
+	@OneToMany(mappedBy="tipManagementId")
+	protected List<TotoEvaluation> totoEvaluations;
 	
-	@Deprecated
-	protected TipManagement(){}
+	protected long tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
 	
-	public TipManagement(long tipSubmissionTimeLimitInMilliSeconds)
+//	@Deprecated
+//	protected TipManagement(){}
+	
+	public TipManagement()
 	{
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
 		dailyLottoDrawings = new LinkedList<DailyLottoDraw>();
 		totoEvaluations = new LinkedList<TotoEvaluation>();
-		
-		tipSubmissionTimeLimit = new Duration(tipSubmissionTimeLimitInMilliSeconds);
 	}
 	
 	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); }
 	public void addDraw(DailyLottoDraw draw){ dailyLottoDrawings.add(draw); }
 	public void addDraw(TotoEvaluation draw){ totoEvaluations.add(draw); }
 	
-	public void setTipSubmissionTimeLimit(Duration tipSubmissionTimeLimit){  this.tipSubmissionTimeLimit = tipSubmissionTimeLimit; }
+	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; }
 	
-	public LinkedList<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
-	public LinkedList<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
-	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
+	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
+	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
+	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
 	
-	public Duration getTipSubmissionTimeLimit(){ return tipSubmissionTimeLimit; }
+	public Duration getTipSubmissionTimeLimit(){ return new Duration(tipSubmissionTimeLimitInMilliSeconds); }
 }
