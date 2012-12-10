@@ -1,5 +1,6 @@
 package gmb.model.tip.tip.single;
 
+import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.group.GroupTip;
@@ -79,4 +80,6 @@ public class SingleTip extends Tip
 	
 	public TipTicket getTipTicket(){ return tipTicket; }
 	public GroupTip getGroupTip(){ return groupTip; }
+	
+	public Customer getOwner(){ return tipTicket.getOwner(); }
 }

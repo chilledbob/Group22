@@ -1,7 +1,7 @@
 package gmb.model.tip.draw;
 
 import gmb.model.Lottery;
-import gmb.model.financial.transaction.Winnings;
+import gmb.model.tip.draw.container.DrawEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -27,51 +27,53 @@ public abstract class Draw
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int drawId;
-	
+
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	
-	@Temporal(value = TemporalType.TIMESTAMP)
-	protected Date actualEvaluationDate = null;	
-	
-	protected BigDecimal prizePotential;	
-	protected List<Winnings> winnings;
-	
+
+	//temporary variables used for evaluation:
+	protected BigDecimal prizePotential = new BigDecimal(0);//temp
+	protected List<SingleTip> allSingleTips = new LinkedList<SingleTip>();//temp
+
+	protected DrawEvaluationResult drawEvaluationResult;
+
 	@OneToMany
-	protected List<SingleTip> singleTips;
+	protected List<SingleTip> singleTips = new LinkedList<SingleTip>();
 	@OneToMany(mappedBy="draw")
-	protected List<GroupTip> groupTips;
-	
+	protected List<GroupTip> groupTips = new LinkedList<GroupTip>();
+
 	@Deprecated
 	protected Draw(){}
-	
+
 	public Draw(DateTime planedEvaluationDate)
 	{
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
-		winnings =  new LinkedList<Winnings>();
-		
-		singleTips = new LinkedList<SingleTip>();
-		groupTips = new LinkedList<GroupTip>();
-		
-		prizePotential = new BigDecimal(0);
 	}
 
 	public boolean evaluate()
 	{
-		actualEvaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		drawEvaluationResult = new DrawEvaluationResult();
+
 		evaluated = true;
-		
-		//accumulate the amount of spent money:
+
+		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
 			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
-		
+
+		allSingleTips.addAll(singleTips);
+
 		for(GroupTip groupTip : groupTips)
+		{
+			allSingleTips.addAll(groupTip.getTips());
+			
 			for(SingleTip tip :  groupTip.getTips())
-			prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
-		
+				prizePotential = prizePotential.add(tip.getTipTicket().getPaidPurchasePrice());
+		}
+
 		return true;
 	}
-	
+
 	/**
 	 * Return Code:
 	 * 0 - successful
@@ -81,7 +83,7 @@ public abstract class Draw
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 */
 	public abstract int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip);
-	
+
 	/**
 	 * returns true if there is still time to submit or "unsubmit" tips, otherwise false
 	 * @return
@@ -91,7 +93,7 @@ public abstract class Draw
 		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), new DateTime(planedEvaluationDate));
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
-	
+
 	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
@@ -107,7 +109,7 @@ public abstract class Draw
 		else 
 			return false;
 	}
-	
+
 	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
@@ -123,7 +125,7 @@ public abstract class Draw
 		else 
 			return false;
 	}
-	
+
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
@@ -136,7 +138,7 @@ public abstract class Draw
 		else 
 			return false;
 	}
-	
+
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
@@ -149,7 +151,7 @@ public abstract class Draw
 		else 
 			return false;
 	}
-	
+
 	//////////////////////////////////////////////////////////check for correct type://
 	//===============================================================================//
 	protected boolean addTip(SingleTip tip, Class<?> tipType)
@@ -157,7 +159,7 @@ public abstract class Draw
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		return addTip(tip);
 	}
-	
+
 	protected boolean addTip(GroupTip tip, Class<?> tipType)
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
@@ -169,7 +171,7 @@ public abstract class Draw
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		return removeTip(tip); 
 	}
-	
+
 	protected boolean removeTip(GroupTip tip, Class<?> tipType)
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
@@ -180,12 +182,12 @@ public abstract class Draw
 
 	public List<SingleTip> getSingleTips(){ return singleTips; }
 	public List<GroupTip> getGroupTips(){ return groupTips; }
-	
+
+	public DrawEvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
-	public List<Winnings> getWinnings(){ return winnings; }
-	
+
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
-	public DateTime getActualEvaluationDate(){ return new DateTime(actualEvaluationDate); }
-	
+	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
+
 	public abstract int[] getResult();
 }

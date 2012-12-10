@@ -46,7 +46,7 @@ public class TicketPurchase extends InternalTransaction
 		this.ticket = ticket;
 		
 		super.init();//update user credit		
-		Lottery.getInstance().getFinancialManagement().updateCredit(this);
+		Lottery.getInstance().getFinancialManagement().addTransaction(this);
 	}
 	
 	public TipTicket getTipTicket(){ return ticket; }

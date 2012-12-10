@@ -1,11 +1,13 @@
 package gmb.model.tip.tip.group;
 
+import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,8 +29,11 @@ public abstract class GroupTip extends Tip
 	
 	protected int currentOverallMinimumStake = 0;
 	
+	protected Winnings averageWinnings;
+	protected List<Winnings> allWinnings = new LinkedList<Winnings>();
+	
 	@OneToMany(mappedBy="groupTip")
-	protected List<SingleTip> tips;
+	protected List<SingleTip> tips = new LinkedList<SingleTip>();
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="draw_id")
@@ -43,12 +48,36 @@ public abstract class GroupTip extends Tip
 		this.group = group;
 		this.minimumStake = minimumStake;
 		this.overallMinimumStake = overallMinimumStake;
-		
-		tips = new LinkedList<SingleTip>();
 	}
 	
 	/**
-	 * submit "groupTip" to "draw" if all criterias were met
+	 * Calculates the overallWinnings and averageWinnings based on the "allWinnings" list 
+	 * and sends each contributer averageWinnings.
+	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
+	 * @return
+	 */
+	public BigDecimal finalizeWinnings()
+	{	
+		BigDecimal overallAmount = new BigDecimal(0);
+		
+		for(Winnings winnings : allWinnings)
+			overallAmount = overallAmount.add(winnings.getAmount());
+			
+		BigDecimal averageAmount = overallAmount.divide(new BigDecimal(allWinnings.size()));
+		
+		//send average winnings to all contributers:
+		for(SingleTip tip : tips)
+			(new Winnings(tip, averageAmount)).init();
+		
+		overallWinnings = new Winnings(this, averageAmount.multiply(new BigDecimal(allWinnings.size())));
+		averageWinnings = new Winnings(this, averageAmount);
+		
+		//return overall amount with error for normalization:
+		return overallWinnings.getAmount();
+	}
+	
+	/**
+	 * submit "groupTip" to "draw" if all criteria were met
 	 * return false if submission failed, otherwise true
 	 * @return
 	 */
@@ -211,6 +240,12 @@ public abstract class GroupTip extends Tip
 			return 2;
 	}
 	
+	public void setAverageWinnings(Winnings averageWinnings){ this.averageWinnings = averageWinnings; }
+	public void addWinnings(Winnings winnings){ this.allWinnings.add(winnings); }
+	
+	public Winnings getAverageWinnings(){ return averageWinnings; }	
+	public List<Winnings> getAllWinnings(){ return allWinnings; }
+	
 	public int getCurrentOverallMinimumStake(){ return currentOverallMinimumStake; }
 	
 	public int getMinimumStake(){ return minimumStake; }
@@ -219,4 +254,6 @@ public abstract class GroupTip extends Tip
 	public Group getGroup(){ return group; }	
 	public boolean getSubmitted(){ return submitted; }
 	public List<SingleTip> getTips(){ return tips; }
+	
+	public Customer getOwner(){ return group.getGroupAdmin(); }
 }

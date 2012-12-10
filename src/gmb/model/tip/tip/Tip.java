@@ -11,6 +11,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import gmb.model.Lottery;
+import gmb.model.financial.transaction.Winnings;
+import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 
 
@@ -27,6 +29,8 @@ public abstract class Tip
 	protected Date submissionDate;
 	@ManyToOne
 	protected Draw draw;
+	
+	protected Winnings overallWinnings = null;
 	
 	@Deprecated
 	protected Tip(){}
@@ -48,5 +52,9 @@ public abstract class Tip
 			return 0;
 	}	
 	
+	public void setOverallWinnings(Winnings overallWinnings){ this.overallWinnings = overallWinnings; }
+	public Winnings getOverallWinnings(){ return overallWinnings; }
+	
 	public DateTime getSubmissionDate(){ return new DateTime(submissionDate); }
+	public abstract Customer getOwner();
 }

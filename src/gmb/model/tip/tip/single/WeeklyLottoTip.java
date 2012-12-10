@@ -16,19 +16,19 @@ public class WeeklyLottoTip extends SingleTip
 	{
 		super(tipTicket, draw, tip);
 
-		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
+		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoTip!";
 	}
 	
 	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip, int[] tip)
 	{
 		super(tipTicket, groupTip, tip);
 
-		assert tip.length == 7 : "Wrong tip length (!=7) given to WeeklyLottoTip!";
+		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoTip!";
 	}
 
 	public boolean setTip(int[] tip)
 	{ 
-		assert tip.length == 7 : "Wrong tip length (!=7) given to DailyLottoTip.setTip(int[] tip)!";
+		assert tip.length == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
 		
 		return super.setTip(tip);
 	}

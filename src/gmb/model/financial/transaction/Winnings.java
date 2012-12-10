@@ -6,13 +6,14 @@ import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 
 import gmb.model.Lottery;
+import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
 @Embeddable
 public class Winnings extends InternalTransaction
 {
 	@OneToOne
-	protected SingleTip tip;
+	protected Tip tip;
 
 	@Deprecated
 	protected Winnings(){}
@@ -24,16 +25,26 @@ public class Winnings extends InternalTransaction
 	 * the credit and prize amount of the lottery will be updated
 	 * @param transaction
 	 */
-	public Winnings(SingleTip tip, BigDecimal amount)
+	public Winnings(Tip tip, BigDecimal amount)
 	{
-		super(tip.getTipTicket().getOwner(),  amount);
+		super(tip.getOwner(),  amount);
 		this.tip = tip;
-		
-		super.init();//update user credit		
-		Lottery.getInstance().getFinancialManagement().updateCredit(this);
-		
-//		tip.getTipTicket().getOwner().addNotification(new Notification(""));
 	}
-	
-	public SingleTip getTip(){ return tip; }
+
+	public void init()
+	{
+		if(tip instanceof SingleTip)
+		{
+			super.init();//update user credit		
+			Lottery.getInstance().getFinancialManagement().addTransaction(this);
+
+			//		tip.getTipTicket().getOwner().addNotification("");
+		}
+		else
+		{
+
+		}
+	}
+
+	public Tip getTip(){ return tip; }
 }

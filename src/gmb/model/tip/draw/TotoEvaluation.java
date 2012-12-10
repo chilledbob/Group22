@@ -38,19 +38,19 @@ public class TotoEvaluation extends Draw
 	{
 		super.evaluate();//set actualEvaluationDate and init prizePotential 
 
-		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getTotoPrize());
-		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
-
-		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
-		for(SingleTip tip : singleTips)
-			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-
-		for(GroupTip groupTip : groupTips)
-			for(SingleTip tip :  groupTip.getTips())
-				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-		
-		Lottery.getInstance().getFinancialManagement().setTotoPrize(prizePotential);//everything for the lottery!
-		//////////////////////////
+//		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getTotoPrize());
+//		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
+//
+//		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
+//		for(SingleTip tip : singleTips)
+//			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+//
+//		for(GroupTip groupTip : groupTips)
+//			for(SingleTip tip :  groupTip.getTips())
+//				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+//		
+//		Lottery.getInstance().getFinancialManagement().setTotoPrize(prizePotential);//everything for the lottery!
+//		//////////////////////////
 
 		return false;
 	}
