@@ -1,11 +1,18 @@
 package gmb.model.financial;
 
 import gmb.model.Lottery;
-import gmb.model.request.RealAccountDataUpdateRequest;
-import gmb.model.user.Customer;
+import gmb.model.financial.container.RealAccountData;
+import gmb.model.financial.transaction.ExternalTransaction;
+import gmb.model.financial.transaction.TicketPurchase;
+import gmb.model.financial.transaction.Transaction;
+import gmb.model.financial.transaction.Winnings;
+import gmb.model.member.Customer;
+import gmb.model.request.ExternalTransactionRequest;
+import gmb.model.request.data.RealAccountDataUpdateRequest;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +21,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+
 
 @Entity
 public class LotteryBankAccount 
@@ -21,80 +32,118 @@ public class LotteryBankAccount
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int lotteryBankAccountId;
 	
-	@OneToOne 
-    @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier") 
+	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
 	protected BigDecimal credit;	
-	@OneToOne 
+	@OneToOne (cascade=CascadeType.ALL)
     @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
+	@OneToMany(mappedBy="lotteryBankAccount")
+	protected List<TicketPurchase> ticketPurchases;
 	@ElementCollection
-	protected LinkedList<InternalTransaction> internalTransactions;
+	protected List<Winnings> winnings;
 	@ElementCollection
-	protected LinkedList<ExternalTransaction> externalTransactions;
+	protected List<ExternalTransaction> externalTransactions;
+	@OneToMany
+	protected List<ExternalTransactionRequest> externalTransactionRequests;	
 	@ElementCollection
-	protected LinkedList<Winnings> winnings;
-	@ElementCollection
-	protected LinkedList<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
+	protected List<RealAccountDataUpdateRequest> realAccountDataUpdateRequests;
 	
 	@Deprecated
 	protected LotteryBankAccount(){}
 	
-	public LotteryBankAccount(Customer owner, RealAccountData realAccountData)
+	public LotteryBankAccount(RealAccountData realAccountData)
 	{
-		this.owner = owner;
-		
 		credit = new BigDecimal(0);
 		this.realAccountData = realAccountData;
-		internalTransactions = new LinkedList<InternalTransaction>();
+		ticketPurchases = new LinkedList<TicketPurchase>();
 		externalTransactions = new LinkedList<ExternalTransaction>();
 		winnings = new LinkedList<Winnings>();
-		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
+		
+		externalTransactionRequests = new LinkedList<ExternalTransactionRequest>();
+		realAccountDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
 	}
 	
 	/**
-	 * updates the credit and adds the transaction to the list
+	 * Updates the "credit" and adds the "transaction" to the list.
 	 * @param transaction
 	 */
 	public void updateCredit(Transaction transaction)
 	{
-		credit.add(transaction.getAmount());
+		credit = credit.add(transaction.getAmount());
 		this.addTransaction(transaction);
 	}
 	
-	public void sendDataUpdateRequest(String note, RealAccountData updatedData)
+	/**
+	 * Creates a "DataUpdateRequest" based on "updatedData" 
+	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
+	 * @param note
+	 * @param updatedData
+	 */
+	public void sendDataUpdateRequest(RealAccountData updatedData, String note)
 	{
 		RealAccountDataUpdateRequest request = new RealAccountDataUpdateRequest(updatedData, owner, note);
 		
 		Lottery.getInstance().getFinancialManagement().addRealAccountDataUpdateRequest(request);
 
-		realAccounDataUpdateRequests.add(request);
+		realAccountDataUpdateRequests.add(request);
 	}
 	
+	/**
+	 * Creates an "ExternalTransactionRequest" based on "transaction" 
+	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
+	 * Returns false if the "transaction" is invalid which is the case when the customer tries
+	 * to transact more money to his real account than he is capable to based on his "LotteryBankAccount"'s "credit",
+	 * otherwise true.
+	 * @param note
+	 * @param updatedData
+	 */
+	public boolean sendExternalTransactionRequest(BigDecimal amount, String note)
+	{
+		if(amount.signum() != -1 || owner.hasEnoughMoneyToPurchase(amount))
+		{
+			ExternalTransactionRequest request = new ExternalTransactionRequest(new ExternalTransaction(owner, amount), note);
+			
+			externalTransactionRequests.add(request);
+			Lottery.getInstance().getFinancialManagement().addExternalTransactionRequest(request);
+			
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public void setOwner(Customer owner){ this.owner = owner; }
 	public void setCredit(BigDecimal credit){ this.credit = credit; }
 	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; }	
 	
 	//delegate method:
-	protected void addTransaction(Transaction transaction)
+	public void addTransaction(Transaction transaction)
 	{ 
-		if(transaction instanceof InternalTransaction)
-			addTransaction((InternalTransaction)transaction);
+		if(transaction instanceof Winnings)
+			addTransaction((Winnings)transaction);
+		else
+		if(transaction instanceof TicketPurchase)
+			addTransaction((TicketPurchase)transaction);
 		else
 			addTransaction((ExternalTransaction)transaction);		
 	}
 	
-	protected void addTransaction(InternalTransaction transaction){ internalTransactions.add(transaction); }
-	protected void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(TicketPurchase purchase){ ticketPurchases.add(purchase); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
 	
-	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); }
-	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request); }
+	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); }
+	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccountDataUpdateRequests.add(request); }
 	
 	public BigDecimal getCredit(){ return credit; }
 	public Customer getOwner(){ return owner; }
 	public RealAccountData getRealAccountData(){ return realAccountData; }
 	
-	public LinkedList<InternalTransaction> getInternalTransactions(){ return internalTransactions; }
-	public LinkedList<ExternalTransaction> getExternalTransactions(){ return externalTransactions; }	
-	public LinkedList<Winnings> getWinnings(){ return winnings; }
-	public LinkedList<RealAccountDataUpdateRequest> getRealAccountDataUpdateRequest(){ return realAccounDataUpdateRequests; }
+	public List<TicketPurchase> getTicketPurchases(){ return ticketPurchases; }
+	public List<ExternalTransaction> getExternalTransactions(){ return externalTransactions; }	
+	public List<Winnings> getWinnings(){ return winnings; }
+	
+	public List<ExternalTransactionRequest> getExternalTransactionRequest() { return externalTransactionRequests; }
+	public List<RealAccountDataUpdateRequest> getRealAccountDataUpdateRequest(){ return realAccountDataUpdateRequests; }
 }

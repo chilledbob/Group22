@@ -1,5 +1,5 @@
 package gmb.controller;
-import gmb.model.user.*;
+import gmb.model.member.*;
 
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
