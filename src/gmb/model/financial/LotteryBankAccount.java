@@ -22,6 +22,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
 import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+
 
 @Entity
 public class LotteryBankAccount 
@@ -29,11 +32,10 @@ public class LotteryBankAccount
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int lotteryBankAccountId;
 	
-	@OneToOne 
-    @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier") 
+	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
 	protected BigDecimal credit;	
-	@OneToOne 
+	@OneToOne (cascade=CascadeType.ALL)
     @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
 	@OneToMany(mappedBy="lotteryBankAccount")
