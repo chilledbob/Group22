@@ -71,3 +71,17 @@ public class GmbPersistenceManager
 	}
 		
 }
+
+//dummy required for unit tests of model code
+//public class GmbPersistenceManager 
+//{		
+//	public static void get(Class<?> classType, int id){}
+//	
+//	public static void add(Object obj){}
+//	
+//	public static void remove(Object obj){}
+//	
+//	public static void update(Object obj){}
+//	
+//	public static void initLottery(){}	
+//}

@@ -45,6 +45,7 @@ import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.salespointframework.core.user.PersistentUserManager;
 
 public class Test01 
 {
@@ -83,6 +84,7 @@ public class Test01
 	@Test
 	public void MasterTest()
 	{
+		PersistentUserManager pum = new PersistentUserManager();
 		//=========================================================================================================================//USER TESTs NO 1
 		
 		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());

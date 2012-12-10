@@ -59,7 +59,7 @@ public abstract class Member extends PersistentUser
 		notifications = new LinkedList<Notification>();
 	}	
 	
-	public void setMemberData(MemberData memberData){ this.memberData = memberData; GmbPersistenceManager.update(this);}
+	public void setMemberData(MemberData memberData){ this.memberData = memberData; GmbPersistenceManager.update(this); }
 	public void addNotification(Notification notification){ this.notifications.add(notification); }
 	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
 

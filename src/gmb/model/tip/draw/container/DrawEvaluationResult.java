@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -19,6 +22,9 @@ import gmb.model.tip.tip.single.SingleTip;
 @Entity
 public class DrawEvaluationResult 
 {
+	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
+	protected int drawEvaluationResultId;
+	
 	ReceiptsDistributionResult receiptsDistributionResult = null;
 	List<Winnings> winnings = new LinkedList<Winnings>();
 	
