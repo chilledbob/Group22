@@ -3,7 +3,7 @@ package gmb.model.request;
 import java.util.Date;
 
 import gmb.model.Lottery;
-import gmb.model.user.Member;
+import gmb.model.member.Member;
 
 import org.joda.time.DateTime;
 
@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 

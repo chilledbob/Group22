@@ -1,9 +1,9 @@
 package gmb.model;
 
-import gmb.model.user.Member;
-import gmb.model.user.MemberManagement;
-import gmb.model.user.GroupManagement;
 import gmb.model.financial.FinancialManagement;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.Member;
+import gmb.model.member.MemberManagement;
 import gmb.model.tip.TipManagement;
 
 import javax.persistence.EntityManager;
@@ -71,3 +71,17 @@ public class GmbPersistenceManager
 	}
 		
 }
+
+//dummy required for unit tests of model code
+//public class GmbPersistenceManager 
+//{		
+//	public static void get(Class<?> classType, int id){}
+//	
+//	public static void add(Object obj){}
+//	
+//	public static void remove(Object obj){}
+//	
+//	public static void update(Object obj){}
+//	
+//	public static void initLottery(){}	
+//}

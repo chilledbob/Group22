@@ -1,10 +1,10 @@
 package gmb.model;
 
 import gmb.model.financial.FinancialManagement;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.MemberManagement;
 
 import gmb.model.tip.TipManagement;
-import gmb.model.user.GroupManagement;
-import gmb.model.user.MemberManagement;
 
 
 public class Lottery 

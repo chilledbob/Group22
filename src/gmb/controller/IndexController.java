@@ -13,12 +13,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
-import gmb.model.user.Admin;
-import gmb.model.user.Adress;
-import gmb.model.user.GroupManagement;
-import gmb.model.user.Member;
-import gmb.model.user.MemberData;
-import gmb.model.user.MemberManagement;
+import gmb.model.group.GroupManagement;
+import gmb.model.member.Admin;
+import gmb.model.member.Member;
+import gmb.model.member.MemberManagement;
+import gmb.model.member.container.Adress;
+import gmb.model.member.container.MemberData;
 
 	
 

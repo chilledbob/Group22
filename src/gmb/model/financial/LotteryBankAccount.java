@@ -1,9 +1,14 @@
 package gmb.model.financial;
 
 import gmb.model.Lottery;
+import gmb.model.financial.container.RealAccountData;
+import gmb.model.financial.transaction.ExternalTransaction;
+import gmb.model.financial.transaction.TicketPurchase;
+import gmb.model.financial.transaction.Transaction;
+import gmb.model.financial.transaction.Winnings;
+import gmb.model.member.Customer;
 import gmb.model.request.ExternalTransactionRequest;
-import gmb.model.request.RealAccountDataUpdateRequest;
-import gmb.model.user.Customer;
+import gmb.model.request.data.RealAccountDataUpdateRequest;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
