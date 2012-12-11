@@ -2,7 +2,7 @@ package gmb.controller;
 
 import javax.servlet.http.HttpSession;
 
-import gmb.model.user.*;
+import gmb.model.member.*;
 
 import org.salespointframework.core.user.Capability;
 import org.salespointframework.core.user.PersistentUser;
