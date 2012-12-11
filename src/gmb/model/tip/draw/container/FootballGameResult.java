@@ -1,6 +1,8 @@
 package gmb.model.tip.draw.container;
 
 
+import gmb.model.PersiObject;
+
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -12,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class FootballGameResult 
+public class FootballGameResult extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int footballGameResultId;

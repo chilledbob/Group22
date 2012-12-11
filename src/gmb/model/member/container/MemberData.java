@@ -2,6 +2,8 @@ package gmb.model.member.container;
 
 
 
+import gmb.model.PersiObject;
+
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -19,7 +21,7 @@ import javax.persistence.TemporalType;
 //import org.eclipse.persistence.internal.jpa.parsing.TemporalLiteralNode.TemporalType;
 
 @Entity
-public class MemberData 
+public class MemberData extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int memberDataId;
@@ -57,10 +59,10 @@ public class MemberData
 	public Adress getAdress(){ return adress; }
 	
 	//SET METHODS
-//	public void setFirstName(String newFName){ firstName = newFName; }
-//	public void setLastName(String newLName){ lastName = newLName; }
-//	public void setBirthDate(DateTime newDate){ birthDate = newDate; }
-//	public void setPhoneNumber(String newPhoneNumber){ phoneNumber = newPhoneNumber; }
-//	public void setEMail(String newEMail){ eMail = newEMail; }
-//	public void setAdress(Adress newAdress){ adress = newAdress; }
+//	public void setFirstName(String newFName){ firstName = newFName; DB_UPDATE(); }
+//	public void setLastName(String newLName){ lastName = newLName; DB_UPDATE(); }
+//	public void setBirthDate(DateTime newDate){ birthDate = newDate; DB_UPDATE(); }
+//	public void setPhoneNumber(String newPhoneNumber){ phoneNumber = newPhoneNumber; DB_UPDATE(); }
+//	public void setEMail(String newEMail){ eMail = newEMail; DB_UPDATE(); }
+//	public void setAdress(Adress newAdress){ adress = newAdress; DB_UPDATE(); }
 }

@@ -1,6 +1,5 @@
 package gmb.model.tip.draw;
 
-import gmb.model.Lottery;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameResult;
 import gmb.model.tip.tip.group.GroupTip;
@@ -52,13 +51,15 @@ public class TotoEvaluation extends Draw
 //		Lottery.getInstance().getFinancialManagement().setTotoPrize(prizePotential);//everything for the lottery!
 //		//////////////////////////
 
+		DB_UPDATE(); 
+		
 		return false;
 	}
 	
-	public void setResult(FootballGameResult[] results){ this.results = results; }
+	public void setResult(FootballGameResult[] results){ this.results = results; DB_UPDATE(); }
 	
-	public boolean addTip(SingleTip tip){ return super.addTip(tip, TotoTip.class); }
-	public boolean addTip(GroupTip tip){ return super.addTip(tip, TotoGroupTip.class); }
+	protected boolean addTip(SingleTip tip){ return super.addTip(tip, TotoTip.class); }
+	protected boolean addTip(GroupTip tip){ return super.addTip(tip, TotoGroupTip.class); }
 	
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
@@ -97,7 +98,7 @@ public class TotoEvaluation extends Draw
 			
 			if(result == 0)
 			{
-				singleTips.add(tip);
+				this.addTip(tip);
 				
 				return 0;
 			}

@@ -1,6 +1,8 @@
 package gmb.model.tip.draw.container;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
+import gmb.model.PersiObject;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +23,7 @@ import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.tip.single.SingleTip;
 
 @Entity
-public class DrawEvaluationResult 
+public class DrawEvaluationResult extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int drawEvaluationResultId;
@@ -33,13 +35,13 @@ public class DrawEvaluationResult
 	@Temporal(value = TemporalType.TIMESTAMP)
 	Date evaluationDate;
 	
-	BigDecimal[] jackpotImageBefore;
-	BigDecimal[] jackpotImageAfter;
-	BigDecimal[] undistributedPrizes;
+	CDecimal[] jackpotImageBefore;
+	CDecimal[] jackpotImageAfter;
+	CDecimal[] undistributedPrizes;
 	
-	BigDecimal[] perCategoryPrizePotential = new BigDecimal[8];
-	BigDecimal[] perCategoryWinningsUnMerged = new BigDecimal[8];
-	BigDecimal[] perCategoryWinningsMerged = new BigDecimal[8];
+	CDecimal[] perCategoryPrizePotential = new CDecimal[8];
+	CDecimal[] perCategoryWinningsUnMerged = new CDecimal[8];
+	CDecimal[] perCategoryWinningsMerged = new CDecimal[8];
 	Object[] tipsInCategory = new Object[8];
 	
 	@Deprecated
@@ -51,9 +53,9 @@ public class DrawEvaluationResult
 		winnings = new LinkedList<Winnings>();
 	}
 	
-	protected BigDecimal[] createDeepCopy(BigDecimal[] array)
+	protected CDecimal[] createDeepCopy(CDecimal[] array)
 	{
-		BigDecimal[] copy = new BigDecimal[array.length];
+		CDecimal[] copy = new CDecimal[array.length];
 		
 		for(int i = 0; i < array.length; ++i)
 			copy[i] = array[i];
@@ -71,62 +73,70 @@ public class DrawEvaluationResult
 		return copy;
 	}
 	
-	public void createJackpotImageBefore(BigDecimal[] jackpot){ jackpotImageBefore = (BigDecimal[])createDeepCopy(jackpot); }
+	public void createJackpotImageBefore(CDecimal[] jackpot){ jackpotImageBefore = (CDecimal[])createDeepCopy(jackpot); DB_UPDATE(); }
 	
-	public void createJackpotImageAfterAndUndistributedPrizes(BigDecimal[] jackpot)
+	public void createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)
 	{ 
-		assert jackpotImageBefore.length == jackpot.length : "Jackpot image length does not fit in DrawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(BigDecimal[] jackpot)";
+		assert jackpotImageBefore.length == jackpot.length : "Jackpot image length does not fit in DrawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)";
 		
-		jackpotImageAfter = (BigDecimal[])createDeepCopy(jackpot); 
+		jackpotImageAfter = (CDecimal[])createDeepCopy(jackpot); 
 		
-		undistributedPrizes = new BigDecimal[jackpotImageAfter.length]; 
+		undistributedPrizes = new CDecimal[jackpotImageAfter.length]; 
 		
 		for(int i = 0; i < undistributedPrizes.length; ++i)
 			undistributedPrizes[i] = jackpotImageAfter[i].subtract(jackpotImageBefore[i]);
+		
+		DB_UPDATE(); 
 	}
 	
-	public BigDecimal initReceiptsDistributionResult(BigDecimal drawReceipts)
+	public CDecimal initReceiptsDistributionResult(CDecimal drawReceipts)
 	{
 		receiptsDistributionResult = new ReceiptsDistributionResult(drawReceipts);
+		DB_UPDATE(); 
+		
 		return receiptsDistributionResult.getWinnersDue();
 	}
 	
-	public void copyCategoryPrizePotential(BigDecimal[] perCategoryPrizePotential)
+	public void copyCategoryPrizePotential(CDecimal[] perCategoryPrizePotential)
 	{ 
-		this.perCategoryPrizePotential = (BigDecimal[])createDeepCopy(perCategoryPrizePotential); 
+		this.perCategoryPrizePotential = (CDecimal[])createDeepCopy(perCategoryPrizePotential); 
+		DB_UPDATE(); 
 	}
 	
-	public void copyCategoryWinningsUnMerged(BigDecimal[] perCategoryPrizePotentialUnMerged)
+	public void copyCategoryWinningsUnMerged(CDecimal[] perCategoryPrizePotentialUnMerged)
 	{ 
-		this.perCategoryWinningsUnMerged = (BigDecimal[])createDeepCopy(perCategoryPrizePotentialUnMerged); 
+		this.perCategoryWinningsUnMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialUnMerged); 
+		DB_UPDATE(); 
 	}
 	
-	public void copyCategoryWinningsMerged(BigDecimal[] perCategoryPrizePotentialMerged)
+	public void copyCategoryWinningsMerged(CDecimal[] perCategoryPrizePotentialMerged)
 	{ 
-		this.perCategoryWinningsMerged = (BigDecimal[])createDeepCopy(perCategoryPrizePotentialMerged); 
+		this.perCategoryWinningsMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialMerged); 
+		DB_UPDATE(); 
 	}
 	
 	public void copyTipsInCategory(Object[] tipsInCategory)
 	{ 
 		this.tipsInCategory = createDeepCopy(tipsInCategory); 
+		DB_UPDATE(); 
 	}
 	
-	public BigDecimal[] getCategoryPrizePotential(){ return perCategoryPrizePotential; }
-	public BigDecimal[] getCategoryWinningsUnMerged(){ return perCategoryWinningsUnMerged; }
-	public BigDecimal[] getCategoryWinningsMerged(){ return perCategoryWinningsMerged; }
+	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); DB_UPDATE(); }
+	public void setReceiptsDistributionResult(ReceiptsDistributionResult receiptsDistributionResult){ this.receiptsDistributionResult = receiptsDistributionResult; DB_UPDATE(); }
+	
+	public CDecimal[] getCategoryPrizePotential(){ return perCategoryPrizePotential; }
+	public CDecimal[] getCategoryWinningsUnMerged(){ return perCategoryWinningsUnMerged; }
+	public CDecimal[] getCategoryWinningsMerged(){ return perCategoryWinningsMerged; }
 	public Object[] getTipsInCategory(){ return tipsInCategory; }
 	
 	@SuppressWarnings("unchecked")
 	public LinkedList<SingleTip> getTipsInCategory(int categoryID){ return (LinkedList<SingleTip>)(tipsInCategory[categoryID]); }
 	
-	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); }
-	public void setReceiptsDistributionResult(ReceiptsDistributionResult receiptsDistributionResult){ this.receiptsDistributionResult = receiptsDistributionResult; }
-	
 	public ReceiptsDistributionResult getReceiptsDistributionResult(){ return receiptsDistributionResult; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	public DateTime getEvaluationDate(){ return new DateTime(evaluationDate); }
 	
-	public BigDecimal[] getJackpotImageBefore(){ return jackpotImageBefore; }
-	public BigDecimal[] getJackpotImageAfter(){ return jackpotImageAfter; }
-	public BigDecimal[] getUndistributedPrizes(){ return undistributedPrizes; }
+	public CDecimal[] getJackpotImageBefore(){ return jackpotImageBefore; }
+	public CDecimal[] getJackpotImageAfter(){ return jackpotImageAfter; }
+	public CDecimal[] getUndistributedPrizes(){ return undistributedPrizes; }
 }

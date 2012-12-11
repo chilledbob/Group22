@@ -1,12 +1,14 @@
 package gmb.model.tip.draw.container;
 
+import gmb.model.PersiObject;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class PartialResult 
+public class PartialResult extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int partialResultId;

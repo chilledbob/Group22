@@ -3,7 +3,7 @@ package gmb.model.financial.transaction;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToOne;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
 import gmb.model.tip.tip.Tip;
@@ -27,7 +27,7 @@ public class Winnings extends InternalTransaction
 	 * the credit and prize amount of the lottery will be updated
 	 * @param transaction
 	 */
-	public Winnings(Tip tip, BigDecimal amount, int prizeCategory)
+	public Winnings(Tip tip, CDecimal amount, int prizeCategory)
 	{
 		super(tip.getOwner(),  amount);
 		this.tip = tip;

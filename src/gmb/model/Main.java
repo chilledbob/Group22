@@ -34,7 +34,7 @@ public class Main {
 	//Testdata
 
 	private void initMm(){
-		MemberManagement mm = new MemberManagement(1);
+		MemberManagement mm = new MemberManagement();
 		FinancialManagement fm = new FinancialManagement(null,null);
 		GmbPersistenceManager.add(new TipManagement());
 		GmbPersistenceManager.add(fm);

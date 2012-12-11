@@ -1,6 +1,6 @@
 package gmb.model.tip.draw;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +24,8 @@ public class WeeklyLottoDraw extends Draw
 {
 	protected int[] result = null;
 
-	protected static final BigDecimal dec100 = new BigDecimal("100");
-	protected static final BigDecimal dec2 = new BigDecimal("2");
+	protected static final CDecimal dec100 = new CDecimal(100);
+	protected static final CDecimal dec2 = new CDecimal(2);
 
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -43,19 +43,19 @@ public class WeeklyLottoDraw extends Draw
 	{
 		super.evaluate();//set actualEvaluationDate and init prizePotential 
 
-		BigDecimal[] jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
+		CDecimal[] jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
 		
 		drawEvaluationResult.createJackpotImageBefore(jackpot);
 
 		//calculate the overall amount of money to be processed (must stay the same):
-		BigDecimal mustOverallAmount = prizePotential;
-		for(BigDecimal categoryJackpot : jackpot)
+		CDecimal mustOverallAmount = prizePotential;
+		for(CDecimal categoryJackpot : jackpot)
 			mustOverallAmount = mustOverallAmount.add(categoryJackpot);
 
 		//calculate the prize potential per prize category:
-		BigDecimal[] prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getWeeklyLottoCategories();
+		CDecimal[] prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getWeeklyLottoCategories();
 
-		BigDecimal[] perCategoryPrizePotential = new BigDecimal[8]; 
+		CDecimal[] perCategoryPrizePotential = new CDecimal[8]; 
 
 		for(int i = 0; i < 8; ++i)
 			perCategoryPrizePotential[i] = prizePotential.multiply(prizeCatagories[i]).divide(dec100).add(jackpot[i]);
@@ -121,30 +121,30 @@ public class WeeklyLottoDraw extends Draw
 		drawEvaluationResult.copyTipsInCategory(category);
 
 		//count number of SingleTips in each category:
-		BigDecimal[] tipCountPerCategory = new BigDecimal[8];
+		CDecimal[] tipCountPerCategory = new CDecimal[8];
 		for(int i = 0; i < 8; ++i)
-			tipCountPerCategory[i] = new BigDecimal(((LinkedList<SingleTip>)(category[i])).size());
+			tipCountPerCategory[i] = new CDecimal(((LinkedList<SingleTip>)(category[i])).size());
 
 		//no winner in second highest winning category but in the highest? -> if so add the prize potential to the highest:
 		if(tipCountPerCategory[1].signum() == 0 && tipCountPerCategory[0].signum() > 0)
 		{
 			perCategoryPrizePotential[0] = perCategoryPrizePotential[0].add(perCategoryPrizePotential[1]);
-			perCategoryPrizePotential[1] = new BigDecimal(0);
+			perCategoryPrizePotential[1] = new CDecimal(0);
 		}
 
 		//calculate the winnings for each SingleTip in each category, and build new jackpot from empty categories:
-		BigDecimal[] newJackpot = new BigDecimal[8];
-		BigDecimal[] categoryWinnings = new BigDecimal[8];
+		CDecimal[] newJackpot = new CDecimal[8];
+		CDecimal[] categoryWinnings = new CDecimal[8];
 
 		for(int i = 0; i < 8; ++i)
 			if(tipCountPerCategory[i].signum() > 0)
 			{
 				categoryWinnings[i] = perCategoryPrizePotential[i].divide(tipCountPerCategory[i]);
-				newJackpot[i] = new BigDecimal(0);
+				newJackpot[i] = new CDecimal(0);
 			}
 			else
 			{
-				categoryWinnings[i] = new BigDecimal(0);
+				categoryWinnings[i] = new CDecimal(0);
 				newJackpot[i] = perCategoryPrizePotential[i];
 			}
 
@@ -168,7 +168,7 @@ public class WeeklyLottoDraw extends Draw
 						{
 							noMerge = false;
 
-							BigDecimal newWinnings = (categoryWinnings[i].add(categoryWinnings[j])).divide(dec2);//average winnings
+							CDecimal newWinnings = (categoryWinnings[i].add(categoryWinnings[j])).divide(dec2);//average winnings
 							categoryWinnings[i] = newWinnings;
 							categoryWinnings[j] = newWinnings;
 
@@ -188,7 +188,7 @@ public class WeeklyLottoDraw extends Draw
 		drawEvaluationResult.copyCategoryWinningsMerged(categoryWinnings);
 
 		//create and send winnings, also calculate the actual overall amount of money that has been processed in the end:
-		BigDecimal actualOverallAmount = new BigDecimal(0);
+		CDecimal actualOverallAmount = new CDecimal(0);
 
 		for(int i = 0; i < 8; ++i)
 		{
@@ -222,8 +222,10 @@ public class WeeklyLottoDraw extends Draw
 			actualOverallAmount = actualOverallAmount.add(tip.finalizeWinnings(drawEvaluationResult));
 
 		//normalize overall amount of processed money:
-		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(mustOverallAmount.subtract(actualOverallAmount));
+//		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(mustOverallAmount.subtract(actualOverallAmount));
 
+		DB_UPDATE(); 
+		
 		return true;
 	}
 
@@ -231,10 +233,11 @@ public class WeeklyLottoDraw extends Draw
 	{ 
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.setResult(int[] result)! (6 + extraNumber + superNumber)";
 		this.result = result; 
+		DB_UPDATE(); 
 	}
 
-	public boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
-	public boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
+	protected boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
+	protected boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
 
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, WeeklyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, WeeklyLottoGroupTip.class); }
@@ -273,7 +276,7 @@ public class WeeklyLottoDraw extends Draw
 
 		if(result == 0)
 		{
-			singleTips.add(tip);
+			this.addTip(tip);
 
 			return 0;
 		}

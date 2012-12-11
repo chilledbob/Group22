@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
@@ -19,7 +20,7 @@ import gmb.model.tip.draw.Draw;
 import org.joda.time.DateTime;
 
 @Entity
-public abstract class Tip 
+public abstract class Tip extends PersiObject
 {	
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
@@ -52,7 +53,7 @@ public abstract class Tip
 			return 0;
 	}	
 	
-	public void setOverallWinnings(Winnings overallWinnings){ this.overallWinnings = overallWinnings; }
+	public void setOverallWinnings(Winnings overallWinnings){ this.overallWinnings = overallWinnings; DB_UPDATE(); }
 	public Winnings getOverallWinnings(){ return overallWinnings; }
 	
 	public DateTime getSubmissionDate(){ return new DateTime(submissionDate); }

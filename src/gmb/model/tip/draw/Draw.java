@@ -1,12 +1,13 @@
 package gmb.model.tip.draw;
 
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.tip.draw.container.DrawEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 @Entity
-public abstract class Draw 
+public abstract class Draw extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int drawId;
@@ -33,7 +34,7 @@ public abstract class Draw
 	protected Date planedEvaluationDate;	
 
 	//temporary variables used for evaluation:
-	protected BigDecimal prizePotential = new BigDecimal(0);//temp
+	protected CDecimal prizePotential = new CDecimal(0);//temp
 	protected List<SingleTip> allSingleTips = new LinkedList<SingleTip>();//temp
 
 	protected DrawEvaluationResult drawEvaluationResult;
@@ -76,8 +77,8 @@ public abstract class Draw
 		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
-			BigDecimal currentValue = tip.getTipTicket().getRemainingValue();
-			BigDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
+			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
+			CDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 			tip.getTipTicket().setRemainingValue(updatedValue);
 
 			if(updatedValue.signum() == -1)
@@ -86,6 +87,8 @@ public abstract class Draw
 				else
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
 		}
+		
+		DB_UPDATE(); 
 		
 		return true;
 	}
@@ -115,83 +118,89 @@ public abstract class Draw
 	 * @param tip
 	 * @return
 	 */
-	public boolean addTip(SingleTip tip)
-	{ 
-		if(isTimeLeftUntilEvaluation())
-		{
-			singleTips.add(tip); 
-			return true;
-		}
-		else 
-			return false;
-	}
+	protected abstract boolean addTip(SingleTip tip);
 
 	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	public boolean addTip(GroupTip tip)
-	{ 
-		if(isTimeLeftUntilEvaluation())
-		{
-			groupTips.add(tip); 
-			return true;
-		}
-		else 
-			return false;
-	}
+	protected abstract boolean addTip(GroupTip tip);
 
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	public boolean removeTip(SingleTip tip)
-	{ 
-		if(isTimeLeftUntilEvaluation())
-			return singleTips.remove(tip); 
-		else 
-			return false;
-	}
+	public abstract boolean removeTip(SingleTip tip);
 
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	public boolean removeTip(GroupTip tip)
-	{ 
-		if(isTimeLeftUntilEvaluation())
-			return groupTips.remove(tip); 
-		else 
-			return false;
-	}
+	public abstract boolean removeTip(GroupTip tip);
 
 	//////////////////////////////////////////////////////////check for correct type://
 	//===============================================================================//
 	protected boolean addTip(SingleTip tip, Class<?> tipType)
 	{ 		
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
-		return addTip(tip);
+		
+		if(isTimeLeftUntilEvaluation())
+		{
+			singleTips.add(tip); 
+			DB_UPDATE(); 
+			
+			return true;
+		}
+		else 
+			return false;
 	}
 
 	protected boolean addTip(GroupTip tip, Class<?> tipType)
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
-		return addTip(tip);
+		
+		if(isTimeLeftUntilEvaluation())
+		{
+			groupTips.add(tip); 
+			DB_UPDATE(); 
+			
+			return true;
+		}
+		else 
+			return false;
 	}
 
 	protected boolean removeTip(SingleTip tip, Class<?> tipType)
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
-		return removeTip(tip); 
+
+		if(isTimeLeftUntilEvaluation())
+		{
+			boolean result = singleTips.remove(tip); 
+			DB_UPDATE(); 
+			
+			return result;
+		}
+		else 
+			return false;
 	}
 
 	protected boolean removeTip(GroupTip tip, Class<?> tipType)
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
-		return removeTip(tip);
+
+		if(isTimeLeftUntilEvaluation())
+		{
+			boolean result = groupTips.remove(tip); 
+			DB_UPDATE(); 
+			
+			return result;
+		}
+		else 
+			return false;
 	}	 
 	//===============================================================================//
 	///////////////////////////////////////////////////////////////////////////////////

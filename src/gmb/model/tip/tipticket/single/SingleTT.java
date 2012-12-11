@@ -1,6 +1,6 @@
 package gmb.model.tip.tipticket.single;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -25,6 +25,8 @@ public abstract class SingleTT extends TipTicket
 		if(this.tip.equals(tip))
 		{
 			this.tip = null;
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else
@@ -40,11 +42,13 @@ public abstract class SingleTT extends TipTicket
 		if(tip != null)
 		{
 			this.tip = tip;
+			DB_UPDATE(); 
+			
 			return 0;
 		}
 		else
 		return 1;
 	}
 	
-	public BigDecimal getPricePerTicket(){ return getPrice(); }
+	public CDecimal getPricePerTicket(){ return getPrice(); }
 }

@@ -1,4 +1,5 @@
 package gmb.model.tip;
+import gmb.model.PersiObject;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
@@ -13,7 +14,7 @@ import javax.persistence.OneToMany;
 import org.joda.time.Duration;
 
 @Entity
-public class TipManagement 
+public class TipManagement extends PersiObject
 {
 	@Id
 	protected int tipManagementId = 1;
@@ -27,9 +28,6 @@ public class TipManagement
 	
 	protected long tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
 	
-//	@Deprecated
-//	protected TipManagement(){}
-	
 	public TipManagement()
 	{
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
@@ -37,11 +35,11 @@ public class TipManagement
 		totoEvaluations = new LinkedList<TotoEvaluation>();
 	}
 	
-	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); }
-	public void addDraw(DailyLottoDraw draw){ dailyLottoDrawings.add(draw); }
-	public void addDraw(TotoEvaluation draw){ totoEvaluations.add(draw); }
+	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); DB_UPDATE(); }
+	public void addDraw(DailyLottoDraw draw){ dailyLottoDrawings.add(draw); DB_UPDATE(); }
+	public void addDraw(TotoEvaluation draw){ totoEvaluations.add(draw); DB_UPDATE(); }
 	
-	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; }
+	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; DB_UPDATE(); }
 	
 	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
 	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
