@@ -3,7 +3,7 @@ package gmb.model.financial.transaction;
 import gmb.model.Lottery;
 import gmb.model.member.Customer;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import javax.persistence.Embeddable;;
 
@@ -13,7 +13,7 @@ public class ExternalTransaction extends Transaction
 	@Deprecated
 	protected ExternalTransaction(){}
 	
-	public ExternalTransaction(Customer affectedCustomer, BigDecimal amount)
+	public ExternalTransaction(Customer affectedCustomer, CDecimal amount)
 	{
 		super( affectedCustomer,  amount);
 	}

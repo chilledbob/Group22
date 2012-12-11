@@ -45,6 +45,8 @@ public abstract class PermaTT extends TipTicket
 			if(this.getDurationDate().isBefore(Lottery.getInstance().getTimer().getDateTime()))
 				expired = true;
 
+			DB_UPDATE(); 
+			
 			return expired;
 		}
 		else
@@ -67,13 +69,10 @@ public abstract class PermaTT extends TipTicket
 
 	public boolean removeTip(SingleTip tip)
 	{
-		if(this.tips.contains(tip))
-		{
-			this.tips.remove(tip);
-			return true;
-		}
-		else
-			return false;
+		boolean result = this.tips.remove(tip);
+		DB_UPDATE(); 
+		
+		return result;
 	}
 
 	/**
@@ -89,6 +88,8 @@ public abstract class PermaTT extends TipTicket
 		if(tips.contains(tip)) return 2;
 
 		tips.add(tip); 
+		DB_UPDATE(); 
+		
 		return 0;	
 	}
 
@@ -101,10 +102,12 @@ public abstract class PermaTT extends TipTicket
 				durationType = 1;
 			else
 				durationType = 2;
+		
+		DB_UPDATE(); 
 	}
 
-	public void setDurationType(int durationType){ this.durationType = durationType; }
-	public void setExpired(boolean expired){ this.expired = expired; }
+	public void setDurationType(int durationType){ this.durationType = durationType; DB_UPDATE(); }
+	public void setExpired(boolean expired){ this.expired = expired; DB_UPDATE(); }
 
 	public List<SingleTip> getTips(){ return tips; }	
 	public SingleTip getLastTip(){ return ((LinkedList<SingleTip>)tips).getLast(); }

@@ -2,10 +2,13 @@ package gmb.junit;
 
 import static org.junit.Assert.*;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 
+import gmb.model.CDecimal;
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.container.RealAccountData;
@@ -87,8 +90,8 @@ public class Test01
 		//=========================================================================================================================//USER TESTs NO 1
 		
 		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());
-		MemberManagement memberManagement = new MemberManagement(0);
-		GroupManagement groupManagement = new GroupManagement(0);
+		MemberManagement memberManagement = new MemberManagement();
+		GroupManagement groupManagement = new GroupManagement();
 		TipManagement tipManagement = new TipManagement();
 
 		Lottery.Instanciate(financialManagement, memberManagement, groupManagement, tipManagement);
@@ -128,11 +131,11 @@ public class Test01
 		printCurrentTimeToConsol("5 brand new StdCustomers!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
-		cus1.getBankAccount().sendExternalTransactionRequest(new BigDecimal(100), "want my money! D:");
-		cus2.getBankAccount().sendExternalTransactionRequest(new BigDecimal(60), "want my money also! D:");
-		cus3.getBankAccount().sendExternalTransactionRequest(new BigDecimal(1000), "money!");
-		cus4.getBankAccount().sendExternalTransactionRequest(new BigDecimal(10), "");
-		cus5.getBankAccount().sendExternalTransactionRequest(new BigDecimal(1000000), "WANT MORE MONEY THEN I PROBABLY HAVE!!!");
+		cus1.getBankAccount().sendExternalTransactionRequest(new CDecimal(100), "want my money! D:");
+		cus2.getBankAccount().sendExternalTransactionRequest(new CDecimal(60), "want my money also! D:");
+		cus3.getBankAccount().sendExternalTransactionRequest(new CDecimal(1000), "money!");
+		cus4.getBankAccount().sendExternalTransactionRequest(new CDecimal(10), "");
+		cus5.getBankAccount().sendExternalTransactionRequest(new CDecimal(1000000), "WANT MORE MONEY THEN I PROBABLY HAVE!!!");
 		
 		assertEquals(5, Lottery.getInstance().getFinancialManagement().getExternalTransactionRequests().size());
 		
@@ -142,7 +145,7 @@ public class Test01
 		//smart admin work:
 		for(ExternalTransactionRequest request : Lottery.getInstance().getFinancialManagement().getExternalTransactionRequests())
 		{
-			if(request.getTransaction().getAmount().compareTo(new BigDecimal(5000)) < 1)
+			if(request.getTransaction().getAmount().compareTo(new CDecimal(5000)) < 1)
 			{
 				System.out.println(request.accept());
 			}
@@ -156,11 +159,11 @@ public class Test01
 		assertEquals(4, Lottery.getInstance().getFinancialManagement().getExternalTransactions().size());
 		assertEquals(1, cus5.getNotifications().size());
 		
-		assertEquals(new BigDecimal(100), cus1.getBankAccount().getCredit());
-		assertEquals(new BigDecimal(60), cus2.getBankAccount().getCredit());
-		assertEquals(new BigDecimal(1000), cus3.getBankAccount().getCredit());
-		assertEquals(new BigDecimal(10), cus4.getBankAccount().getCredit());
-		assertEquals(new BigDecimal(0), cus5.getBankAccount().getCredit());
+		assertEquals(new CDecimal("100.00"), cus1.getBankAccount().getCredit());
+		assertEquals(new CDecimal("60.00"), cus2.getBankAccount().getCredit());
+		assertEquals(new CDecimal("1000.00"), cus3.getBankAccount().getCredit());
+		assertEquals(new CDecimal("10.00"), cus4.getBankAccount().getCredit());
+		assertEquals(new CDecimal(0), cus5.getBankAccount().getCredit());
 		
 		printCurrentTimeToConsol("Most people got their money!");//<-------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addMinutes(23);//<-------------------------------------------------------------------------------------------[TIME SIMULATION]
@@ -287,25 +290,25 @@ public class Test01
 		WeeklyLottoSTT ticket0 = new WeeklyLottoSTT();
 		WeeklyLottoSTT ticket1 = new WeeklyLottoSTT();
 		DailyLottoSTT ticket2 = new DailyLottoSTT();
-		BigDecimal oriCredit1 = cus1.getBankAccount().getCredit();
+		CDecimal oriCredit1 = cus1.getBankAccount().getCredit();
 		ticket0.purchase(cus1);
 		ticket1.purchase(cus1);
 		ticket2.purchase(cus1);
 		
 		TotoSTT ticket3 = new TotoSTT();
 		DailyLottoPTT ticket4 = new DailyLottoPTT(PTTDuration.MONTH);
-		BigDecimal oriCredit2 = cus2.getBankAccount().getCredit();
+		CDecimal oriCredit2 = cus2.getBankAccount().getCredit();
 		ticket3.purchase(cus2);
 		ticket4.purchase(cus2);
 		
 		WeeklyLottoPTT ticket5 = new WeeklyLottoPTT(PTTDuration.YEAR);
 		DailyLottoPTT ticket6 = new DailyLottoPTT(PTTDuration.HALFYEAR);
-		BigDecimal oriCredit3 = cus3.getBankAccount().getCredit();
+		CDecimal oriCredit3 = cus3.getBankAccount().getCredit();
 		ticket5.purchase(cus3);
 		ticket6.purchase(cus3);
 		
 		WeeklyLottoSTT ticket7 = new WeeklyLottoSTT();
-		BigDecimal oriCredit4 = cus4.getBankAccount().getCredit();
+		CDecimal oriCredit4 = cus4.getBankAccount().getCredit();
 		ticket7.purchase(cus4);
 		
 		WeeklyLottoPTT ticket8 = new WeeklyLottoPTT(PTTDuration.YEAR);
@@ -340,7 +343,7 @@ public class Test01
 		
 		assertEquals(0, cus5.getWeeklyLottoPTTs().size());
 		assertEquals(0, cus5.getDailyLottoPTTs().size());
-		assertEquals(new BigDecimal(0), cus5.getBankAccount().getCredit());
+		assertEquals(new CDecimal(0), cus5.getBankAccount().getCredit());
 		
 		assertEquals(8, Lottery.getInstance().getFinancialManagement().getTicketPurchases().size());
 		
@@ -420,17 +423,17 @@ public class Test01
 		}
 		
 		Object[] tipsInCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
-		BigDecimal[] categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
+		CDecimal[] categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
 			if(((LinkedList<SingleTip>)(tipsInCategory[i])).size() > 0 && ((LinkedList<SingleTip>)(tipsInCategory[i-1])).size() > 0)
 			assertEquals(true, categoryWinnings[i].compareTo(categoryWinnings[i-1]) < 1);
 		
-		for(BigDecimal dec : draw1.getDrawEvaluationResult().getCategoryWinningsUnMerged())
+		for(CDecimal dec : draw1.getDrawEvaluationResult().getCategoryWinningsUnMerged())
 			System.out.print(dec.toString() + " ");
 		
 		System.out.println(" ");
 		
-		for(BigDecimal dec : categoryWinnings)
+		for(CDecimal dec : categoryWinnings)
 			System.out.print(dec.toString() + " ");
 		
 		System.out.println(" ");
@@ -439,6 +442,14 @@ public class Test01
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getTreasuryDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getLotteryTaxDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getManagementDue());
+		
+
+//class TestClass extends PersiObject
+//{
+//	public TestClass(){ }
+//}
+//
+//(new TestClass()).DB_ADD();
 		
 //		int findNoti = 0;
 //		for(Notification notification : cus1.getNotifications())
@@ -454,9 +465,9 @@ public class Test01
 //		
 //		assertEquals(1, findNoti);
 //
-//		BigDecimal pricePotential = ticket1.getPaidPurchasePrice().add(ticket5.getPaidPurchasePrice());
+//		CDecimal pricePotential = ticket1.getPaidPurchasePrice().add(ticket5.getPaidPurchasePrice());
 //		assertEquals(
-//				pricePotential.multiply(new BigDecimal(Lottery.getInstance().getFinancialManagement().getReceiptsDistribution().getWinnersDue())).divide(new BigDecimal(100)) 
+//				pricePotential.multiply(new CDecimal(Lottery.getInstance().getFinancialManagement().getReceiptsDistribution().getWinnersDue())).divide(new CDecimal(100)) 
 //				,Lottery.getInstance().getFinancialManagement().getWeeklyLottoPrize());
 		
 		printCurrentTimeToConsol("WeeklyLottoDraw (draw1) has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>

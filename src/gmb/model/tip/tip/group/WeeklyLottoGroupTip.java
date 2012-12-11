@@ -14,7 +14,7 @@ public class WeeklyLottoGroupTip extends GroupTip
 	public WeeklyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw, group, minimumStake, overallMinimumStake);
-		group.addWeeklyLottoGroupTip(this);
+		group.addGroupTip(this);
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class WeeklyLottoGroupTip extends GroupTip
 		int result = super.withdraw();	
 		if(result != 0) return result;
 		
-		if(group.getWeeklyLottoGroupTips().remove(this))
+		if(group.removeGroupTip(this))
 			return 0;
 		else
 			return 4;

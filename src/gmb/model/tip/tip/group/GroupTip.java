@@ -8,7 +8,7 @@ import gmb.model.tip.draw.container.DrawEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,9 +57,9 @@ public abstract class GroupTip extends Tip
 	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
 	 * @return
 	 */
-	public BigDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
+	public CDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
 	{	
-		BigDecimal overallAmount = new BigDecimal(0);
+		CDecimal overallAmount = new CDecimal(0);
 
 		if(allWinnings.size() > 0)
 		{
@@ -70,7 +70,7 @@ public abstract class GroupTip extends Tip
 				highestPrizeCategory = Math.min(highestPrizeCategory, winnings.getPrizeCategory());
 			}
 
-			BigDecimal averageAmount = overallAmount.divide(new BigDecimal(allWinnings.size()));
+			CDecimal averageAmount = overallAmount.divide(new CDecimal(allWinnings.size()));
 
 			//send average winnings to all contributers:
 			for(SingleTip tip : tips)
@@ -81,9 +81,11 @@ public abstract class GroupTip extends Tip
 				drawEvaluationResult.addWinnings(newWinnings);
 			}
 
-			overallWinnings = new Winnings(this, averageAmount.multiply(new BigDecimal(allWinnings.size())), highestPrizeCategory);
+			overallWinnings = new Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
 			averageWinnings = new Winnings(this, averageAmount, -1);
 		}
+		
+		DB_UPDATE(); 
 		
 		//return overall amount with error for normalization:
 		return overallWinnings.getAmount();
@@ -94,22 +96,24 @@ public abstract class GroupTip extends Tip
 	 * return false if submission failed, otherwise true
 	 * @return
 	 */
-	public boolean submit()
-	{	
-		if(submitted) return true;
-		if(draw.getEvaluated()) return false;
-
-		if(draw.isTimeLeftUntilEvaluation())
-			if(overallMinimumStake >= currentOverallMinimumStake)
-			{
-				draw.addTip(this);
-				submitted = true;
-
-				return true;
-			}
-
-		return false;
-	}
+//	public boolean submit()
+//	{	
+//		if(submitted) return true;
+//		if(draw.getEvaluated()) return false;
+//
+//		if(draw.isTimeLeftUntilEvaluation())
+//			if(overallMinimumStake >= currentOverallMinimumStake)
+//			{
+//				draw.addTip(this);
+//				submitted = true;
+//
+//				DB_UPDATE(); 
+//				
+//				return true;
+//			}
+//
+//		return false;
+//	}
 
 	/**
 	 * 'unsubmit' from "draw" if possible
@@ -125,6 +129,8 @@ public abstract class GroupTip extends Tip
 			draw.removeTip(this);
 			submitted = false;
 
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else
@@ -149,6 +155,8 @@ public abstract class GroupTip extends Tip
 			currentOverallMinimumStake += tips.size();
 			this.tips.addAll(tips);
 
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else
@@ -177,6 +185,8 @@ public abstract class GroupTip extends Tip
 			tips.remove(tip);
 			--currentOverallMinimumStake;
 
+			DB_UPDATE(); 
+			
 			return 0;
 		}
 		else
@@ -215,6 +225,8 @@ public abstract class GroupTip extends Tip
 
 		currentOverallMinimumStake -= stake;
 
+		DB_UPDATE(); 
+		
 		return 0;
 	}
 
@@ -247,14 +259,16 @@ public abstract class GroupTip extends Tip
 
 			tips.clear();//not really necessary
 
+			DB_UPDATE(); 
+			
 			return 0;
 		}
 		else
 			return 2;
 	}
 
-	public void setAverageWinnings(Winnings averageWinnings){ this.averageWinnings = averageWinnings; }
-	public void addWinnings(Winnings winnings){ this.allWinnings.add(winnings); }
+	public void setAverageWinnings(Winnings averageWinnings){ this.averageWinnings = averageWinnings; DB_UPDATE(); }
+	public void addWinnings(Winnings winnings){ this.allWinnings.add(winnings); DB_UPDATE(); }
 
 	public Winnings getAverageWinnings(){ return averageWinnings; }	
 	public List<Winnings> getAllWinnings(){ return allWinnings; }

@@ -45,6 +45,10 @@ public abstract class Member extends PersistentUser
 	@JoinColumn(name="member", referencedColumnName="member_ID")
 	protected List<Notification> notifications;
 	
+	public void DB_ADD(){ GmbPersistenceManager.add(this); }
+	public void DB_UPDATE(){ GmbPersistenceManager.update(this); }
+	public void DB_REMOVE(){ GmbPersistenceManager.remove(this); }
+	
 	@Deprecated
 	protected Member(){}
 	
@@ -59,9 +63,9 @@ public abstract class Member extends PersistentUser
 		notifications = new LinkedList<Notification>();
 	}	
 	
-	public void setMemberData(MemberData memberData){ this.memberData = memberData; GmbPersistenceManager.update(this); }
-	public void addNotification(Notification notification){ this.notifications.add(notification); }
-	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); }
+	public void setMemberData(MemberData memberData){ this.memberData = memberData; DB_UPDATE(); }
+	public void addNotification(Notification notification){ this.notifications.add(notification); DB_UPDATE(); }
+	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); DB_UPDATE(); }
 
 	public MemberData getMemberData(){ return memberData; }	
 	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
@@ -70,7 +74,7 @@ public abstract class Member extends PersistentUser
 	public List<Notification> getNotifications(){ return notifications; }
 
 
-	public void activateAccount(){ activated = true; }
+	public void activateAccount(){ activated = true;  DB_UPDATE(); }
 	
 	/**
 	 * create a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
@@ -85,5 +89,7 @@ public abstract class Member extends PersistentUser
 		Lottery.getInstance().getMemberManagement().addMemberDataUpdateRequest(request);
 
 		memberDataUpdateRequest.add(request);
+		
+		DB_UPDATE(); 
 	}	
 }

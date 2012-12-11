@@ -1,6 +1,7 @@
 package gmb.model.group;
 
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.member.Customer;
 import gmb.model.request.Notification;
 import gmb.model.request.RequestState;
@@ -31,7 +32,7 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name="GroupTable")
-public class Group 
+public class Group extends PersiObject
 {
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
@@ -102,6 +103,8 @@ public class Group
 		customer.addGroupMembershipApplication(application);
 		this.groupMembershipApplications.add(application);
 		
+		DB_UPDATE(); 
+		
 		return application;
 	}
 
@@ -116,6 +119,8 @@ public class Group
 
 		customer.addGroupInvitation(invitation);
 		this.groupInvitations.add(invitation);
+		
+		DB_UPDATE(); 
 		
 		return invitation;
 	}
@@ -132,6 +137,8 @@ public class Group
 		groupMember.addGroupAdminRightsTransfereOffering(offering);
 		this.groupAdminRightsTransfereOfferings.add(offering);
 		
+		DB_UPDATE(); 
+		
 		return offering;
 	}
 
@@ -142,6 +149,8 @@ public class Group
 			groupMembers.add(groupAdmin);
 			groupAdmin = groupMember;
 			groupMembers.remove(groupMember);
+			
+			DB_UPDATE(); 
 			
 			return true;
 		}
@@ -164,7 +173,7 @@ public class Group
 			withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
 			groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
 			
-			groupAdmin.getGroups().remove(this);
+			groupAdmin.removeGroup(this);
 		}
 		else
 		if(groupMembers.contains(groupMember))
@@ -174,8 +183,10 @@ public class Group
 			groupMember.addNotification(new Notification("You have been resigned from Group " + name + "."));
 			groupMembers.remove(groupMember);
 			
-			groupMember.getGroups().remove(this);
+			groupMember.removeGroup(this);
 		}
+		
+		DB_UPDATE(); 
 	}
 
 	/**
@@ -222,23 +233,34 @@ public class Group
 		}
 				
 		resign(groupAdmin);
+		
+		DB_UPDATE(); 
 	}
  
 	public void addGroupMember(Customer customer)
 	{ 
 		groupMembers.add(customer); 
 		customer.addGroup(this);
+		
+		DB_UPDATE(); 
 	}
 	
-	public void SetInfoText(String infoText){ this.infoText = infoText; }	
-	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; }
-
+	public void SetInfoText(String infoText){ this.infoText = infoText; DB_UPDATE(); }	
+	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; DB_UPDATE(); }
+	
+	public void addGroupTip(DailyLottoGroupTip tip){ dailyLottoGroupTips.add(tip); DB_UPDATE(); }	
+	public void addGroupTip(WeeklyLottoGroupTip tip){ weeklyLottoGroupTips.add(tip); DB_UPDATE(); }	
+	public void addGroupTip(TotoGroupTip tip){ totoGroupTips.add(tip); DB_UPDATE(); }
+	
+	public boolean removeGroupTip(DailyLottoGroupTip tip){ boolean result = dailyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
+	public boolean removeGroupTip(WeeklyLottoGroupTip tip){ boolean result = weeklyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
+	public boolean removeGroupTip(TotoGroupTip tip){ boolean result = totoGroupTips.remove(tip); DB_UPDATE(); return result; }
+	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
 	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
-	public String getName(){ return name; };
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
 	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }
@@ -246,8 +268,4 @@ public class Group
 	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
 	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
 	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
-
-	public void addDailyLottoGroupTip(DailyLottoGroupTip tip){ dailyLottoGroupTips.add(tip); }	
-	public void addWeeklyLottoGroupTip(WeeklyLottoGroupTip tip){ weeklyLottoGroupTips.add(tip); }	
-	public void addTotoGroupTip(TotoGroupTip tip){ totoGroupTips.add(tip); }
 }

@@ -3,6 +3,7 @@ package gmb.model.request;
 import java.util.Date;
 
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.member.Member;
 
 import org.joda.time.DateTime;
@@ -17,7 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Notification 
+public class Notification extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int notificationId;

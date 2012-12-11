@@ -1,6 +1,6 @@
 package gmb.model.tip.tipticket.single;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -12,9 +12,6 @@ import javax.persistence.Entity;
 @Entity
 public class DailyLottoSTT extends SingleTT implements DailyLottoTT 
 {	
-//	@Deprecated
-//	protected DailyLottoSTT(){}
-
 	public DailyLottoSTT()
 	{
 		super();
@@ -25,5 +22,5 @@ public class DailyLottoSTT extends SingleTT implements DailyLottoTT
 	
 	public int addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
 	
-	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoSTTPrice(); }
+	public CDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoSTTPrice(); }
 }

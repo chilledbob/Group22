@@ -1,6 +1,6 @@
 package gmb.model.tip.tipticket.perma;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
 import gmb.model.tip.tip.single.SingleTip;
@@ -26,7 +26,7 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 	
 	public int addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
 	
-	public BigDecimal getPrice()
+	public CDecimal getPrice()
 	{ 
 		switch(durationType)
 		{
@@ -36,5 +36,5 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 		}
 	}
 	
-	public BigDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoSTTPrice(); }
+	public CDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoSTTPrice(); }
 }
