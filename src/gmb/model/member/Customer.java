@@ -11,7 +11,7 @@ import gmb.model.tip.tipticket.single.DailyLottoSTT;
 import gmb.model.tip.tipticket.single.TotoSTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class Customer extends Member
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 	}
 	
-	public boolean hasEnoughMoneyToPurchase(BigDecimal price)
+	public boolean hasEnoughMoneyToPurchase(CDecimal price)
 	{
 		return lotteryBankAccount.getCredit().compareTo(price) > -1;
 	}

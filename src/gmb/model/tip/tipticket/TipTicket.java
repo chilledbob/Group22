@@ -1,6 +1,6 @@
 package gmb.model.tip.tipticket;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -30,9 +30,9 @@ public abstract class TipTicket  implements GenericTT
 	
 	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
-	protected BigDecimal paidPurchasePrice;
-	protected BigDecimal perTicketPaidPurchasePrice;//the price of the corresponding SingleTT (the same like paidPurchasePrice for SingleTTs of course)
-	protected BigDecimal remainingValue;//decrement this by perTicketPaidPurchasePrice for each submitted tip (in the case of PermaTTs the treasury has to pay as soon this one goes under 0)
+	protected CDecimal paidPurchasePrice;
+	protected CDecimal perTicketPaidPurchasePrice;//the price of the corresponding SingleTT (the same like paidPurchasePrice for SingleTTs of course)
+	protected CDecimal remainingValue;//decrement this by perTicketPaidPurchasePrice for each submitted tip (in the case of PermaTTs the treasury has to pay as soon this one goes under 0)
 	
 	@OneToOne(mappedBy="ticket")
 	protected TicketPurchase ticketPurchaseId;
@@ -87,14 +87,14 @@ public abstract class TipTicket  implements GenericTT
 	
 	public int getDrawTypeAsInt(){ return drawType; }
 	
-	public void setRemainingValue(BigDecimal remainingValue){ this.remainingValue = remainingValue; }
+	public void setRemainingValue(CDecimal remainingValue){ this.remainingValue = remainingValue; }
 	
-	public BigDecimal getRemainingValue(){ return remainingValue; }
-	public BigDecimal getPerTicketPaidPurchasePrice(){ return perTicketPaidPurchasePrice; }
+	public CDecimal getRemainingValue(){ return remainingValue; }
+	public CDecimal getPerTicketPaidPurchasePrice(){ return perTicketPaidPurchasePrice; }
 	
 	public Customer getOwner(){ return owner; }
 	public DateTime getPurchaseDate(){ return new DateTime(purchaseDate); }	
-	public BigDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
+	public CDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
 	
 	/**
 	 * Return Code:
@@ -108,6 +108,6 @@ public abstract class TipTicket  implements GenericTT
 	public abstract int addTip(SingleTip tip);
 	
 	public abstract boolean removeTip(SingleTip tip); 
-	public abstract BigDecimal getPrice();
-	public abstract BigDecimal getPricePerTicket();
+	public abstract CDecimal getPrice();
+	public abstract CDecimal getPricePerTicket();
 }

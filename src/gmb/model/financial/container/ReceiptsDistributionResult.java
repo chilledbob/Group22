@@ -1,8 +1,7 @@
 package gmb.model.financial.container;
 
+import gmb.model.CDecimal;
 import gmb.model.Lottery;
-
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,24 +14,24 @@ public class ReceiptsDistributionResult
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int receiptsDistributionResultId;
 	
-	protected BigDecimal winnersDue;
-	protected BigDecimal treasuryDue;
-	protected BigDecimal lotteryTaxDue;
-	protected BigDecimal managementDue;
+	protected CDecimal winnersDue;
+	protected CDecimal treasuryDue;
+	protected CDecimal lotteryTaxDue;
+	protected CDecimal managementDue;
 	
-	protected static final BigDecimal dec100 = new BigDecimal("100");
+	protected static final CDecimal dec100 = new CDecimal(100);
 	
 	@Deprecated
 	protected ReceiptsDistributionResult(){}
 	
-	public ReceiptsDistributionResult(BigDecimal drawReceipts)
+	public ReceiptsDistributionResult(CDecimal drawReceipts)
 	{
 		ReceiptsDistribution receiptsDistribution = Lottery.getInstance().getFinancialManagement().getReceiptsDistribution();
 		
-		winnersDue = drawReceipts.multiply(new BigDecimal(receiptsDistribution.getWinnersDue())).divide(dec100);
-		treasuryDue = drawReceipts.multiply(new BigDecimal(receiptsDistribution.getTreasuryDue())).divide(dec100);
-		lotteryTaxDue = drawReceipts.multiply(new BigDecimal(receiptsDistribution.getLotteryTaxDue())).divide(dec100);
-		managementDue = drawReceipts.multiply(new BigDecimal(receiptsDistribution.getManagementDue())).divide(dec100);
+		winnersDue = drawReceipts.multiply(new CDecimal(receiptsDistribution.getWinnersDue())).divide(dec100);
+		treasuryDue = drawReceipts.multiply(new CDecimal(receiptsDistribution.getTreasuryDue())).divide(dec100);
+		lotteryTaxDue = drawReceipts.multiply(new CDecimal(receiptsDistribution.getLotteryTaxDue())).divide(dec100);
+		managementDue = drawReceipts.multiply(new CDecimal(receiptsDistribution.getManagementDue())).divide(dec100);
 		
 		//normalize receipts:
 		treasuryDue = treasuryDue.add(drawReceipts.subtract(winnersDue.add(treasuryDue.add(lotteryTaxDue.add(managementDue)))));
@@ -40,10 +39,10 @@ public class ReceiptsDistributionResult
 		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
 	}
 	
-	public void addToTreasuryDue(BigDecimal dec){ treasuryDue = treasuryDue.add(dec); }
+	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); }
 	
-	public BigDecimal getWinnersDue(){ return winnersDue; }
-	public BigDecimal getTreasuryDue(){ return treasuryDue; }
-	public BigDecimal getLotteryTaxDue(){ return lotteryTaxDue; }
-	public BigDecimal getManagementDue(){ return managementDue; }
+	public CDecimal getWinnersDue(){ return winnersDue; }
+	public CDecimal getTreasuryDue(){ return treasuryDue; }
+	public CDecimal getLotteryTaxDue(){ return lotteryTaxDue; }
+	public CDecimal getManagementDue(){ return managementDue; }
 }

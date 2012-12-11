@@ -6,7 +6,7 @@ import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +33,7 @@ public abstract class Draw
 	protected Date planedEvaluationDate;	
 
 	//temporary variables used for evaluation:
-	protected BigDecimal prizePotential = new BigDecimal(0);//temp
+	protected CDecimal prizePotential = new CDecimal(0);//temp
 	protected List<SingleTip> allSingleTips = new LinkedList<SingleTip>();//temp
 
 	protected DrawEvaluationResult drawEvaluationResult;
@@ -76,8 +76,8 @@ public abstract class Draw
 		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
-			BigDecimal currentValue = tip.getTipTicket().getRemainingValue();
-			BigDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
+			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
+			CDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 			tip.getTipTicket().setRemainingValue(updatedValue);
 
 			if(updatedValue.signum() == -1)

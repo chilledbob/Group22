@@ -1,6 +1,6 @@
 package gmb.model.tip.tipticket.single;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
 import gmb.model.tip.tip.single.SingleTip;
@@ -24,5 +24,5 @@ public class TotoSTT extends SingleTT
 	
 	public int addTip(SingleTip tip){ return super.addTip(tip, TotoTip.class); }
 	
-	public BigDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getTotoSTTPrice(); }
+	public CDecimal getPrice(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getTotoSTTPrice(); }
 }

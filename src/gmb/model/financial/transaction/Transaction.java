@@ -3,7 +3,7 @@ import gmb.model.Lottery;
 import gmb.model.member.Customer;
 
 import java.util.Date;
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 
 import org.joda.time.DateTime;
 
@@ -20,14 +20,14 @@ public abstract class Transaction
 	@OneToOne 
     @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier")
 	protected Customer affectedCustomer; 
-	protected BigDecimal amount;
+	protected CDecimal amount;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date date;
 	
 	@Deprecated
 	protected Transaction(){}
 	
-	public Transaction(Customer affectedCustomer, BigDecimal amount)
+	public Transaction(Customer affectedCustomer, CDecimal amount)
 	{
 		this.affectedCustomer = affectedCustomer;
 		this.amount = amount;
@@ -35,7 +35,7 @@ public abstract class Transaction
 	}
 	
 	public Customer getAffectedCustomer(){ return affectedCustomer; }
-	public BigDecimal getAmount(){ return amount; }
+	public CDecimal getAmount(){ return amount; }
 	public DateTime getDate(){ return new DateTime(date); }
 	
 	public void init()

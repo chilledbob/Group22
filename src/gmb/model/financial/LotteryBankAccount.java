@@ -10,7 +10,7 @@ import gmb.model.member.Customer;
 import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.request.data.RealAccountDataUpdateRequest;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class LotteryBankAccount
 	
 	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
-	protected BigDecimal credit;	
+	protected CDecimal credit;	
 	@OneToOne (cascade=CascadeType.ALL)
     @JoinColumn(name="realAccountDataId") 
 	protected RealAccountData realAccountData;
@@ -54,7 +54,7 @@ public class LotteryBankAccount
 	
 	public LotteryBankAccount(RealAccountData realAccountData)
 	{
-		credit = new BigDecimal(0);
+		credit = new CDecimal(0);
 		this.realAccountData = realAccountData;
 		ticketPurchases = new LinkedList<TicketPurchase>();
 		externalTransactions = new LinkedList<ExternalTransaction>();
@@ -98,7 +98,7 @@ public class LotteryBankAccount
 	 * @param note
 	 * @param updatedData
 	 */
-	public boolean sendExternalTransactionRequest(BigDecimal amount, String note)
+	public boolean sendExternalTransactionRequest(CDecimal amount, String note)
 	{
 		if(amount.signum() != -1 || owner.hasEnoughMoneyToPurchase(amount))
 		{
@@ -114,7 +114,7 @@ public class LotteryBankAccount
 	}
 	
 	public void setOwner(Customer owner){ this.owner = owner; }
-	public void setCredit(BigDecimal credit){ this.credit = credit; }
+	public void setCredit(CDecimal credit){ this.credit = credit; }
 	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; }	
 	
 	//delegate method:
@@ -136,7 +136,7 @@ public class LotteryBankAccount
 	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); }
 	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccountDataUpdateRequests.add(request); }
 	
-	public BigDecimal getCredit(){ return credit; }
+	public CDecimal getCredit(){ return credit; }
 	public Customer getOwner(){ return owner; }
 	public RealAccountData getRealAccountData(){ return realAccountData; }
 	

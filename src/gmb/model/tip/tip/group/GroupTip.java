@@ -8,7 +8,7 @@ import gmb.model.tip.draw.container.DrawEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
-import java.math.BigDecimal;
+import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,9 +57,9 @@ public abstract class GroupTip extends Tip
 	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
 	 * @return
 	 */
-	public BigDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
+	public CDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
 	{	
-		BigDecimal overallAmount = new BigDecimal(0);
+		CDecimal overallAmount = new CDecimal(0);
 
 		if(allWinnings.size() > 0)
 		{
@@ -70,7 +70,7 @@ public abstract class GroupTip extends Tip
 				highestPrizeCategory = Math.min(highestPrizeCategory, winnings.getPrizeCategory());
 			}
 
-			BigDecimal averageAmount = overallAmount.divide(new BigDecimal(allWinnings.size()));
+			CDecimal averageAmount = overallAmount.divide(new CDecimal(allWinnings.size()));
 
 			//send average winnings to all contributers:
 			for(SingleTip tip : tips)
@@ -81,7 +81,7 @@ public abstract class GroupTip extends Tip
 				drawEvaluationResult.addWinnings(newWinnings);
 			}
 
-			overallWinnings = new Winnings(this, averageAmount.multiply(new BigDecimal(allWinnings.size())), highestPrizeCategory);
+			overallWinnings = new Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
 			averageWinnings = new Winnings(this, averageAmount, -1);
 		}
 		
