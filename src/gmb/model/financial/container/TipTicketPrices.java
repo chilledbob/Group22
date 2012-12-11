@@ -1,6 +1,7 @@
 package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
+import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class TipTicketPrices 
+public class TipTicketPrices extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketPricesId;
@@ -24,10 +25,10 @@ public class TipTicketPrices
 	
 	protected CDecimal weeklyLottoPTTPrice_Month = new CDecimal("2.75");
 	protected CDecimal dailyLottoPTTPrice_Month = new CDecimal("1.75");
-	protected CDecimal weeklyLottoPTTPrice_HalfYear = new CDecimal(14);
-	protected CDecimal dailyLottoPTTPrice_HalfYear = new CDecimal(9);
-	protected CDecimal weeklyLottoPTTPrice_Year = new CDecimal(25);
-	protected CDecimal dailyLottoPTTPrice_Year = new CDecimal(15);
+	protected CDecimal weeklyLottoPTTPrice_HalfYear = new CDecimal("14");
+	protected CDecimal dailyLottoPTTPrice_HalfYear = new CDecimal("9");
+	protected CDecimal weeklyLottoPTTPrice_Year = new CDecimal("25");
+	protected CDecimal dailyLottoPTTPrice_Year = new CDecimal("15");
 	
 	public TipTicketPrices(){}
 	
@@ -48,16 +49,16 @@ public class TipTicketPrices
 		this.dailyLottoPTTPrice_Year = dailyLottoPTTPrice_Year;
 	}
 	
-	public void setWeeklyLottoSTTPrice(CDecimal price){ this.weeklyLottoSTTPrice = price; }
-	public void setTotoSTTPrice(CDecimal price){ this.totoSTTPrice = price; }
-	public void setDailyLottoSTTPrice(CDecimal price){ this.dailyLottoSTTPrice = price; }
+	public void setWeeklyLottoSTTPrice(CDecimal price){ this.weeklyLottoSTTPrice = price; DB_UPDATE(); }
+	public void setTotoSTTPrice(CDecimal price){ this.totoSTTPrice = price; DB_UPDATE(); }
+	public void setDailyLottoSTTPrice(CDecimal price){ this.dailyLottoSTTPrice = price; DB_UPDATE(); }
 	
-	public void setWeeklyLottoPTTPrice_Month(CDecimal price){ this.weeklyLottoPTTPrice_Month = price; }
-	public void setDailyLottoPTTPrice_Month(CDecimal price){ this.dailyLottoPTTPrice_Month = price; }
-	public void setWeeklyLottoPTTPrice_HalfYear(CDecimal price){ this.weeklyLottoPTTPrice_HalfYear = price; }
-	public void setDailyLottoPTTPrice_HalfYear(CDecimal price){ this.dailyLottoPTTPrice_HalfYear = price; }
-	public void setWeeklyLottoPTTPrice_Year(CDecimal price){ this.weeklyLottoPTTPrice_Year = price; }
-	public void setDailyLottoPTTPrice_Year(CDecimal price){ this.dailyLottoPTTPrice_Year = price; }
+	public void setWeeklyLottoPTTPrice_Month(CDecimal price){ this.weeklyLottoPTTPrice_Month = price; DB_UPDATE(); }
+	public void setDailyLottoPTTPrice_Month(CDecimal price){ this.dailyLottoPTTPrice_Month = price; DB_UPDATE(); }
+	public void setWeeklyLottoPTTPrice_HalfYear(CDecimal price){ this.weeklyLottoPTTPrice_HalfYear = price; DB_UPDATE(); }
+	public void setDailyLottoPTTPrice_HalfYear(CDecimal price){ this.dailyLottoPTTPrice_HalfYear = price; DB_UPDATE(); }
+	public void setWeeklyLottoPTTPrice_Year(CDecimal price){ this.weeklyLottoPTTPrice_Year = price; DB_UPDATE(); }
+	public void setDailyLottoPTTPrice_Year(CDecimal price){ this.dailyLottoPTTPrice_Year = price; DB_UPDATE(); }
 	
 	public CDecimal getWeeklyLottoSTTPrice(){ return weeklyLottoSTTPrice; }
 	public CDecimal getTotoSTTPrice(){ return totoSTTPrice; }

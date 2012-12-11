@@ -29,6 +29,8 @@ public class GroupAdminRightsTransfereOffering extends GroupRequest
 			else
 			{
 				state = 3;
+				DB_UPDATE();
+				
 				return 2;
 			}
 		else

@@ -1,6 +1,7 @@
 package gmb.model.financial;
 
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.financial.container.RealAccountData;
 import gmb.model.financial.transaction.ExternalTransaction;
 import gmb.model.financial.transaction.TicketPurchase;
@@ -27,7 +28,7 @@ import javax.persistence.CascadeType;
 
 
 @Entity
-public class LotteryBankAccount 
+public class LotteryBankAccount extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int lotteryBankAccountId;
@@ -72,6 +73,7 @@ public class LotteryBankAccount
 	{
 		credit = credit.add(transaction.getAmount());
 		this.addTransaction(transaction);
+		DB_UPDATE(); 
 	}
 	
 	/**
@@ -87,6 +89,8 @@ public class LotteryBankAccount
 		Lottery.getInstance().getFinancialManagement().addRealAccountDataUpdateRequest(request);
 
 		realAccountDataUpdateRequests.add(request);
+		
+		DB_UPDATE();
 	}
 	
 	/**
@@ -107,15 +111,17 @@ public class LotteryBankAccount
 			externalTransactionRequests.add(request);
 			Lottery.getInstance().getFinancialManagement().addExternalTransactionRequest(request);
 			
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else
 			return false;
 	}
 	
-	public void setOwner(Customer owner){ this.owner = owner; }
-	public void setCredit(CDecimal credit){ this.credit = credit; }
-	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; }	
+	public void setOwner(Customer owner){ this.owner = owner; DB_UPDATE(); }
+	public void setCredit(CDecimal credit){ this.credit = credit; DB_UPDATE(); }
+	public void setRealAccountData(RealAccountData realAccountData){ this.realAccountData = realAccountData; DB_UPDATE(); }	
 	
 	//delegate method:
 	public void addTransaction(Transaction transaction)
@@ -129,12 +135,12 @@ public class LotteryBankAccount
 			addTransaction((ExternalTransaction)transaction);		
 	}
 	
-	public void addTransaction(TicketPurchase purchase){ ticketPurchases.add(purchase); }
-	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
-	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
+	public void addTransaction(TicketPurchase purchase){ ticketPurchases.add(purchase); DB_UPDATE(); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); DB_UPDATE(); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction); DB_UPDATE(); }
 	
-	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); }
-	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccountDataUpdateRequests.add(request); }
+	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); DB_UPDATE(); }
+	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccountDataUpdateRequests.add(request); DB_UPDATE(); }
 	
 	public CDecimal getCredit(){ return credit; }
 	public Customer getOwner(){ return owner; }

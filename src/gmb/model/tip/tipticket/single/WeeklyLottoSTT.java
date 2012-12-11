@@ -13,9 +13,6 @@ import javax.persistence.Entity;
 @Entity
 public class WeeklyLottoSTT extends SingleTT  implements WeeklyLottoTT
 {
-//	@Deprecated
-//	protected WeeklyLottoSTT(){}
-
 	public WeeklyLottoSTT()
 	{
 		super();

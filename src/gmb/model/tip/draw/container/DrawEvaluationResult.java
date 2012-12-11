@@ -1,6 +1,8 @@
 package gmb.model.tip.draw.container;
 
 import gmb.model.CDecimal;
+import gmb.model.PersiObject;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +22,7 @@ import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.tip.single.SingleTip;
 
 @Entity
-public class DrawEvaluationResult 
+public class DrawEvaluationResult extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int drawEvaluationResultId;
@@ -65,7 +67,7 @@ public class DrawEvaluationResult
 		return copy;
 	}
 	
-	public void createJackpotImageBefore(CDecimal[] jackpot){ jackpotImageBefore = (CDecimal[])createDeepCopy(jackpot); }
+	public void createJackpotImageBefore(CDecimal[] jackpot){ jackpotImageBefore = (CDecimal[])createDeepCopy(jackpot); DB_UPDATE(); }
 	
 	public void createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)
 	{ 
@@ -77,33 +79,44 @@ public class DrawEvaluationResult
 		
 		for(int i = 0; i < undistributedPrizes.length; ++i)
 			undistributedPrizes[i] = jackpotImageAfter[i].subtract(jackpotImageBefore[i]);
+		
+		DB_UPDATE(); 
 	}
 	
 	public CDecimal initReceiptsDistributionResult(CDecimal drawReceipts)
 	{
 		receiptsDistributionResult = new ReceiptsDistributionResult(drawReceipts);
+		DB_UPDATE(); 
+		
 		return receiptsDistributionResult.getWinnersDue();
 	}
 	
 	public void copyCategoryPrizePotential(CDecimal[] perCategoryPrizePotential)
 	{ 
 		this.perCategoryPrizePotential = (CDecimal[])createDeepCopy(perCategoryPrizePotential); 
+		DB_UPDATE(); 
 	}
 	
 	public void copyCategoryWinningsUnMerged(CDecimal[] perCategoryPrizePotentialUnMerged)
 	{ 
 		this.perCategoryWinningsUnMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialUnMerged); 
+		DB_UPDATE(); 
 	}
 	
 	public void copyCategoryWinningsMerged(CDecimal[] perCategoryPrizePotentialMerged)
 	{ 
 		this.perCategoryWinningsMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialMerged); 
+		DB_UPDATE(); 
 	}
 	
 	public void copyTipsInCategory(Object[] tipsInCategory)
 	{ 
 		this.tipsInCategory = createDeepCopy(tipsInCategory); 
+		DB_UPDATE(); 
 	}
+	
+	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); DB_UPDATE(); }
+	public void setReceiptsDistributionResult(ReceiptsDistributionResult receiptsDistributionResult){ this.receiptsDistributionResult = receiptsDistributionResult; DB_UPDATE(); }
 	
 	public CDecimal[] getCategoryPrizePotential(){ return perCategoryPrizePotential; }
 	public CDecimal[] getCategoryWinningsUnMerged(){ return perCategoryWinningsUnMerged; }
@@ -112,9 +125,6 @@ public class DrawEvaluationResult
 	
 	@SuppressWarnings("unchecked")
 	public LinkedList<SingleTip> getTipsInCategory(int categoryID){ return (LinkedList<SingleTip>)(tipsInCategory[categoryID]); }
-	
-	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); }
-	public void setReceiptsDistributionResult(ReceiptsDistributionResult receiptsDistributionResult){ this.receiptsDistributionResult = receiptsDistributionResult; }
 	
 	public ReceiptsDistributionResult getReceiptsDistributionResult(){ return receiptsDistributionResult; }
 	public List<Winnings> getWinnings(){ return winnings; }

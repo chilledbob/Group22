@@ -1,5 +1,6 @@
 package gmb.model.financial.container;
 
+import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
@@ -9,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class ReceiptsDistribution 
+public class ReceiptsDistribution extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int receiptsDistributionId;
@@ -32,10 +33,10 @@ public class ReceiptsDistribution
 		this.managementDue = managementDue;
 	}
 	
-	public void setWinnersDue(int winnersDue){ this.winnersDue = winnersDue; }
-	public void setTreasuryDue(int treasuryDue){ this.treasuryDue = treasuryDue; }
-	public void setLotteryTaxDue(int lotteryTaxDue){ this.lotteryTaxDue = lotteryTaxDue; }
-	public void setManagementDue(int managementDue){ this.managementDue = managementDue; }	
+	public void setWinnersDue(int winnersDue){ this.winnersDue = winnersDue; DB_UPDATE(); }
+	public void setTreasuryDue(int treasuryDue){ this.treasuryDue = treasuryDue; DB_UPDATE(); }
+	public void setLotteryTaxDue(int lotteryTaxDue){ this.lotteryTaxDue = lotteryTaxDue; DB_UPDATE(); }
+	public void setManagementDue(int managementDue){ this.managementDue = managementDue; DB_UPDATE(); }	
 	
 	public int getWinnersDue(){ return winnersDue; }
 	public int getTreasuryDue(){ return treasuryDue; }

@@ -1,6 +1,5 @@
 package gmb.model.tip.draw;
 
-import gmb.model.Lottery;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
@@ -48,6 +47,8 @@ public class DailyLottoDraw extends Draw
 //		Lottery.getInstance().getFinancialManagement().setDailyLottoPrize(prizePotential);//everything for the lottery!
 //		//////////////////////////
 
+		DB_UPDATE(); 
+		
 		return false;
 	}
 
@@ -55,10 +56,12 @@ public class DailyLottoDraw extends Draw
 	{ 
 		assert result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.setResult(int[] result)!";
 		this.result = result; 
+		
+		DB_UPDATE(); 
 	}
 
-	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
-	public boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
+	protected boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
+	protected boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
 
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, DailyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, DailyLottoGroupTip.class); }
@@ -84,7 +87,7 @@ public class DailyLottoDraw extends Draw
 
 		if(result == 0)
 		{
-			singleTips.add(tip);
+			this.addTip(tip);
 
 			return 0;
 		}

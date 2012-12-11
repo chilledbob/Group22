@@ -65,6 +65,7 @@ public abstract class Request extends Notification
 	{ 
 		state = 0; 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate(); 
+		DB_UPDATE();
 	}
 
 	public boolean withdraw()
@@ -74,6 +75,7 @@ public abstract class Request extends Notification
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 1; 
+		DB_UPDATE();
 		return true;
 	}
 
@@ -84,6 +86,7 @@ public abstract class Request extends Notification
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 2; 
+		DB_UPDATE();
 		return 0;
 	}
 
@@ -94,6 +97,7 @@ public abstract class Request extends Notification
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 3; 
+		DB_UPDATE();
 		return true;
 	}
 	

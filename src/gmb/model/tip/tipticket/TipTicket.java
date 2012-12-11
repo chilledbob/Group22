@@ -1,6 +1,8 @@
 package gmb.model.tip.tipticket;
 
 import gmb.model.CDecimal;
+import gmb.model.PersiObject;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -23,7 +25,7 @@ import gmb.model.tip.tipticket.type.GenericTT;
 import org.joda.time.DateTime;
 
 @Entity
-public abstract class TipTicket  implements GenericTT
+public abstract class TipTicket extends PersiObject implements GenericTT
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
@@ -52,21 +54,23 @@ public abstract class TipTicket  implements GenericTT
 	 * @return
 	 */
 	public boolean purchase(Customer customer)
-	{
-		this.owner = customer;
-		purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
-		paidPurchasePrice = getPrice();
-		
+	{	
 		if(customer.hasEnoughMoneyToPurchase(this.getPrice()))
 		{
+			this.owner = customer;
+			purchaseDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+			paidPurchasePrice = getPrice();			
+
 			paidPurchasePrice = this.getPrice();//we need this information since the price can change over time
 			remainingValue = paidPurchasePrice;
-			
+
 			perTicketPaidPurchasePrice = this.getPricePerTicket();
-			
+
 			new TicketPurchase(this);
 			this.addToOwner();
-			
+
+			DB_UPDATE(); 
+
 			return true;
 		}
 		else
@@ -87,7 +91,7 @@ public abstract class TipTicket  implements GenericTT
 	
 	public int getDrawTypeAsInt(){ return drawType; }
 	
-	public void setRemainingValue(CDecimal remainingValue){ this.remainingValue = remainingValue; }
+	public void setRemainingValue(CDecimal remainingValue){ this.remainingValue = remainingValue; DB_UPDATE(); }
 	
 	public CDecimal getRemainingValue(){ return remainingValue; }
 	public CDecimal getPerTicketPaidPurchasePrice(){ return perTicketPaidPurchasePrice; }

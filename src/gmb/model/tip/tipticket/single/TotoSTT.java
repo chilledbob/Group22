@@ -11,9 +11,6 @@ import javax.persistence.Entity;
 @Entity
 public class TotoSTT extends SingleTT 
 {
-//	@Deprecated
-//	protected TotoSTT(){}
-
 	public TotoSTT()
 	{
 		super();

@@ -1,4 +1,5 @@
 package gmb.model.financial;
+import gmb.model.PersiObject;
 import gmb.model.financial.container.Jackpots;
 import gmb.model.financial.container.LotteryCredits;
 import gmb.model.financial.container.PrizeCategories;
@@ -22,7 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
 
 @Entity
-public class FinancialManagement 
+public class FinancialManagement extends PersiObject
 {	
 	@Id
 	protected int finacialManagementId = 1;
@@ -72,12 +73,12 @@ public class FinancialManagement
 		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
 	}
 	
-	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request); }
-	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request); }
+	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request);  DB_UPDATE(); }
+	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request);  DB_UPDATE(); }
 
-	public void addTransaction(TicketPurchase transaction){ ticketPurchases.add(transaction); }
-	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction); }
-	public void addTransaction(Winnings transaction){ winnings.add(transaction); }
+	public void addTransaction(TicketPurchase transaction){ ticketPurchases.add(transaction);  DB_UPDATE(); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction);  DB_UPDATE(); }
+	public void addTransaction(Winnings transaction){ winnings.add(transaction);  DB_UPDATE(); }
 	
 	//delegate method:
 	public void addTransaction(Transaction transaction)
@@ -91,12 +92,12 @@ public class FinancialManagement
 			addTransaction((ExternalTransaction)transaction);		
 	}
 	
-	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; }
-	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; }
+	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; DB_UPDATE(); }
+	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; DB_UPDATE(); }
 	
-	public void setLotteryCredits(LotteryCredits lotteryCredits){ this.lotteryCredits = lotteryCredits; }
-	public void setJackpots(Jackpots jackpots){ this.jackpots = jackpots; }
-	public void setPrizeCategories(PrizeCategories prizeCategories){ this.prizeCategories = prizeCategories; }
+	public void setLotteryCredits(LotteryCredits lotteryCredits){ this.lotteryCredits = lotteryCredits; DB_UPDATE(); }
+	public void setJackpots(Jackpots jackpots){ this.jackpots = jackpots; DB_UPDATE(); }
+	public void setPrizeCategories(PrizeCategories prizeCategories){ this.prizeCategories = prizeCategories; DB_UPDATE(); }
 	
 	public LotteryCredits getLotteryCredits(){ return lotteryCredits; }
 	public Jackpots getJackpots(){ return jackpots; }

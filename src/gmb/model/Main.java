@@ -32,10 +32,10 @@ public class Main {
 	//Testdata
 
 	private void initMm(){
-		MemberManagement mm = new MemberManagement(1);
+		MemberManagement mm = new MemberManagement();
 		//FinancialManagement fm = new FinancialManagement();
 		GmbPersistenceManager.add(new TipManagement());
-		GmbPersistenceManager.add(new GroupManagement(1));
+		GmbPersistenceManager.add(new GroupManagement());
 		GmbPersistenceManager.add(mm);
 	}
 

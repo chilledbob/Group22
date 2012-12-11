@@ -82,17 +82,18 @@ public class Customer extends Member
 	
 //	public void setLotteryBankAccount(LotteryBankAccount lotteryBankAccount){ this.lotteryBankAccount = lotteryBankAccount; }
 	
-	public void addTipTicket(WeeklyLottoSTT ticket){ weeklyLottoSTTs.add(ticket); }
-	public void addTipTicket(DailyLottoSTT ticket){ dailyLottoSTTs.add(ticket); }
-	public void addTipTicket(TotoSTT ticket){ totoSTTs.add(ticket); }
-	public void addTipTicket(WeeklyLottoPTT ticket){ weeklyLottoPTTs.add(ticket); }
-	public void addTipTicket(DailyLottoPTT ticket){ dailyLottoPTTs.add(ticket); }
+	public void addTipTicket(WeeklyLottoSTT ticket){ weeklyLottoSTTs.add(ticket); DB_UPDATE(); }
+	public void addTipTicket(DailyLottoSTT ticket){ dailyLottoSTTs.add(ticket); DB_UPDATE(); }
+	public void addTipTicket(TotoSTT ticket){ totoSTTs.add(ticket); DB_UPDATE(); }
+	public void addTipTicket(WeeklyLottoPTT ticket){ weeklyLottoPTTs.add(ticket); DB_UPDATE(); }
+	public void addTipTicket(DailyLottoPTT ticket){ dailyLottoPTTs.add(ticket); DB_UPDATE(); }
 	
-	public void addGroupInvitation(GroupInvitation invitation){ groupInvitations.add(invitation); }
-	public void addGroupAdminRightsTransfereOffering(GroupAdminRightsTransfereOffering offering){ groupAdminRightsTransfereOfferings.add(offering); }
-	public void addGroupMembershipApplication(GroupMembershipApplication application){ groupMembershipApplications.add(application); }
-	public void addGroup(Group group){ groups.add(group); }
+	public void addGroupInvitation(GroupInvitation invitation){ groupInvitations.add(invitation); DB_UPDATE(); }
+	public void addGroupAdminRightsTransfereOffering(GroupAdminRightsTransfereOffering offering){ groupAdminRightsTransfereOfferings.add(offering); DB_UPDATE(); }
+	public void addGroupMembershipApplication(GroupMembershipApplication application){ groupMembershipApplications.add(application); DB_UPDATE(); }
+	public void addGroup(Group group){ groups.add(group); DB_UPDATE(); }
 
+	public boolean removeGroup(Group group){ boolean result = groups.remove(group); DB_UPDATE(); return result;}
 
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
  	public List<Group> getGroups(){ return groups; }

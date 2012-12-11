@@ -2,6 +2,7 @@ package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class ReceiptsDistributionResult 
+public class ReceiptsDistributionResult extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int receiptsDistributionResultId;
@@ -39,7 +40,7 @@ public class ReceiptsDistributionResult
 		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
 	}
 	
-	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); }
+	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); DB_UPDATE(); }
 	
 	public CDecimal getWinnersDue(){ return winnersDue; }
 	public CDecimal getTreasuryDue(){ return treasuryDue; }

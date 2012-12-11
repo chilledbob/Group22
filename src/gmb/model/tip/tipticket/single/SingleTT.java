@@ -25,6 +25,8 @@ public abstract class SingleTT extends TipTicket
 		if(this.tip.equals(tip))
 		{
 			this.tip = null;
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else
@@ -40,6 +42,8 @@ public abstract class SingleTT extends TipTicket
 		if(tip != null)
 		{
 			this.tip = tip;
+			DB_UPDATE(); 
+			
 			return 0;
 		}
 		else

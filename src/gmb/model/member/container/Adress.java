@@ -1,12 +1,14 @@
 package gmb.model.member.container;
 
+import gmb.model.PersiObject;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Adress 
+public class Adress extends PersiObject
 {	
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int adrId;
@@ -32,8 +34,8 @@ public class Adress
 	public String getPostCode(){ return postCode; }
 	public String getTownName(){ return townName; }
 	
-//	public void setStreetName(String newSName){ streetName = newSName; }
-//	public void setHouseNumber(String newHNumber){ houseNumber = newHNumber; }
-//	public void setPostCode(String newPCode){ postCode = newPCode; }
-//	public void setTownName(String newTName){ townName = newTName; }
+//	public void setStreetName(String newSName){ streetName = newSName; DB_UPDATE(); }
+//	public void setHouseNumber(String newHNumber){ houseNumber = newHNumber; DB_UPDATE(); }
+//	public void setPostCode(String newPCode){ postCode = newPCode; DB_UPDATE(); }
+//	public void setTownName(String newTName){ townName = newTName; DB_UPDATE(); }
 }

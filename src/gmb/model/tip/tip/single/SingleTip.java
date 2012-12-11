@@ -70,6 +70,8 @@ public abstract class SingleTip extends Tip
 		if(draw.isTimeLeftUntilEvaluation())
 		{
 			this.tip = tip;
+			DB_UPDATE(); 
+			
 			return true;
 		}
 		else

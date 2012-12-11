@@ -40,6 +40,6 @@ public class WeeklyLottoTip extends SingleTip
 	 * (or in test cases)
 	 * @param superNumber
 	 */
-	public void setSuperNumber(int superNumber){ this.superNumber = superNumber; }	
+	public void setSuperNumber(int superNumber){ this.superNumber = superNumber; DB_UPDATE(); }	
 	public int getSuperNumber(){ return superNumber; }
 }

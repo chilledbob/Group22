@@ -1,6 +1,7 @@
 package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
+import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class PrizeCategories 
+public class PrizeCategories extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int jackpotsId;
@@ -48,9 +49,9 @@ public class PrizeCategories
 		totoCategories[0] = new CDecimal(0);
 	}
 	
-	public void setWeeklyLottoCategories(CDecimal[] weeklyLottoCategories){ this.weeklyLottoCategories = weeklyLottoCategories; }
-	public void setDailyLottoCategories(CDecimal[] dailyLottoCategories){ this.dailyLottoCategories = dailyLottoCategories; }
-	public void setTotoCategories(CDecimal[] totoCategories){ this.totoCategories = totoCategories; }	
+	public void setWeeklyLottoCategories(CDecimal[] weeklyLottoCategories){ this.weeklyLottoCategories = weeklyLottoCategories; DB_UPDATE(); }
+	public void setDailyLottoCategories(CDecimal[] dailyLottoCategories){ this.dailyLottoCategories = dailyLottoCategories; DB_UPDATE(); }
+	public void setTotoCategories(CDecimal[] totoCategories){ this.totoCategories = totoCategories; DB_UPDATE(); }	
 	
 	public CDecimal[] getWeeklyLottoCategories(){ return weeklyLottoCategories; }
 	public CDecimal[] getDailyLottoCategories(){ return dailyLottoCategories; }

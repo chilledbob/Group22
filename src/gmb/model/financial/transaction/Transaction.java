@@ -1,5 +1,6 @@
 package gmb.model.financial.transaction;
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.member.Customer;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ import javax.persistence.TemporalType;
 
 
 @Embeddable
-public abstract class Transaction 
+public abstract class Transaction extends PersiObject
 {
 	@OneToOne 
     @JoinColumn(name="userIdentifier", referencedColumnName="userIdentifier")

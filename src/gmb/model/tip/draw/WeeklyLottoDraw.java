@@ -24,8 +24,8 @@ public class WeeklyLottoDraw extends Draw
 {
 	protected int[] result = null;
 
-	protected static final CDecimal dec100 = new CDecimal("100");
-	protected static final CDecimal dec2 = new CDecimal("2");
+	protected static final CDecimal dec100 = new CDecimal(100);
+	protected static final CDecimal dec2 = new CDecimal(2);
 
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -224,6 +224,8 @@ public class WeeklyLottoDraw extends Draw
 		//normalize overall amount of processed money:
 //		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(mustOverallAmount.subtract(actualOverallAmount));
 
+		DB_UPDATE(); 
+		
 		return true;
 	}
 
@@ -231,10 +233,11 @@ public class WeeklyLottoDraw extends Draw
 	{ 
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.setResult(int[] result)! (6 + extraNumber + superNumber)";
 		this.result = result; 
+		DB_UPDATE(); 
 	}
 
-	public boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
-	public boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
+	protected boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
+	protected boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
 
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, WeeklyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, WeeklyLottoGroupTip.class); }
@@ -273,7 +276,7 @@ public class WeeklyLottoDraw extends Draw
 
 		if(result == 0)
 		{
-			singleTips.add(tip);
+			this.addTip(tip);
 
 			return 0;
 		}

@@ -6,7 +6,9 @@ import java.math.RoundingMode;
 import java.util.LinkedList;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
+import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.container.RealAccountData;
@@ -88,8 +90,8 @@ public class Test01
 		//=========================================================================================================================//USER TESTs NO 1
 		
 		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());
-		MemberManagement memberManagement = new MemberManagement(0);
-		GroupManagement groupManagement = new GroupManagement(0);
+		MemberManagement memberManagement = new MemberManagement();
+		GroupManagement groupManagement = new GroupManagement();
 		TipManagement tipManagement = new TipManagement();
 
 		Lottery.Instanciate(financialManagement, memberManagement, groupManagement, tipManagement);
@@ -441,20 +443,13 @@ public class Test01
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getLotteryTaxDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getManagementDue());
 		
-//		System.out.println((new CDecimal(9)).divide(new CDecimal(2)).toString());
-//		System.out.println((new CDecimal("0.75")).multiply(new CDecimal(12)).divide(new CDecimal(2)).toString());
-//		System.out.println((new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75"))
-//					   .add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).toString());
-//		
-//		System.out.println((new CDecimal("0.75")).add(new CDecimal("0.75")).toString());
-//		System.out.println((new CDecimal("0.75")).add(new CDecimal("0.75")).add(new CDecimal("0.75")).toString());
-//		System.out.println((new CDecimal("1.50")).add(new CDecimal("0.75")).toString());
-//		System.out.println((new CDecimal("2.26")).toString());
-//		System.out.println((new CDecimal("112.26")).toString());
-//		CDecimal t = new CDecimal(0.14);
-//		t = t.setScale(2, RoundingMode.HALF_UP);
-//		t = t.com
-//		System.out.println(t.toString());
+
+class TestClass extends PersiObject
+{
+	public TestClass(){ }
+}
+
+(new TestClass()).DB_ADD();
 		
 //		int findNoti = 0;
 //		for(Notification notification : cus1.getNotifications())
