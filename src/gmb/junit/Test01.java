@@ -3,6 +3,7 @@ package gmb.junit;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 
 import gmb.model.Lottery;
@@ -439,6 +440,10 @@ public class Test01
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getTreasuryDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getLotteryTaxDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getManagementDue());
+		
+		BigDecimal t = new BigDecimal(0.14);
+		t = t.setScale(2, RoundingMode.HALF_UP);
+		System.out.println(t.toString());
 		
 //		int findNoti = 0;
 //		for(Notification notification : cus1.getNotifications())
