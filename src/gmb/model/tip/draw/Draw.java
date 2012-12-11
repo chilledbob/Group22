@@ -53,7 +53,7 @@ public abstract class Draw
 
 	public boolean evaluate()
 	{
-		drawEvaluationResult = new DrawEvaluationResult();
+		drawEvaluationResult = new DrawEvaluationResult(1);
 
 		evaluated = true;
 

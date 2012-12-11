@@ -15,6 +15,7 @@ import gmb.model.request.data.RealAccountDataUpdateRequest;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -27,16 +28,16 @@ public class FinancialManagement
 	@Id
 	protected int finacialManagementId = 1;
 	
-	@OneToOne(mappedBy="financialManagementId")
+	@OneToOne(cascade = CascadeType.ALL)
 	LotteryCredits lotteryCredits = new LotteryCredits();
 	
-	@OneToOne(mappedBy="financialManagementId")
+	@OneToOne(cascade = CascadeType.ALL)
 	Jackpots jackpots = new Jackpots();
 	
-	@OneToOne(mappedBy="financialManagementId")
+	@OneToOne(cascade = CascadeType.ALL)
 	PrizeCategories prizeCategories = new PrizeCategories();
 	
-	@OneToOne(mappedBy="financialManagementId")
+	@OneToOne(cascade = CascadeType.ALL)
 	protected TipTicketPrices tipTicketPrices;
 	
 	@OneToOne(mappedBy="financialManagementId")

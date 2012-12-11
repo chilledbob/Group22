@@ -18,10 +18,10 @@ public class GroupManagement
 	@OneToMany(mappedBy="groupManagementId")
 	protected List<Group> groups;
 	
-	@Deprecated
-	protected GroupManagement(){}
+	//@Deprecated
+	//protected GroupManagement(){}
 	
-	public GroupManagement(int dummy)
+	public GroupManagement()
 	{
  		groups = new LinkedList<Group>();
 	}

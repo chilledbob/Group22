@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,7 @@ import javax.persistence.ManyToOne;
 import org.joda.time.DateTime;
 
 @Entity
+@Table(name="GroupTable")
 public class Group 
 {
 	@Id
@@ -236,6 +238,7 @@ public class Group
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
+	public String getName(){ return name; };
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
 	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }
