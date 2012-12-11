@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +29,8 @@ public class DrawEvaluationResult extends PersiObject
 	protected int drawEvaluationResultId;
 	
 	ReceiptsDistributionResult receiptsDistributionResult = null;
-	List<Winnings> winnings = new LinkedList<Winnings>();
+	@ElementCollection
+	List<Winnings> winnings;
 	
 	@Temporal(value = TemporalType.TIMESTAMP)
 	Date evaluationDate;
@@ -42,9 +44,13 @@ public class DrawEvaluationResult extends PersiObject
 	CDecimal[] perCategoryWinningsMerged = new CDecimal[8];
 	Object[] tipsInCategory = new Object[8];
 	
-	public DrawEvaluationResult()
+	@Deprecated
+	protected DrawEvaluationResult(){}
+	
+	public DrawEvaluationResult(int dummy)
 	{
 		evaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
+		winnings = new LinkedList<Winnings>();
 	}
 	
 	protected CDecimal[] createDeepCopy(CDecimal[] array)

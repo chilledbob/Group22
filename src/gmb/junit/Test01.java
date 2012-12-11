@@ -444,12 +444,12 @@ public class Test01
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getManagementDue());
 		
 
-class TestClass extends PersiObject
-{
-	public TestClass(){ }
-}
-
-(new TestClass()).DB_ADD();
+//class TestClass extends PersiObject
+//{
+//	public TestClass(){ }
+//}
+//
+//(new TestClass()).DB_ADD();
 		
 //		int findNoti = 0;
 //		for(Notification notification : cus1.getNotifications())

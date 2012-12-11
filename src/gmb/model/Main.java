@@ -6,6 +6,7 @@ import org.salespointframework.core.shop.Shop;
 
 import gmb.model.Lottery;
 import gmb.model.tip.*;
+import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.financial.*;
 import gmb.model.financial.container.RealAccountData;
 import gmb.model.group.GroupManagement;
@@ -14,6 +15,7 @@ import gmb.model.member.Customer;
 import gmb.model.member.MemberManagement;
 import gmb.model.member.container.Adress;
 import gmb.model.member.container.MemberData;
+import gmb.model.group.Group;
 
 @Component
 public class Main {
@@ -22,7 +24,7 @@ public class Main {
 	 * alles initialisieren
 	 */
 	public Main(){
-		Shop.INSTANCE.initializePersistent();
+		//Shop.INSTANCE.initializePersistent();
 		initMm();
 		GmbPersistenceManager.initLottery();
 		initData();
@@ -33,9 +35,9 @@ public class Main {
 
 	private void initMm(){
 		MemberManagement mm = new MemberManagement();
-		//FinancialManagement fm = new FinancialManagement();
+		FinancialManagement fm = new FinancialManagement(null,null);
 		GmbPersistenceManager.add(new TipManagement());
-		GmbPersistenceManager.add(new GroupManagement());
+		GmbPersistenceManager.add(fm);
 		GmbPersistenceManager.add(mm);
 	}
 
@@ -49,7 +51,7 @@ public class Main {
 
 		GmbPersistenceManager.add(a);
 		GmbPersistenceManager.add(md);
-		GmbPersistenceManager.add(user);
+		//GmbPersistenceManager.add(user);
 		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 
 		RealAccountData rad = new RealAccountData("0010","0815");
@@ -65,6 +67,10 @@ public class Main {
 		Adress ab = new Adress("ee","f","g","h");
 		DateTime db = new DateTime();
 		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
+		
+		WeeklyLottoSTT wl = new WeeklyLottoSTT();
+		
+		GmbPersistenceManager.add(wl);
 
 		GmbPersistenceManager.add(aa);
 		GmbPersistenceManager.add(mda);
@@ -73,11 +79,11 @@ public class Main {
 
 		c.sendDataUpdateRequest(mdb, "");
 		GmbPersistenceManager.update(c);
-		//Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
-		//GmbPersistenceManager.add(g);
-		//GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
+		Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
+		GmbPersistenceManager.add(g);
+		GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
 		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
-
+		//GmbPersistenceManager.update(Lottery.getInstance().getFinancialManagement());
 
 		}
 	
