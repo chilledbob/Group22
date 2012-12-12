@@ -27,20 +27,22 @@ public class DrawEvaluationResult extends PersiObject
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int drawEvaluationResultId;
 	
-	ReceiptsDistributionResult receiptsDistributionResult = null;
-	List<Winnings> winnings = new LinkedList<Winnings>();
+	protected ReceiptsDistributionResult receiptsDistributionResult = null;
+	protected List<Winnings> winnings = new LinkedList<Winnings>();
 	
 	@Temporal(value = TemporalType.TIMESTAMP)
-	Date evaluationDate;
+	protected Date evaluationDate;
 	
-	CDecimal[] jackpotImageBefore;
-	CDecimal[] jackpotImageAfter;
-	CDecimal[] undistributedPrizes;
+	protected CDecimal[] jackpotImageBefore;
+	protected CDecimal[] jackpotImageAfter;
+	protected CDecimal[] undistributedPrizes;
 	
-	CDecimal[] perCategoryPrizePotential = new CDecimal[8];
-	CDecimal[] perCategoryWinningsUnMerged = new CDecimal[8];
-	CDecimal[] perCategoryWinningsMerged = new CDecimal[8];
-	Object[] tipsInCategory = new Object[8];
+	protected CDecimal[] perCategoryPrizePotential = new CDecimal[8];
+	protected CDecimal[] perCategoryWinningsUnMerged = new CDecimal[8];
+	protected CDecimal[] perCategoryWinningsMerged = new CDecimal[8];
+	protected Object[] tipsInCategory = new Object[8];
+	
+	protected CDecimal normalizationAmount;
 	
 	public DrawEvaluationResult()
 	{
@@ -73,7 +75,7 @@ public class DrawEvaluationResult extends PersiObject
 	{ 
 		assert jackpotImageBefore.length == jackpot.length : "Jackpot image length does not fit in DrawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)";
 		
-		jackpotImageAfter = (CDecimal[])createDeepCopy(jackpot); 
+		jackpotImageAfter = createDeepCopy(jackpot); 
 		
 		undistributedPrizes = new CDecimal[jackpotImageAfter.length]; 
 		
@@ -93,19 +95,19 @@ public class DrawEvaluationResult extends PersiObject
 	
 	public void copyCategoryPrizePotential(CDecimal[] perCategoryPrizePotential)
 	{ 
-		this.perCategoryPrizePotential = (CDecimal[])createDeepCopy(perCategoryPrizePotential); 
+		this.perCategoryPrizePotential = createDeepCopy(perCategoryPrizePotential); 
 		DB_UPDATE(); 
 	}
 	
 	public void copyCategoryWinningsUnMerged(CDecimal[] perCategoryPrizePotentialUnMerged)
 	{ 
-		this.perCategoryWinningsUnMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialUnMerged); 
+		this.perCategoryWinningsUnMerged = createDeepCopy(perCategoryPrizePotentialUnMerged); 
 		DB_UPDATE(); 
 	}
 	
 	public void copyCategoryWinningsMerged(CDecimal[] perCategoryPrizePotentialMerged)
 	{ 
-		this.perCategoryWinningsMerged = (CDecimal[])createDeepCopy(perCategoryPrizePotentialMerged); 
+		this.perCategoryWinningsMerged = createDeepCopy(perCategoryPrizePotentialMerged); 
 		DB_UPDATE(); 
 	}
 	
@@ -116,7 +118,13 @@ public class DrawEvaluationResult extends PersiObject
 	}
 	
 	public void addWinnings(Winnings winnings){ this.winnings.add(winnings); DB_UPDATE(); }
+	public void addWinnings(LinkedList<Winnings> winnings){ this.winnings.addAll(winnings); DB_UPDATE(); }
+	
 	public void setReceiptsDistributionResult(ReceiptsDistributionResult receiptsDistributionResult){ this.receiptsDistributionResult = receiptsDistributionResult; DB_UPDATE(); }
+	
+	public void setNormalizationAmount(CDecimal normalizationAmount){ this.normalizationAmount = normalizationAmount; DB_UPDATE(); }
+	
+	public CDecimal getNormalizationAmount(){ return normalizationAmount; }
 	
 	public CDecimal[] getCategoryPrizePotential(){ return perCategoryPrizePotential; }
 	public CDecimal[] getCategoryWinningsUnMerged(){ return perCategoryWinningsUnMerged; }

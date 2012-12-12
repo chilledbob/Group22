@@ -25,24 +25,25 @@ public abstract class SingleTip extends Tip
 	@Deprecated
 	protected SingleTip(){}
 	
-	public SingleTip(GenericTT tipTicket, GroupTip groupTip, int[] tip) 
+	public SingleTip(GenericTT tipTicket, GroupTip groupTip) 
 	{
 		super(groupTip.getDraw());
 		
-		this.tip = tip;
 		this.tipTicket = (TipTicket)tipTicket;
 		
 		this.groupTip = groupTip;
 	}
 
-	public SingleTip(GenericTT tipTicket, Draw draw, int[] tip) 
+	public SingleTip(GenericTT tipTicket, Draw draw) 
 	{
 		super(draw);
 		
-		this.tip = tip;
 		this.tipTicket = (TipTicket)tipTicket;
 	}
 	
+	/**
+	 * 
+	 */
 	public int withdraw()
 	{
 		int result = super.withdraw();//draw already evaluated?		
@@ -55,7 +56,7 @@ public abstract class SingleTip extends Tip
 		if(groupTip == null)
 		{
 			draw.removeTip(this);
-			tipTicket.removeTip(this);
+			if(!tipTicket.removeTip(this)) return 2;
 			
 			return 0;
 		}
@@ -65,17 +66,23 @@ public abstract class SingleTip extends Tip
 		}
 	}
 	
-	public boolean setTip(int[] tip)
+	/**
+	 * 0 - successful
+	 *-2 - not enough time left until the planned evaluation of the draw
+	 * @param tip
+	 * @return
+	 */
+	public int setTip(int[] tip)
 	{ 		
 		if(draw.isTimeLeftUntilEvaluation())
 		{
 			this.tip = tip;
 			DB_UPDATE(); 
 			
-			return true;
+			return 0;
 		}
 		else
-		return false;
+		return -2;
 	}
 	
 	public int[] getTip(){ return tip; }

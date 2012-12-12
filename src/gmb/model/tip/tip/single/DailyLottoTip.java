@@ -16,21 +16,17 @@ public class DailyLottoTip extends SingleTip
 	@Deprecated
 	protected DailyLottoTip(){}
 
-	public DailyLottoTip(DailyLottoTT tipTicket, DailyLottoDraw draw, int[] tip)
+	public DailyLottoTip(DailyLottoTT tipTicket, DailyLottoDraw draw)
 	{
-		super(tipTicket, draw, tip);
-
-		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip!";
+		super(tipTicket, draw);
 	}
 	
-	public DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip, int[] tip)
+	public DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip)
 	{
-		super(tipTicket, groupTip, tip);
-
-		assert tip.length == 7 : "Wrong tip length (!=10) given to DailyLottoTip!";
+		super(tipTicket, groupTip);
 	}
 	
-	public boolean setTip(int[] tip)
+	public int setTip(int[] tip)
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
 		

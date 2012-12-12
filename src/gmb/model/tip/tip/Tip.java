@@ -29,7 +29,7 @@ public abstract class Tip extends PersiObject
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date submissionDate;
 	@ManyToOne
-	protected Draw draw;
+	protected Draw draw = null;
 	
 	protected Winnings overallWinnings = null;
 	

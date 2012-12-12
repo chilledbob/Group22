@@ -7,6 +7,7 @@ import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.container.DrawEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
+import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
 import java.util.LinkedList;
@@ -36,9 +37,10 @@ public abstract class GroupTip extends Tip
 	@OneToMany(mappedBy="groupTip")
 	protected List<SingleTip> tips = new LinkedList<SingleTip>();
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="draw_id")
-	private Draw draw;
+//"draw" is already used by Tip
+//	@ManyToOne(fetch=FetchType.LAZY)
+//	@JoinColumn(name="draw_id")
+//	protected Draw draw;
 
 	@Deprecated
 	protected GroupTip(){}
@@ -59,10 +61,10 @@ public abstract class GroupTip extends Tip
 	 */
 	public CDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
 	{	
-		CDecimal overallAmount = new CDecimal(0);
-
 		if(allWinnings.size() > 0)
 		{
+			CDecimal overallAmount = new CDecimal(0);
+			
 			int highestPrizeCategory = 8;
 			for(Winnings winnings : allWinnings)
 			{
@@ -83,12 +85,14 @@ public abstract class GroupTip extends Tip
 
 			overallWinnings = new Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
 			averageWinnings = new Winnings(this, averageAmount, -1);
+			
+			DB_UPDATE(); 
+			
+			//return overall amount with error for normalization:
+			return overallWinnings.getAmount();
 		}
-		
-		DB_UPDATE(); 
-		
-		//return overall amount with error for normalization:
-		return overallWinnings.getAmount();
+					
+		return new CDecimal(0);
 	}
 
 	/**
@@ -96,24 +100,24 @@ public abstract class GroupTip extends Tip
 	 * return false if submission failed, otherwise true
 	 * @return
 	 */
-//	public boolean submit()
-//	{	
-//		if(submitted) return true;
-//		if(draw.getEvaluated()) return false;
-//
-//		if(draw.isTimeLeftUntilEvaluation())
-//			if(overallMinimumStake >= currentOverallMinimumStake)
-//			{
-//				draw.addTip(this);
-//				submitted = true;
-//
-//				DB_UPDATE(); 
-//				
-//				return true;
-//			}
-//
-//		return false;
-//	}
+	public boolean submit()
+	{	
+		if(submitted) return true;
+		if(draw.getEvaluated()) return false;
+
+		if(draw.isTimeLeftUntilEvaluation())
+			if(currentOverallMinimumStake >= overallMinimumStake)
+			{
+				draw.addTip(this);
+				submitted = true;
+
+				DB_UPDATE(); 
+				
+				return true;
+			}
+
+		return false;
+	}
 
 	/**
 	 * 'unsubmit' from "draw" if possible
@@ -137,41 +141,61 @@ public abstract class GroupTip extends Tip
 			return false;
 	}
 
+
 	/**
-	 * add tips if the amount matches the "minimumStake" criteria, 
-	 * increment "currentOverallMinimumStake" by the amount of tips 
+	 * submit tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * increment "currentOverallMinimumStake" by the amount of newly created tips 
 	 * @param tips
 	 * @return
 	 */
-	public boolean addTips(LinkedList<SingleTip> tips)
+	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
-		if(tips.size() == 0) return false;
-		if(!draw.isTimeLeftUntilEvaluation()) return false;
+		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
+		if(!(this.draw.isTimeLeftUntilEvaluation())) return -2;
+	
+		int stake = getGroupMemberStake((tickets.getFirst()).getOwner());
 
-		int stake = getGroupMemberStake(tips.getFirst().getTipTicket().getOwner());
-
-		if(tips.size() >= minimumStake || stake != 0)
+		if(tickets.size() >= minimumStake || stake != 0)
 		{
 			currentOverallMinimumStake += tips.size();
-			this.tips.addAll(tips);
+					
+			for(int i = 0; i < tickets.size(); ++i)
+			{
+				SingleTip tip = createSingleTip(tickets.get(i));
 
+				int result1 = tip.setTip(tipTips.get(i));
+				if(result1 != 0) return result1;	
+
+				int result2 = tickets.get(i).addTip(tip);
+				if(result2 != 0) return result2;		
+				
+				this.tips.add(tip);
+			}
+				
 			DB_UPDATE(); 
 			
-			return true;
+			return 0;
 		}
 		else
-			return false;
+			return 6;
 	}
-
+	
+	protected abstract SingleTip createSingleTip(TipTicket ticket);
+	
 	/**
 	 * removes a single tip if possible, can lead to annulation of the submission
+	 * return code:
+	 * 0 - successful
+	 *-1 - not enough time left until evaluation
+	 * 1 - the associated group member would fall under his minimumStake limit
+	 * 2 - can not 'unsubmit' the group tip and therefore not remove tip
 	 * @param tip
 	 * @return
 	 */
 	public int removeSingleTip(SingleTip tip)
 	{
 		if(!tips.contains(tip)) return 3;		
-		if(!draw.isTimeLeftUntilEvaluation()) return -1;
+		if(submitted && !draw.isTimeLeftUntilEvaluation()) return -1;
 
 		if(getGroupMemberStake(tip.getTipTicket().getOwner()) > minimumStake)
 		{	
@@ -194,7 +218,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * removes all tips associated with "groupMember" if possible, can lead to annulation of the submission
+	 * removes all tips associated with "groupMember" if possible, can lead to annulment of the submission
 	 * @param groupMember
 	 * @return
 	 */
@@ -210,17 +234,8 @@ public abstract class GroupTip extends Tip
 				return 2;			
 		}
 
-		//create list of tips which belong to the group member:
-		LinkedList<SingleTip> memberTips = new LinkedList<SingleTip>();
-
-		for(SingleTip tip : tips)
-		{
-			if(tip.getTipTicket().getOwner().equals(groupMember))
-				memberTips.add(tip);
-		}
-
 		//remove tips from group tip:
-		for(SingleTip tip : memberTips)
+		for(SingleTip tip : getAllTipsOfGroupMember(groupMember))
 			tips.remove(tip);
 
 		currentOverallMinimumStake -= stake;
@@ -230,6 +245,19 @@ public abstract class GroupTip extends Tip
 		return 0;
 	}
 
+	public LinkedList<SingleTip> getAllTipsOfGroupMember(Customer groupMember)
+	{
+		LinkedList<SingleTip> memberTips = new LinkedList<SingleTip>();
+
+		for(SingleTip tip : tips)
+		{
+			if(tip.getTipTicket().getOwner() == groupMember)
+				memberTips.add(tip);
+		}
+		
+		return memberTips;
+	}
+	
 	/**
 	 * returns the count of tips associated with the "groupMember" 
 	 * @param groupMember
@@ -271,7 +299,7 @@ public abstract class GroupTip extends Tip
 	public void addWinnings(Winnings winnings){ this.allWinnings.add(winnings); DB_UPDATE(); }
 
 	public Winnings getAverageWinnings(){ return averageWinnings; }	
-	public List<Winnings> getAllWinnings(){ return allWinnings; }
+	public LinkedList<Winnings> getAllWinnings(){ return (LinkedList<Winnings>)allWinnings; }
 
 	public int getCurrentOverallMinimumStake(){ return currentOverallMinimumStake; }
 
@@ -279,8 +307,8 @@ public abstract class GroupTip extends Tip
 	public int getOverallMinimumStake(){ return overallMinimumStake; }
 
 	public Group getGroup(){ return group; }	
-	public boolean getSubmitted(){ return submitted; }
-	public List<SingleTip> getTips(){ return tips; }
+	public boolean isSubmitted(){ return submitted; }
+	public LinkedList<SingleTip> getTips(){ return (LinkedList<SingleTip>)tips; }
 
 	public Customer getOwner(){ return group.getGroupAdmin(); }
 }

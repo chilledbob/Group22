@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
 public class DailyLottoDraw extends Draw 
 {
 	protected int[] result;
-	
+
 	@ManyToOne
 	protected TipManagement tipManagementId;
 
@@ -33,22 +33,22 @@ public class DailyLottoDraw extends Draw
 	{
 		super.evaluate();//set actualEvaluationDate and init prizePotential 
 
-//		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getDailyLottoPrize());
-//		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
-//
-//		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
-//		for(SingleTip tip : singleTips)
-//			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-//
-//		for(GroupTip groupTip : groupTips)
-//			for(SingleTip tip :  groupTip.getTips())
-//				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-//
-//		Lottery.getInstance().getFinancialManagement().setDailyLottoPrize(prizePotential);//everything for the lottery!
-//		//////////////////////////
+		//		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getDailyLottoPrize());
+		//		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
+		//
+		//		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
+		//		for(SingleTip tip : singleTips)
+		//			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+		//
+		//		for(GroupTip groupTip : groupTips)
+		//			for(SingleTip tip :  groupTip.getTips())
+		//				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
+		//
+		//		Lottery.getInstance().getFinancialManagement().setDailyLottoPrize(prizePotential);//everything for the lottery!
+		//		//////////////////////////
 
 		DB_UPDATE(); 
-		
+
 		return false;
 	}
 
@@ -56,12 +56,12 @@ public class DailyLottoDraw extends Draw
 	{ 
 		assert result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.setResult(int[] result)!";
 		this.result = result; 
-		
+
 		DB_UPDATE(); 
 	}
 
-	protected boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
-	protected boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
+	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
+	public boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
 
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, DailyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, DailyLottoGroupTip.class); }
@@ -80,21 +80,16 @@ public class DailyLottoDraw extends Draw
 	{
 		assert ticket instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoTT!";
 
-	if(this.isTimeLeftUntilEvaluation())
-	{
-		DailyLottoTip tip = new DailyLottoTip((DailyLottoTT)ticket, this, tipTip);
-		int result = ticket.addTip(tip);
+		DailyLottoTip tip = new DailyLottoTip((DailyLottoTT)ticket, this);
 
-		if(result == 0)
-		{
-			this.addTip(tip);
+		int result1 = tip.setTip(tipTip);
+		if(result1 != 0) return result1;	
 
-			return 0;
-		}
-		else 
-			return result;
-	}
-	else
-		return -2;
+		int result2 = ticket.addTip(tip);
+		if(result2 != 0) return result2;
+
+		this.addTip(tip);
+
+		return 0;	
 	}
 }

@@ -118,14 +118,14 @@ public abstract class Draw extends PersiObject
 	 * @param tip
 	 * @return
 	 */
-	protected abstract boolean addTip(SingleTip tip);
+	public abstract boolean addTip(SingleTip tip);
 
 	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	protected abstract boolean addTip(GroupTip tip);
+	public abstract boolean addTip(GroupTip tip);
 
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
