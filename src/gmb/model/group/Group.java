@@ -313,6 +313,12 @@ public class Group extends PersiObject
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
+	/**
+	 * show the groupname
+	 * important for view output
+	 * @return
+	 */
+	public String getName(){ return name;}
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
 	public DateTime getFoundingDate(){ return new DateTime(foundingDate); }

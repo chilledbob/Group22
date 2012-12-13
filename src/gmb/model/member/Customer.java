@@ -60,7 +60,11 @@ public class Customer extends Member
 		this.addCapability(new Capability("customer"));
 		
 		this.lotteryBankAccount = lotteryBankAccount;
-		lotteryBankAccount.setOwner(this);
+		
+		//currently not possible
+		//membermanager must be updated first
+		//better do this separately
+		//lotteryBankAccount.setOwner(this);
 		
 		groups = new LinkedList<Group>();
 		
