@@ -26,10 +26,10 @@ public class DailyLottoTip extends SingleTip
 		super(tipTicket, groupTip);
 	}
 	
-	public int setTip(int[] tip)
+	public int validateTip(int[] tip)
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
 		
-		return super.setTip(tip);
+		return super.validateTip(tip);
 	}
 }

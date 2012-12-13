@@ -2,5 +2,5 @@ package gmb.model.request;
 
 public enum RequestState 
 {
-	UNHANDELED, WITHDRAWN, ACCEPTED, REFUSED
+	UNHANDLED, WITHDRAWN, ACCEPTED, REFUSED
 }

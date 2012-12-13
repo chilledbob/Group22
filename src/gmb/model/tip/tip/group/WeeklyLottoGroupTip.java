@@ -24,7 +24,8 @@ public class WeeklyLottoGroupTip extends GroupTip
 	}
 	
 	/**
-	 * tries to withdraw the "GroupTip" and removes all existing references in the system.
+	 * [intended for direct usage by controller]
+	 * Tries to delete this "GroupTip" with all implications.
 	 * returns 0 if successful.
 	 */
 	public int withdraw()
@@ -39,6 +40,9 @@ public class WeeklyLottoGroupTip extends GroupTip
 	}	
 	
 	/**
+	 * [intended for direct usage by controller]
+	 * Submits tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * increment "currentOverallMinimumStake" by the amount of newly created tips. 
 	 * Return Code:
 	 * 0 - successful
 	 *-2 - not enough time left until the planned evaluation of the draw

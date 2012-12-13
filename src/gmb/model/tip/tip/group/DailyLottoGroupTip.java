@@ -38,6 +38,13 @@ public class DailyLottoGroupTip extends GroupTip
 			return 4;
 	}
 	
+	/**
+	 * [intended for direct usage by controller]
+	 * Submits tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * increment "currentOverallMinimumStake" by the amount of newly created tips. 
+	 * @param tips
+	 * @return
+	 */
 	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
 		if(tickets.size() == 0 || tipTips.size() == 0) return 5;

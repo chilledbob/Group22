@@ -1,5 +1,6 @@
 package gmb.model.tip.draw;
 
+import gmb.model.Lottery;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
@@ -27,6 +28,7 @@ public class DailyLottoDraw extends Draw
 	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 
 	public boolean evaluate() 
@@ -52,6 +54,12 @@ public class DailyLottoDraw extends Draw
 		return false;
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Sets the drawn results for this draw type. 
+	 * Has to be done before evaluation.
+	 * @param result
+	 */
 	public void setResult(int[] result)
 	{ 
 		assert result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.setResult(int[] result)!";
@@ -60,6 +68,16 @@ public class DailyLottoDraw extends Draw
 		DB_UPDATE(); 
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Returns true if there is still time to submit tips, otherwise false.
+	 * @return
+	 */
+	public boolean isTimeLeftUntilEvaluationForSubmission()
+	{
+		return isTimeLeftUntilEvaluationForChanges();
+	}
+	
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
 	public boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
 
@@ -82,13 +100,13 @@ public class DailyLottoDraw extends Draw
 
 		DailyLottoTip tip = new DailyLottoTip((DailyLottoTT)ticket, this);
 
+		if(!this.addTip(tip)) return -2;
+		
 		int result1 = tip.setTip(tipTip);
 		if(result1 != 0) return result1;	
 
 		int result2 = ticket.addTip(tip);
 		if(result2 != 0) return result2;
-
-		this.addTip(tip);
 
 		return 0;	
 	}

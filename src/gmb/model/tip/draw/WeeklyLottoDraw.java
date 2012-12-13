@@ -14,6 +14,7 @@ import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import javax.persistence.*;
 
@@ -34,8 +35,14 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean evaluate() 
 	{
@@ -246,6 +253,12 @@ public class WeeklyLottoDraw extends Draw
 		return true;
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Sets the drawn results for this draw type. 
+	 * Has to be done before evaluation.
+	 * @param result
+	 */
 	public void setResult(int[] result)
 	{ 
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.setResult(int[] result)! (6 + extraNumber + superNumber)";
@@ -253,6 +266,20 @@ public class WeeklyLottoDraw extends Draw
 		DB_UPDATE(); 
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Returns true if there is still time to submit tips, otherwise false.
+	 * @return
+	 */
+	public boolean isTimeLeftUntilEvaluationForSubmission()
+	{
+		DateTime peDate = new DateTime(planedEvaluationDate);
+		DateTime endDate = new DateTime(peDate.getYear(), peDate.getMonthOfYear(), peDate.getDayOfMonth(), 0, 0, 0);//reset hours, minutes, seconds
+		
+		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), endDate);
+		return duration.isLongerThan(new Duration(0));	
+	}
+	
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
 	public boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
 
@@ -262,6 +289,7 @@ public class WeeklyLottoDraw extends Draw
 	public int[] getResult(){ return result; }
 
 	/**
+	 * [intended for direct usage by controller]
 	 * Return Code:
 	 * 0 - successful
 	 *-2 - not enough time left until the planned evaluation of the draw
@@ -277,13 +305,13 @@ public class WeeklyLottoDraw extends Draw
 
 		WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoTT)ticket, this);
 
+		if(!this.addTip(tip)) return -2;
+		
 		int result1 = tip.setTip(tipTip);
 		if(result1 != 0) return result1;	
 
 		int result2 = ticket.addTip(tip);
 		if(result2 != 0) return result2;
-
-		this.addTip(tip);
 
 		return 0;			
 

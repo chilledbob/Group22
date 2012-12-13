@@ -23,14 +23,14 @@ public class WeeklyLottoTip extends SingleTip
 	{
 		super(tipTicket, groupTip);
 	}
-
+	
 	/**
 	 * return code:
 	 * 3 - a tipped number is smaller than 1 oder greater than 49
 	 * 4 - the same number has been tipped multiple times
 	 */
-	public int setTip(int[] tip)
-	{ 
+	public int validateTip(int[] tip)
+	{
 		assert tip.length == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
 		
 		for(int i = 0; i < 6; ++i)
@@ -43,7 +43,7 @@ public class WeeklyLottoTip extends SingleTip
 				return 4;
 		}
 		
-		return super.setTip(tip);
+		return super.validateTip(tip);
 	}
 	
 	/**

@@ -30,6 +30,7 @@ public class ExternalTransactionRequest extends Request
 	}
 	
 	/**
+	 * [intended for direct usage by controller]
 	 * Return code:
 	 * 0 - successful
 	 * 1 - failed because state was not "UNHANDLED"

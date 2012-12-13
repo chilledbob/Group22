@@ -24,8 +24,10 @@ public class TotoTip extends SingleTip
 		assert ((TotoEvaluation)groupTip.getDraw()).getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
 	}
 	
-//	public int setTip(int[] tip)
-//	{ 			
-//		return super.setTip(tip);
+//	public int validateTip(int[] tip)
+//	{ 
+//		assert tip.length == 10 : "Wrong tip length (!=10) given to TotoTip.setTip(int[] tip)!";
+//		
+//		return super.validateTip(tip);
 //	}
 }

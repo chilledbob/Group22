@@ -42,14 +42,17 @@ public abstract class SingleTip extends Tip
 	}
 	
 	/**
-	 * 
+	 * [intended for direct usage by controller]
+	 * Tries to withdraw the tip with all implications which also depend
+	 * on whether the "SingleTip" is associated with a "GroupTip".
+	 * @return
 	 */
 	public int withdraw()
 	{
 		int result = super.withdraw();//draw already evaluated?		
 		if(result != 0) return result;
 		
-		if(!draw.isTimeLeftUntilEvaluation()) return -1;
+		if(!draw.isTimeLeftUntilEvaluationForSubmission()) return -1;
 		
 		tipTicket.removeTip(this);
 		
@@ -74,15 +77,21 @@ public abstract class SingleTip extends Tip
 	 */
 	public int setTip(int[] tip)
 	{ 		
-		if(draw.isTimeLeftUntilEvaluation())
-		{
-			this.tip = tip;
-			DB_UPDATE(); 
-			
+		int result = this.validateTip(tip);
+		if(result != 0) return result;
+		
+		this.tip = tip;
+		DB_UPDATE();
+		
+		return 0;
+	}
+	
+	public int validateTip(int[] tip)
+	{
+		if(draw.isTimeLeftUntilEvaluationForChanges())
 			return 0;
-		}
 		else
-		return -2;
+			return -2;
 	}
 	
 	public int[] getTip(){ return tip; }

@@ -1,5 +1,6 @@
 package gmb.model.tip.draw;
 
+import gmb.model.Lottery;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameResult;
 import gmb.model.tip.tip.group.GroupTip;
@@ -31,6 +32,7 @@ public class TotoEvaluation extends Draw
 	{
 		super(planedEvaluationDate);
 		this.results = results;
+		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 	
 	public boolean evaluate() 
@@ -57,6 +59,16 @@ public class TotoEvaluation extends Draw
 	}
 	
 	public void setResult(FootballGameResult[] results){ this.results = results; DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * Returns true if there is still time to submit tips, otherwise false.
+	 * @return
+	 */
+	public boolean isTimeLeftUntilEvaluationForSubmission()
+	{
+		return isTimeLeftUntilEvaluationForChanges();
+	}
 	
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, TotoTip.class); }
 	public boolean addTip(GroupTip tip){ return super.addTip(tip, TotoGroupTip.class); }
@@ -93,13 +105,13 @@ public class TotoEvaluation extends Draw
 		
 		TotoTip tip = new TotoTip((TotoSTT)ticket, this);
 
+		if(!this.addTip(tip)) return -2;
+		
 		int result1 = tip.setTip(tipTip);
 		if(result1 != 0) return result1;	
 
 		int result2 = ticket.addTip(tip);
 		if(result2 != 0) return result2;
-
-		this.addTip(tip);
 
 		return 0;	
 	}

@@ -503,17 +503,27 @@ public class Test01
 		//=========================================================================================================================//SHORTLY BEFORE EVALUATION
 	
 		Lottery.getInstance().getTimer().addDays(7);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]	
-		Lottery.getInstance().getTimer().addMinutes(-4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
+//		Lottery.getInstance().getTimer().addMinutes(-4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		Lottery.getInstance().getTimer().addMinutes(-140);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+
+//		DateTime peDate = Lottery.getInstance().getTimer().getDateTime();
+//		DateTime endDate = new DateTime(peDate.getYear(), peDate.getMonthOfYear(), peDate.getDayOfMonth(), 0, 0, 0);//reset hours, minutes, seconds
+//		System.out.println(endDate.toString());
+//		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), endDate);
+//
+//		System.out.println(duration.toString());
+//		System.out.println(draw1.getPlanedEvaluationDate().toString());
+//		assertEquals(false, duration.isLongerThan(new Duration(0)));
+//		assertEquals(false, draw1.isTimeLeftUntilEvaluationForSubmission());
 		assertEquals(false, gwtip1.unsubmit());
-		
+
 		//cus4:
-		int rcode3 = draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6});
+		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}));
 		
-		assertEquals(-2, rcode3);
-		
-		printCurrentTimeToConsol("Another customer tried to submit but was too late.");//<------------------------------------------------------------------<TIMELINE UPDATE>
-		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't been 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		Lottery.getInstance().getTimer().addMinutes(145);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
 		//=========================================================================================================================//WEEKLYDRAW EVALUATION
 		

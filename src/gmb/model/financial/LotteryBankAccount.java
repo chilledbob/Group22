@@ -77,6 +77,7 @@ public class LotteryBankAccount extends PersiObject
 	}
 	
 	/**
+	 * [intended for direct usage by controller]
 	 * Creates a "DataUpdateRequest" based on "updatedData" 
 	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
 	 * @param note
@@ -94,6 +95,7 @@ public class LotteryBankAccount extends PersiObject
 	}
 	
 	/**
+	 * [intended for direct usage by controller]
 	 * Creates an "ExternalTransactionRequest" based on "transaction" 
 	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
 	 * Returns false if the "transaction" is invalid which is the case when the customer tries

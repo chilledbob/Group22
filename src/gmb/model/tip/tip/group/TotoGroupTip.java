@@ -26,8 +26,9 @@ public class TotoGroupTip extends GroupTip
 	}
 	
 	/**
-	 * tries to withdraw the "GroupTip" and removes all existing references in the system.
-	 * returns 0 if successful.
+	 * [intended for direct usage by controller]
+	 * Tries to delete this "GroupTip" with all implications.
+	 * Returns 0 if successful.
 	 */
 	public int withdraw()
 	{

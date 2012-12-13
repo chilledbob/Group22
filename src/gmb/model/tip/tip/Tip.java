@@ -45,6 +45,11 @@ public abstract class Tip extends PersiObject
 	
 	public Draw getDraw(){ return draw; }
 		
+	/**
+	 * [intended for direct usage by controller]
+	 * Tries to withdraw the tip with all implications.
+	 * @return
+	 */
 	public int withdraw()
 	{
 		if(draw.getEvaluated())

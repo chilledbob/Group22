@@ -35,7 +35,7 @@ public abstract class PermaTT extends TipTicket
 	}
 
 	/**
-	 * checks whether the ticket's duration has expired by now
+	 * Checks whether the ticket's duration has expired by now.
 	 * @return
 	 */
 	public boolean isExpired()

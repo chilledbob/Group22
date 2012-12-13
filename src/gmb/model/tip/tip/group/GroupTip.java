@@ -96,6 +96,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * submit "groupTip" to "draw" if all criteria were met
 	 * return false if submission failed, otherwise true
 	 * @return
@@ -105,7 +106,7 @@ public abstract class GroupTip extends Tip
 		if(submitted) return true;
 		if(draw.getEvaluated()) return false;
 
-		if(draw.isTimeLeftUntilEvaluation())
+		if(draw.isTimeLeftUntilEvaluationForSubmission())
 			if(currentOverallMinimumStake >= overallMinimumStake)
 			{
 				draw.addTip(this);
@@ -120,6 +121,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * 'unsubmit' from "draw" if possible
 	 * @return
 	 */
@@ -128,7 +130,7 @@ public abstract class GroupTip extends Tip
 		if(!submitted) return true;
 		if(draw.getEvaluated()) return false;
 
-		if(draw.isTimeLeftUntilEvaluation())
+		if(draw.isTimeLeftUntilEvaluationForSubmission())
 		{
 			draw.removeTip(this);
 			submitted = false;
@@ -143,15 +145,16 @@ public abstract class GroupTip extends Tip
 
 
 	/**
-	 * submit tickets and tips if the amount matches the "minimumStake" criteria, 
-	 * increment "currentOverallMinimumStake" by the amount of newly created tips 
+	 * [intended for direct usage by controller]
+	 * Submit tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * increment "currentOverallMinimumStake" by the amount of newly created tips. 
 	 * @param tips
 	 * @return
 	 */
 	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
 		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
-		if(!(this.draw.isTimeLeftUntilEvaluation())) return -2;
+		if(!(this.draw.isTimeLeftUntilEvaluationForSubmission())) return -2;
 	
 		int stake = getGroupMemberStake((tickets.getFirst()).getOwner());
 
@@ -195,7 +198,7 @@ public abstract class GroupTip extends Tip
 	public int removeSingleTip(SingleTip tip)
 	{
 		if(!tips.contains(tip)) return 3;		
-		if(submitted && !draw.isTimeLeftUntilEvaluation()) return -1;
+		if(submitted && !draw.isTimeLeftUntilEvaluationForChanges()) return -1;
 
 		if(getGroupMemberStake(tip.getTipTicket().getOwner()) > minimumStake)
 		{	
@@ -218,13 +221,14 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * removes all tips associated with "groupMember" if possible, can lead to annulment of the submission
+	 * [intended for direct usage by controller]
+	 * Removes all tips associated with "groupMember" if possible, can lead to annulment of the submission.
 	 * @param groupMember
 	 * @return
 	 */
 	public int removeAllTipsOfGroupMember(Customer groupMember)
 	{
-		if(!draw.isTimeLeftUntilEvaluation()) return -1;
+		if(!draw.isTimeLeftUntilEvaluationForChanges()) return -1;
 
 		int stake = getGroupMemberStake(groupMember);
 
@@ -245,6 +249,12 @@ public abstract class GroupTip extends Tip
 		return 0;
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Returns a list of all "SingleTips" the "groupMember" contributed to the "GroupTip".
+	 * @param groupMember
+	 * @return
+	 */
 	public LinkedList<SingleTip> getAllTipsOfGroupMember(Customer groupMember)
 	{
 		LinkedList<SingleTip> memberTips = new LinkedList<SingleTip>();
@@ -259,7 +269,8 @@ public abstract class GroupTip extends Tip
 	}
 	
 	/**
-	 * returns the count of tips associated with the "groupMember" 
+	 * [intended for direct usage by controller]
+	 * Returns the count of all "SingleTips" the "groupMember" contributed to the "GroupTip".
 	 * @param groupMember
 	 * @return
 	 */
@@ -275,6 +286,10 @@ public abstract class GroupTip extends Tip
 		return stake;
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Tries to delete this "GroupTip" with all implications.
+	 */
 	public int withdraw()
 	{
 		int result = super.withdraw();//draw already evaluated?	
