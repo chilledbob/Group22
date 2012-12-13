@@ -79,6 +79,12 @@ public class Customer extends Member
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 	}
 	
+	/**
+	 * [intended for direct usage by controller]
+	 * Returns true if the customer owns enough money.
+	 * @param price
+	 * @return
+	 */
 	public boolean hasEnoughMoneyToPurchase(CDecimal price)
 	{
 		return lotteryBankAccount.getCredit().compareTo(price) > -1;

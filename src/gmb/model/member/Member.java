@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 
+import org.salespointframework.core.user.Capability;
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
@@ -64,7 +65,17 @@ public abstract class Member extends PersistentUser
 	}	
 	
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param notification
+	 */
 	public void addNotification(Notification notification){ this.notifications.add(notification); DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param notification
+	 */
 	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); DB_UPDATE(); }
 
 	public MemberData getMemberData(){ return memberData; }	
@@ -73,12 +84,22 @@ public abstract class Member extends PersistentUser
 	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return memberDataUpdateRequest; }
 	public List<Notification> getNotifications(){ return notifications; }
 
-
-	public void activateAccount(){ activated = true;  DB_UPDATE(); }
+	/**
+	 * [intended for direct usage by controller]
+	 * Sets "activated" to true and adds the capability "activated".
+	 */
+	public void activateAccount(){ activated = true;  this.addCapability(new Capability("activated")); DB_UPDATE(); }
 	
 	/**
-	 * create a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
-	 * and the "Member" himself
+	 * [intended for direct usage by controller]
+	 * Sets "activated" to false and removes the capability "activated".
+	 */
+	public void deactivateAccount(){ activated = false; this.removeCapability(new Capability("activated")); DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * Create a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
+	 * and the "Member" himself.
 	 * @param note
 	 * @param updatedData
 	 */

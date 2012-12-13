@@ -14,25 +14,36 @@ public class WeeklyLottoTip extends SingleTip
 	@Deprecated
 	protected WeeklyLottoTip(){}
 
-	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw, int[] tip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw)
 	{
-		super(tipTicket, draw, tip);
-
-		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoTip!";
+		super(tipTicket, draw);
 	}
 	
-	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip, int[] tip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip)
 	{
-		super(tipTicket, groupTip, tip);
-
-		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoTip!";
+		super(tipTicket, groupTip);
 	}
-
-	public boolean setTip(int[] tip)
-	{ 
+	
+	/**
+	 * return code:
+	 * 3 - a tipped number is smaller than 1 oder greater than 49
+	 * 4 - the same number has been tipped multiple times
+	 */
+	public int validateTip(int[] tip)
+	{
 		assert tip.length == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
 		
-		return super.setTip(tip);
+		for(int i = 0; i < 6; ++i)
+		{
+			if(tip[i] < 1 || tip[i] > 49)
+				return 3;
+			
+			for(int j = 0; j < 6; ++j)
+			if(i != j && tip[i] == tip[j])
+				return 4;
+		}
+		
+		return super.validateTip(tip);
 	}
 	
 	/**

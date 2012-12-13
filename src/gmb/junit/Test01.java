@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.math.RoundingMode;
 import java.util.LinkedList;
+import java.util.List;
 
 import gmb.model.CDecimal;
 import gmb.model.GmbPersistenceManager;
@@ -34,8 +35,10 @@ import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
+import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
+import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.DailyLottoPTT;
 import gmb.model.tip.tipticket.perma.PTTDuration;
 import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
@@ -82,6 +85,7 @@ public class Test01
 	Group group1;
 	Group group2;
 	Group group3;
+	Group group4;
 	
 	@SuppressWarnings("unchecked")
 	@Test
@@ -283,6 +287,41 @@ public class Test01
 		
 		printCurrentTimeToConsol("2 new groups and some applications + invitations.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
 		
+		//=============================================================================================================================================//GROUP TESTs NO 1
+		
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		group3 = new Group("MuffinGroup", cus2, "Omnomnom!");
+		group3.applyForMembership(cus1, "Muffins?! I'm so in!!1");
+		group3.applyForMembership(cus4, "");
+		group3.applyForMembership(cus5, "Yo, man!");
+		
+		//smart cus2(groupadmin) browsing group3's lists:
+		for(GroupMembershipApplication application : group3.getGroupMembershipApplications())
+			application.accept();
+
+		group3.sendGroupAdminRightsTransfereOffering(cus1, "U moar muffin! U admin! :D");
+		cus1.getGroupAdminRightsTransfereOfferings().get(0).accept();
+		
+		assertEquals(true, group3.getGroupAdmin() == cus1);
+		
+		group3.resign(cus5);
+		
+		assertEquals(false, group3.getGroupMembers().contains(cus5));
+		assertEquals(3, cus5.getNotifications().size());
+		assertEquals(0, cus5.getGroupAdminRightsTransfereOfferings().size());
+		
+		//cus1 (groupAdmin) sending invitation:
+		group3.sendGroupInvitation(cus3, "u wanna come in?");
+		
+		//group admin resigns which leads to closure of the group:
+		group3.resign(cus1);
+		
+		assertEquals(true, group3.isClosed());
+		assertEquals(false, group3.getGroupMembers().contains(cus1));
+		assertEquals(false, group3.getGroupMembers().contains(cus4));
+		assertEquals(true, group3.getGroupAdmin() == null);
+		assertEquals(RequestState.WITHDRAWN, ((LinkedList<GroupInvitation>)cus3.getGroupInvitations()).getLast().getState());
 		//=========================================================================================================================//TIPTICKET TESTs NO 1
 		
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
@@ -347,11 +386,25 @@ public class Test01
 		
 		assertEquals(8, Lottery.getInstance().getFinancialManagement().getTicketPurchases().size());
 		
-		WeeklyLottoSTT[] cus3WLSTTs = new WeeklyLottoSTT[10];
-		for(int i = 0; i < 10; ++i)
+		WeeklyLottoSTT[] cus3WLSTTs = new WeeklyLottoSTT[15];
+		for(int i = 0; i < 15; ++i)
 		{
 			cus3WLSTTs[i] = new WeeklyLottoSTT();
 			cus3WLSTTs[i].purchase(cus3);
+		}
+		
+		WeeklyLottoSTT[] cus1WLSTTs = new WeeklyLottoSTT[5];
+		for(int i = 0; i < 5; ++i)
+		{
+			cus1WLSTTs[i] = new WeeklyLottoSTT();
+			cus1WLSTTs[i].purchase(cus1);
+		}
+		
+		WeeklyLottoSTT[] cus2WLSTTs = new WeeklyLottoSTT[5];
+		for(int i = 0; i < 5; ++i)
+		{
+			cus2WLSTTs[i] = new WeeklyLottoSTT();
+			cus2WLSTTs[i].purchase(cus2);
 		}
 		
 		printCurrentTimeToConsol("Some people purchased TipTickets.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
@@ -388,33 +441,109 @@ public class Test01
 		draw1.createAndSubmitSingleTip(cus3WLSTTs[9], new int[]{1,2,3,13,14,15});//3 hits
 		
 		printCurrentTimeToConsol("Two people submitted tips to a WeeklyLottoDraw (draw1).");//<------------------------------------------------------------------<TIMELINE UPDATE>
-		Lottery.getInstance().getTimer().addDays(7);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		Lottery.getInstance().getTimer().addMinutes(-4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		//=========================================================================================================================//GROUPTIP
+
+		//cus1 creates group tip:
+		WeeklyLottoGroupTip gwtip1 = new WeeklyLottoGroupTip(draw1, group1, 2, 5);
 		
+		//cus1 contributes tips:
+		LinkedList<int[]> cus1_tipTips1 = new LinkedList<int[]>();
+		cus1_tipTips1.add(new int[]{1,2,12,13,14,15});
+		cus1_tipTips1.add(new int[]{1,2,12,13,14,15});
+		
+		LinkedList<TipTicket> cus1_tickets1 = new LinkedList<TipTicket>();
+		cus1_tickets1.add(cus1WLSTTs[0]);
+		cus1_tickets1.add(cus1WLSTTs[1]);
+		
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus1_tickets1, cus1_tipTips1));
+		assertEquals(2, gwtip1.getTips().size());
+		assertEquals(2, gwtip1.getGroupMemberStake(cus1));
+		
+		assertEquals(1, gwtip1.getTips().getFirst().withdraw());
+		assertEquals(false, gwtip1.submit());
+		
+		//cus2 contributes tips:
+		LinkedList<int[]> cus2_tipTips1 = new LinkedList<int[]>();
+		cus2_tipTips1.add(new int[]{1,2,12,13,14,15});
+			
+		LinkedList<TipTicket> cus2_tickets1 = new LinkedList<TipTicket>();
+		cus2_tickets1.add(cus2WLSTTs[0]);
+		
+		assertEquals(6, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
+		
+		cus2_tipTips1.add(new int[]{1,2,12,4,7,8});//3 hits + extraNumber
+		cus2_tickets1.add(cus2WLSTTs[1]);
+		
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
+		
+		assertEquals(false, gwtip1.submit());
+		
+		//cus3 contributes tips:
+		LinkedList<int[]> cus3_tipTips1 = new LinkedList<int[]>();
+		cus3_tipTips1.add(new int[]{1,2,12,13,14,15});
+		cus3_tipTips1.add(new int[]{1,2,12,13,14,15});
+		
+		LinkedList<TipTicket> cus3_tickets1 = new LinkedList<TipTicket>();
+		cus3_tickets1.add(cus3WLSTTs[0]);
+		cus3_tickets1.add(cus3WLSTTs[1]);
+		
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));
+		
+		assertEquals(true, gwtip1.submit());
+		assertEquals(true, gwtip1.unsubmit());
+		assertEquals(true, gwtip1.submit());
+		
+		assertEquals(0, gwtip1.removeAllTipsOfGroupMember(cus3));
+		assertEquals(false, gwtip1.submit());
+		
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));//re-submit tips
+		
+		assertEquals(true, gwtip1.submit());//re-submit group tip
+		//=========================================================================================================================//SHORTLY BEFORE EVALUATION
+	
+		Lottery.getInstance().getTimer().addDays(7);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]	
+		
+//		Lottery.getInstance().getTimer().addMinutes(-4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		Lottery.getInstance().getTimer().addMinutes(-140);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+
+//		DateTime peDate = Lottery.getInstance().getTimer().getDateTime();
+//		DateTime endDate = new DateTime(peDate.getYear(), peDate.getMonthOfYear(), peDate.getDayOfMonth(), 0, 0, 0);//reset hours, minutes, seconds
+//		System.out.println(endDate.toString());
+//		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), endDate);
+//
+//		System.out.println(duration.toString());
+//		System.out.println(draw1.getPlanedEvaluationDate().toString());
+//		assertEquals(false, duration.isLongerThan(new Duration(0)));
+//		assertEquals(false, draw1.isTimeLeftUntilEvaluationForSubmission());
+		assertEquals(false, gwtip1.unsubmit());
+
 		//cus4:
-		int rcode3 = draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6});
+		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}));
 		
-		assertEquals(-2, rcode3);
+		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't been 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		Lottery.getInstance().getTimer().addMinutes(145);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		printCurrentTimeToConsol("Another customer tried to submit but was too late.");//<------------------------------------------------------------------<TIMELINE UPDATE>
-		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		//=========================================================================================================================//WEEKLYDRAW EVALUATION
 		
 		draw1.setResult(new int[]{1,2,3,4,5,6,7,8});
 		draw1.evaluate();
 		
+		assertEquals(1, gwtip1.getAllWinnings().size());
+		
+		assertEquals(3, cus1.getBankAccount().getWinnings().size());
+		assertEquals(2, cus2.getBankAccount().getWinnings().size());
+		assertEquals(6, cus3.getBankAccount().getWinnings().size());
+		
 		assertEquals(1, draw1.getDrawEvaluationResult().getTipsInCategory(0).size());
 		assertEquals(1, draw1.getDrawEvaluationResult().getTipsInCategory(2).size());
-		assertEquals(1, draw1.getDrawEvaluationResult().getTipsInCategory(6).size());
+		assertEquals(2, draw1.getDrawEvaluationResult().getTipsInCategory(6).size());
 		assertEquals(2, draw1.getDrawEvaluationResult().getTipsInCategory(7).size());
 		
-		assertEquals(1, cus1.getBankAccount().getWinnings().size());
-		assertEquals(4, cus3.getBankAccount().getWinnings().size());
+		assertEquals(11, Lottery.getInstance().getFinancialManagement().getWinnings().size());
 		
-//		assertEquals(1, cus3.g);
-		
-		assertEquals(5, Lottery.getInstance().getFinancialManagement().getWinnings().size());
-		int[] shouldPrizeCat = new int[]{1,3,7,8,8};
+		int[] shouldPrizeCat = new int[]{1,3,7,8,8,-1,-1,-1,-1,-1,-1};
 		int i1 = 0;
 		for(Winnings winnings : Lottery.getInstance().getFinancialManagement().getWinnings())
 		{
@@ -422,12 +551,44 @@ public class Test01
 			++i1;
 		}
 		
-		Object[] tipsInCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
+		Object[] tipsPerCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
+		for(int i = 0; i < 8; ++i)
+		{
+			System.out.print(((LinkedList<SingleTip>)(tipsPerCategory[i])).size());
+			System.out.print(" ");
+		}
+		
+		System.out.println(" ");
+		
+		//--------------------------------------------------------//check whether lower prize categories have lower/equal per tip winnings:
 		CDecimal[] categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
-			if(((LinkedList<SingleTip>)(tipsInCategory[i])).size() > 0 && ((LinkedList<SingleTip>)(tipsInCategory[i-1])).size() > 0)
+			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0 && ((LinkedList<SingleTip>)(tipsPerCategory[i-1])).size() > 0)
 			assertEquals(true, categoryWinnings[i].compareTo(categoryWinnings[i-1]) < 1);
+		//--------------------------------------------------------//
 		
+		//--------------------------------------------------------//check whether the distribution of the winners due sums up correctly:
+		CDecimal[] jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
+		CDecimal[] jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
+		
+		CDecimal checkWinnersDue = new CDecimal(0);
+		for(int i = 0; i < 8; ++i)
+		{
+			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0)
+			{
+				checkWinnersDue = checkWinnersDue.add(categoryWinnings[i].multiply(new CDecimal(((LinkedList<SingleTip>)(tipsPerCategory[i])).size())));
+			}
+			else
+			{
+				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter[i]);
+			}
+		}
+		checkWinnersDue = checkWinnersDue.add(draw1.getDrawEvaluationResult().getNormalizationAmount());
+
+		assertEquals(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getWinnersDue(), checkWinnersDue);
+		//--------------------------------------------------------//
+		
+		//not auto-testing here, just some stuff for manual checks:
 		for(CDecimal dec : draw1.getDrawEvaluationResult().getCategoryWinningsUnMerged())
 			System.out.print(dec.toString() + " ");
 		
@@ -443,13 +604,18 @@ public class Test01
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getLotteryTaxDue());
 		System.out.println(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getManagementDue());
 		
-
-//class TestClass extends PersiObject
-//{
-//	public TestClass(){ }
-//}
-//
-//(new TestClass()).DB_ADD();
+		for(CDecimal dec : jackpotImageBefore)
+		System.out.print(dec.toString() + " ");
+		
+		System.out.println(" ");
+		
+		for(CDecimal dec : jackpotImageAfter)
+		System.out.print(dec.toString() + " ");
+		
+		System.out.println(" ");
+		
+		System.out.println(draw1.getDrawEvaluationResult().getNormalizationAmount().toString());
+		
 		
 //		int findNoti = 0;
 //		for(Notification notification : cus1.getNotifications())

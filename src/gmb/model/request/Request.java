@@ -39,7 +39,7 @@ public abstract class Request extends Notification
 			else
 				if(this.state == 3){ return RequestState.REFUSED; }
 				else
-					return RequestState.UNHANDELED;
+					return RequestState.UNHANDLED;
 	}
 
 	/**

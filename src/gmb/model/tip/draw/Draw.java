@@ -52,9 +52,14 @@ public abstract class Draw extends PersiObject
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 	}
 
+	/**
+	 * [intended for direct usage by controller]
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return
+	 */
 	public boolean evaluate()
 	{
-		drawEvaluationResult = new DrawEvaluationResult(1);
+		drawEvaluationResult = new DrawEvaluationResult();
 
 		evaluated = true;
 
@@ -94,6 +99,7 @@ public abstract class Draw extends PersiObject
 	}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * Return Code:
 	 * 0 - successful
 	 *-2 - not enough time left until the planned evaluation of the draw
@@ -104,28 +110,36 @@ public abstract class Draw extends PersiObject
 	public abstract int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip);
 
 	/**
-	 * returns true if there is still time to submit or "unsubmit" tips, otherwise false
+	 * [intended for direct usage by controller]
+	 * Returns true if there is still time to change or 'unsubmit' tips, otherwise false.
 	 * @return
 	 */
-	public boolean isTimeLeftUntilEvaluation()
+	public boolean isTimeLeftUntilEvaluationForChanges()
 	{
 		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), new DateTime(planedEvaluationDate));
 		return duration.isLongerThan(Lottery.getInstance().getTipManagement().getTipSubmissionTimeLimit());		
 	}
 
 	/**
+	 * [intended for direct usage by controller]
+	 * Returns true if there is still time to submit tips, otherwise false.
+	 * @return
+	 */
+	public abstract boolean isTimeLeftUntilEvaluationForSubmission();
+	
+	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	protected abstract boolean addTip(SingleTip tip);
+	public abstract boolean addTip(SingleTip tip);
 
 	/**
 	 * submits the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
 	 * @param tip
 	 * @return
 	 */
-	protected abstract boolean addTip(GroupTip tip);
+	public abstract boolean addTip(GroupTip tip);
 
 	/**
 	 * removes the tip if there is enough time left till the planned evaluation and returns true if so, otherwise false
@@ -147,7 +161,7 @@ public abstract class Draw extends PersiObject
 	{ 		
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		
-		if(isTimeLeftUntilEvaluation())
+		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			singleTips.add(tip); 
 			DB_UPDATE(); 
@@ -162,7 +176,7 @@ public abstract class Draw extends PersiObject
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.addTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
 		
-		if(isTimeLeftUntilEvaluation())
+		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			groupTips.add(tip); 
 			DB_UPDATE(); 
@@ -177,7 +191,7 @@ public abstract class Draw extends PersiObject
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(SingleTip tip)! Expected: " + tipType.getSimpleName() + " !";
 
-		if(isTimeLeftUntilEvaluation())
+		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			boolean result = singleTips.remove(tip); 
 			DB_UPDATE(); 
@@ -192,7 +206,7 @@ public abstract class Draw extends PersiObject
 	{ 	
 		assert tip.getClass() == tipType : "Wrong type given to Draw.removeTip(GroupTip tip)! Expected: " + tipType.getSimpleName() + " !";
 
-		if(isTimeLeftUntilEvaluation())
+		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			boolean result = groupTips.remove(tip); 
 			DB_UPDATE(); 
@@ -215,4 +229,12 @@ public abstract class Draw extends PersiObject
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 
 	public abstract int[] getResult();
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * Sets the drawn results for this draw type. 
+	 * Has to be done before evaluation.
+	 * @param result
+	 */
+//	public abstract void setResult(int[] result);
 }

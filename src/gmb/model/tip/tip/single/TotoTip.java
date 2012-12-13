@@ -12,24 +12,22 @@ public class TotoTip extends SingleTip
 	@Deprecated
 	protected TotoTip(){}
 
-	public TotoTip(TotoSTT tipTicket, TotoEvaluation eval, int[] tip)
+	public TotoTip(TotoSTT tipTicket, TotoEvaluation eval)
 	{
-		super(tipTicket, eval, tip);
-
-		assert eval.getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
+		super(tipTicket, eval);
 	}
 	
-	public TotoTip(TotoSTT tipTicket, GroupTip groupTip, int[] tip)
+	public TotoTip(TotoSTT tipTicket, GroupTip groupTip)
 	{
-		super(tipTicket, groupTip, tip);
+		super(tipTicket, groupTip);
 
 		assert ((TotoEvaluation)groupTip.getDraw()).getResult().length == tip.length : "Wrong number of tips given to TotoTip!";
 	}
 	
-	public boolean setTip(int[] tip)
-	{ 	
-		if(!draw.isTimeLeftUntilEvaluation()) return false;
-		
-		return super.setTip(tip);
-	}
+//	public int validateTip(int[] tip)
+//	{ 
+//		assert tip.length == 10 : "Wrong tip length (!=10) given to TotoTip.setTip(int[] tip)!";
+//		
+//		return super.validateTip(tip);
+//	}
 }
