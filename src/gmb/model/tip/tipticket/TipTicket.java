@@ -18,14 +18,15 @@ import gmb.model.Lottery;
 import gmb.model.financial.transaction.TicketPurchase;
 import gmb.model.member.Customer;
 import gmb.model.tip.tip.single.SingleTip;
+import gmb.model.tip.tipticket.type.DailyLottoTT;
 import gmb.model.tip.tipticket.type.DrawType;
-import gmb.model.tip.tipticket.type.GenericTT;
+import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 
 import org.joda.time.DateTime;
 
 @Entity
-public abstract class TipTicket extends PersiObject implements GenericTT
+public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, DailyLottoTT
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int tipTicketId;
@@ -47,6 +48,7 @@ public abstract class TipTicket extends PersiObject implements GenericTT
 	public TipTicket(){}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
 	 * will be added to the "customers" list and "true" will be returned, otherwise "false".
 	 * Also the actually paid price will be saved in "paidPurchasePrice".

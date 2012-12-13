@@ -3,7 +3,6 @@ package gmb.model.group;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.member.Customer;
-import gmb.model.request.Notification;
 import gmb.model.request.RequestState;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
 import gmb.model.request.group.GroupInvitation;
@@ -92,6 +91,7 @@ public class Group extends PersiObject
 	}
 	
 	/**
+	 * [intended for direct usage by controller]
 	 * creates a "GroupMembershipApplication" and adds it to the "customer" and this group
 	 * @param customer
 	 * @param note
@@ -109,6 +109,7 @@ public class Group extends PersiObject
 	}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * creates a "GroupInvitation" and adds it to the "customer" and this group
 	 * @param customer
 	 * @param note
@@ -126,6 +127,7 @@ public class Group extends PersiObject
 	}
 
 	/**
+	 * [intended for direct usage by controller]
 	 * creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group
 	 * @param groupMember
 	 * @param note
@@ -142,6 +144,13 @@ public class Group extends PersiObject
 		return offering;
 	}
 
+	/**
+	 * Swaps the "groupAdmin" with "groupMember".
+	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin"
+	 * Returns false if the "groupMember" is not in "groupMembers".
+	 * @param groupMember
+	 * @return
+	 */
 	public boolean switchGroupAdmin(Customer groupMember)
 	{
 		if(groupMembers.contains(groupMember))
@@ -158,35 +167,46 @@ public class Group extends PersiObject
 			return false;
 	}
 	
-	/**
-	 * resign the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
-	 * sending a "Notification" to the member and removing him from the "groupMembers" list.
-	 * if it's the "groupAdmin" who resigns "close" the group. 
-	 * @param groupMember
-	 */
-	public void resign(Customer groupMember)
-	{	
-		if(groupMember == groupAdmin)
-		{
-			close();
-			
-			withdrawUnhandledGroupRequestsOfGroupMember(groupAdmin);
-			groupAdmin.addNotification(new Notification("The group " + name + ", where you had admin status, has been closed. You will be automatically resigned."));
-			
-			groupAdmin.removeGroup(this);
-		}
-		else
-		if(groupMembers.contains(groupMember))
+	protected boolean resign(Customer groupMember, String notification)
+	{
+		if(groupMembers.contains(groupMember) || groupMember == groupAdmin)
 		{
 			withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
 
-			groupMember.addNotification(new Notification("You have been resigned from Group " + name + "."));
-			groupMembers.remove(groupMember);
+			groupMember.addNotification(notification);
+			
+			if(groupMembers.contains(groupMember))
+				groupMembers.remove(groupMember);
+			else
+				groupAdmin = null;
 			
 			groupMember.removeGroup(this);
+			
+			return true;
 		}
-		
+		else
+			return false;
+	}
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember"
+	 * and sending a "Notification" to the member and removing him from the "groupMembers" list.
+	 * If it's the "groupAdmin" who resigns "close" the group. 
+	 * @param groupMember
+	 */
+	public boolean resign(Customer groupMember)
+	{	
+		if(groupMember == groupAdmin)
+		{
+			if(!close()) return false;
+		}
+		else
+			resign(groupMember, "You have been resigned from Group " + name + ".");
+
 		DB_UPDATE(); 
+		
+		return true;
 	}
 
 	/**
@@ -195,46 +215,71 @@ public class Group extends PersiObject
 	 */
 	protected void withdrawUnhandledGroupRequestsOfGroupMember(Customer groupMember)
 	{
-		for(GroupMembershipApplication application : groupMember.getGroupMembershipApplications())
+		for(GroupMembershipApplication application : groupMembershipApplications)
 		{
-			if(application.getGroup() == this && application.getState() == RequestState.UNHANDELED)
+			if(application.getMember() == groupMember && application.getState() == RequestState.UNHANDLED)
 				application.withdraw();
 		}
 
-		for(GroupInvitation invitation : groupMember.getGroupInvitations())
+		for(GroupInvitation invitation : groupInvitations)
 		{
-			if(invitation.getGroup() == this && invitation.getState() == RequestState.UNHANDELED)
+			if(invitation.getMember() == groupMember && invitation.getState() == RequestState.UNHANDLED)
 				invitation.withdraw();
 		}
 
-		for(GroupAdminRightsTransfereOffering offerings : groupMember.getGroupAdminRightsTransfereOfferings())
+		for(GroupAdminRightsTransfereOffering offerings : groupAdminRightsTransfereOfferings)
 		{
-			if(offerings.getGroup() == this && offerings.getState() == RequestState.UNHANDELED)
+			if(offerings.getMember() == groupMember && offerings.getState() == RequestState.UNHANDLED)
 				offerings.withdraw();
 		}
 	}
 	
 	/**
-	 * close group by resigning all "groupMembers" + "groupAdmin" and setting the "closed" flag to true
+	 * [intended for direct usage by controller]
+	 * Closes the group by resigning all "groupMembers" + "groupAdmin", 
+	 * withdrawing all group related requests in the system which are still unhandled
+	 * and setting the "closed" flag to true.
+	 * This doesn't remove the group from the system entirely.
 	 */
-	public void close()
+	public boolean close()
 	{
-		if(closed == true) return;
-		
+		if(closed == true) return false;		
 		closed = true;
 		
+		for(DailyLottoGroupTip groupTip : dailyLottoGroupTips)
+			for(Customer groupMember : groupMembers)
+				groupTip.removeAllTipsOfGroupMember(groupMember);
+		
+		for(WeeklyLottoGroupTip groupTip : weeklyLottoGroupTips)
+			for(Customer groupMember : groupMembers)
+				groupTip.removeAllTipsOfGroupMember(groupMember);
+		
+		for(TotoGroupTip groupTip : totoGroupTips)
+			for(Customer groupMember : groupMembers)
+				groupTip.removeAllTipsOfGroupMember(groupMember);
+		
+		
 		for(Customer groupMember : groupMembers)
-		{
-			if(groupMembers.contains(groupMember))
-			{
-				withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
-				groupMember.addNotification(new Notification("The group " + name + " has been closed. You will be automatically resigned."));
-			}
-		}
+			resign(groupMember, "The group " + name + " has been closed. You will be automatically resigned.");
 				
-		resign(groupAdmin);
+		resign(groupAdmin, "The group " + name + ", where you had admin status, has been closed. You will be automatically resigned.");
+		
+		//withdraw all group related requests not only those which are associated with groupMembers:
+		for(GroupMembershipApplication application : groupMembershipApplications)
+			if(application.getState() == RequestState.UNHANDLED)
+				application.withdraw();
+
+		for(GroupInvitation invitation : groupInvitations)
+			if(invitation.getState() == RequestState.UNHANDLED)
+				invitation.withdraw();
+		
+		for(GroupAdminRightsTransfereOffering offerings : groupAdminRightsTransfereOfferings)
+			if(offerings.getState() == RequestState.UNHANDLED)
+				offerings.withdraw();
 		
 		DB_UPDATE(); 
+		
+		return true;
 	}
  
 	public void addGroupMember(Customer customer)
@@ -244,7 +289,12 @@ public class Group extends PersiObject
 		
 		DB_UPDATE(); 
 	}
-	
+		
+	/**
+	 * [intended for direct usage by controller]
+	 * Sets the info text for the group.
+	 * @param infoText
+	 */
 	public void SetInfoText(String infoText){ this.infoText = infoText; DB_UPDATE(); }	
 	public void setGroupAdmin(Customer groupAdmin){ this.groupAdmin = groupAdmin; DB_UPDATE(); }
 	
@@ -255,6 +305,8 @@ public class Group extends PersiObject
 	public boolean removeGroupTip(DailyLottoGroupTip tip){ boolean result = dailyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	public boolean removeGroupTip(WeeklyLottoGroupTip tip){ boolean result = weeklyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	public boolean removeGroupTip(TotoGroupTip tip){ boolean result = totoGroupTips.remove(tip); DB_UPDATE(); return result; }
+	
+	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
 	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }

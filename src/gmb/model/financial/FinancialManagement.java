@@ -93,11 +93,29 @@ public class FinancialManagement extends PersiObject
 			addTransaction((ExternalTransaction)transaction);		
 	}
 	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param tipTicketPrices
+	 */
 	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param receiptsDistribution
+	 */
 	public void setReceiptsDistribution(ReceiptsDistribution receiptsDistribution){ this.receiptsDistribution = receiptsDistribution; DB_UPDATE(); }
 	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param lotteryCredits
+	 */
 	public void setLotteryCredits(LotteryCredits lotteryCredits){ this.lotteryCredits = lotteryCredits; DB_UPDATE(); }
 	public void setJackpots(Jackpots jackpots){ this.jackpots = jackpots; DB_UPDATE(); }
+	
+	/**
+	 * [intended for direct usage by controller]
+	 * @param prizeCategories
+	 */
 	public void setPrizeCategories(PrizeCategories prizeCategories){ this.prizeCategories = prizeCategories; DB_UPDATE(); }
 	
 	public LotteryCredits getLotteryCredits(){ return lotteryCredits; }

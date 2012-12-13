@@ -21,6 +21,7 @@ public class RealAccountDataUpdateRequest extends Request
 	}
 	
 	/**
+	 * [intended for direct usage by controller]
 	 * Return codes:
 	 * 0 - successful
 	 * 1 - failed because state was not "UNHANDLED"
