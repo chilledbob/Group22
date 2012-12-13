@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +29,7 @@ public class DrawEvaluationResult extends PersiObject
 	protected int drawEvaluationResultId;
 	
 	protected ReceiptsDistributionResult receiptsDistributionResult = null;
+	@ElementCollection
 	protected List<Winnings> winnings = new LinkedList<Winnings>();
 	
 	@Temporal(value = TemporalType.TIMESTAMP)

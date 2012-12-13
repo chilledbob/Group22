@@ -30,6 +30,7 @@ import gmb.model.member.container.MemberData;
 			ModelAndView mav = new ModelAndView();
 
 			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
+			mav.addObject("groupList", Lottery.getInstance().getGroupManagement().getGroups());
 			mav.setViewName("index");
 			return mav;
 	    }

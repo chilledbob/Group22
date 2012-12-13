@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,7 @@ import javax.persistence.ManyToOne;
 import org.joda.time.DateTime;
 
 @Entity
+@Table(name="GroupTable")
 public class Group extends PersiObject
 {
 	@Id
