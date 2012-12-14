@@ -1,8 +1,11 @@
 package gmb.model.group;
 
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
-import gmb.model.PersiObject;
+import gmb.model.PersiObject2;
+import gmb.model.member.Admin;
 import gmb.model.member.Customer;
+import gmb.model.member.container.MemberData;
 import gmb.model.request.RequestState;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
 import gmb.model.request.group.GroupInvitation;
@@ -31,11 +34,13 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name="GroupTable")
-public class Group extends PersiObject
+public class Group extends PersiObject2
 {
-	@Id
-	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int groupId;
+//	@Id
+//	@GeneratedValue (strategy=GenerationType.AUTO)
+//	protected int groupId;
+//	
+//	public int getGroupId(){ return groupId;}
 	
 	protected String name;
 	protected String infoText;
@@ -86,9 +91,9 @@ public class Group extends PersiObject
 		groupInvitations = new LinkedList<GroupInvitation>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
-		
 		Lottery.getInstance().getGroupManagement().addGroup(this);
 	}
+	
 	
 	/**
 	 * [intended for direct usage by controller]

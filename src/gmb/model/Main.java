@@ -46,7 +46,7 @@ public class Main {
 		Adress a = new Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = new MemberData("a","b",d,"c","d",a);
-		Admin user = new Admin("bob","bob",md);		
+		Admin user = new Admin("bob", "bob", md);	
 		Lottery.getInstance().getMemberManagement().addMember(user);
 
 		GmbPersistenceManager.add(a);
@@ -79,8 +79,8 @@ public class Main {
 
 		c.sendDataUpdateRequest(mdb, "");
 		GmbPersistenceManager.update(c);
-		Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
-		GmbPersistenceManager.add(g);
+		Group g = GmbPersistenceManager.createGroup("The Savages", c, "Don't hunt what you can't kill!");
+		//GmbPersistenceManager.add(g);
 		GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
 		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 		//GmbPersistenceManager.update(Lottery.getInstance().getFinancialManagement());

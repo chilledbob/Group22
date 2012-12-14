@@ -1,7 +1,9 @@
 package gmb.model;
 
 import gmb.model.financial.FinancialManagement;
+import gmb.model.group.Group;
 import gmb.model.group.GroupManagement;
+import gmb.model.member.Customer;
 import gmb.model.member.Member;
 import gmb.model.member.MemberManagement;
 import gmb.model.tip.TipManagement;
@@ -13,7 +15,6 @@ import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
 
-//ALTER WAS KOMMENTIERST DU DAS ALLES AUS!
 public class GmbPersistenceManager 
 {	
 	private static final EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
@@ -29,6 +30,17 @@ public class GmbPersistenceManager
 	public static Member get(UserIdentifier uid){ return pum.get(Member.class, uid); }
 	
 	public static Object get(Class<?> classType, int id){ return initContainer(classType, id); }
+	
+	public static PersiObject2 add(PersiObject2 obj)
+	{
+		EntityManager em = emf.createEntityManager();
+		
+		em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		return em.find(obj.getClass(), obj.getId());
+	}
 	
 	public static void add(Object obj)
 	{
@@ -72,6 +84,13 @@ public class GmbPersistenceManager
 		EntityManager em = emf.createEntityManager();
 		
 		return em.find(classType, id);
+	}
+	
+	public static Group createGroup(String name, Customer groupAdmin, String infoText){
+		
+		Group g = new Group(name, groupAdmin, infoText);
+		
+		return (Group) GmbPersistenceManager.add(g);
 	}
 		
 }

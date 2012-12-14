@@ -46,7 +46,9 @@ public class DrawEvaluationResult extends PersiObject
 	
 	protected CDecimal normalizationAmount;
 	
-	public DrawEvaluationResult()
+	protected DrawEvaluationResult(){}
+	
+	public DrawEvaluationResult(int dummy)
 	{
 		evaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}

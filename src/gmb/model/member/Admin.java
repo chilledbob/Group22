@@ -1,5 +1,6 @@
 package gmb.model.member;
 
+import gmb.model.GmbPersistenceManager;
 import gmb.model.member.container.MemberData;
 
 import javax.persistence.Entity;
@@ -17,4 +18,5 @@ public class Admin extends Employee
 		super(nickName, password, memberData);
 		this.addCapability(new Capability("admin"));
 	}
+	
 }
