@@ -64,7 +64,7 @@ public class Customer extends Member
 		//currently not possible
 		//membermanager must be updated first
 		//better do this separately
-		//lotteryBankAccount.setOwner(this);
+		lotteryBankAccount.setOwner(this);
 		
 		groups = new LinkedList<Group>();
 		

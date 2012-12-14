@@ -1,8 +1,10 @@
 package gmb.model.tip.draw.container;
 
+import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,14 +37,14 @@ public class DrawEvaluationResult extends PersiObject
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date evaluationDate;
 	
-	protected CDecimal[] jackpotImageBefore;
-	protected CDecimal[] jackpotImageAfter;
-	protected CDecimal[] undistributedPrizes;
+	protected List<CDecimal> jackpotImageBefore;
+	protected List<CDecimal> jackpotImageAfter;
+	protected List<CDecimal> undistributedPrizes;
 	
-	protected CDecimal[] perCategoryPrizePotential = new CDecimal[8];
-	protected CDecimal[] perCategoryWinningsUnMerged = new CDecimal[8];
-	protected CDecimal[] perCategoryWinningsMerged = new CDecimal[8];
-	protected Object[] tipsInCategory = new Object[8];
+	protected List<CDecimal> perCategoryPrizePotential = ArrayListFac.new_CDecimalArray(8);
+	protected List<CDecimal> perCategoryWinningsUnMerged = ArrayListFac.new_CDecimalArray(8);
+	protected List<CDecimal> perCategoryWinningsMerged = ArrayListFac.new_CDecimalArray(8);
+	protected ArrayList<LinkedList<SingleTip>> tipsInCategory = ArrayListFac.new_SingleTipLinkedListArray(8);
 	
 	protected CDecimal normalizationAmount;
 	
@@ -51,38 +53,38 @@ public class DrawEvaluationResult extends PersiObject
 		evaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
-	protected CDecimal[] createDeepCopy(CDecimal[] array)
+	protected ArrayList<CDecimal> createDeepCopyForCDecimalArray(ArrayList<CDecimal> array)
 	{
-		CDecimal[] copy = new CDecimal[array.length];
+		List<CDecimal> copy = ArrayListFac.new_CDecimalArray(array.size());
 		
-		for(int i = 0; i < array.length; ++i)
-			copy[i] = array[i];
+		for(int i = 0; i < array.size(); ++i)
+			copy.set(i, array.get(i));
+		
+		return (ArrayList<CDecimal>)copy;
+	}
+	
+	protected ArrayList<LinkedList<SingleTip>> createDeepCopyForSingleTipLLArray(ArrayList<LinkedList<SingleTip>> array)
+	{
+		ArrayList<LinkedList<SingleTip>> copy = ArrayListFac.new_SingleTipLinkedListArray(array.size());
+		
+		for(int i = 0; i < array.size(); ++i)
+			copy.set(i, array.get(i));
 		
 		return copy;
 	}
 	
-	protected Object[] createDeepCopy(Object[] array)
-	{
-		Object[] copy = new Object[array.length];
-		
-		for(int i = 0; i < array.length; ++i)
-			copy[i] = array[i];
-		
-		return copy;
-	}
+	public void createJackpotImageBefore(ArrayList<CDecimal> jackpot){ jackpotImageBefore = createDeepCopyForCDecimalArray(jackpot); DB_UPDATE(); }
 	
-	public void createJackpotImageBefore(CDecimal[] jackpot){ jackpotImageBefore = (CDecimal[])createDeepCopy(jackpot); DB_UPDATE(); }
-	
-	public void createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)
+	public void createJackpotImageAfterAndUndistributedPrizes(ArrayList<CDecimal> jackpot)
 	{ 
-		assert jackpotImageBefore.length == jackpot.length : "Jackpot image length does not fit in DrawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)";
+		assert jackpotImageBefore.size() == jackpot.size() : "Jackpot image length does not fit in DrawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(CDecimal[] jackpot)";
 		
-		jackpotImageAfter = createDeepCopy(jackpot); 
+		jackpotImageAfter = createDeepCopyForCDecimalArray(jackpot); 
 		
-		undistributedPrizes = new CDecimal[jackpotImageAfter.length]; 
+		undistributedPrizes = new ArrayList<CDecimal>(jackpotImageAfter.size()); 
 		
-		for(int i = 0; i < undistributedPrizes.length; ++i)
-			undistributedPrizes[i] = jackpotImageAfter[i].subtract(jackpotImageBefore[i]);
+		for(int i = 0; i < undistributedPrizes.size(); ++i)
+			undistributedPrizes.set(i, jackpotImageAfter.get(i).subtract(jackpotImageBefore.get(i)));
 		
 		DB_UPDATE(); 
 	}
@@ -95,27 +97,27 @@ public class DrawEvaluationResult extends PersiObject
 		return receiptsDistributionResult.getWinnersDue();
 	}
 	
-	public void copyCategoryPrizePotential(CDecimal[] perCategoryPrizePotential)
+	public void copyCategoryPrizePotential(ArrayList<CDecimal> perCategoryPrizePotential)
 	{ 
-		this.perCategoryPrizePotential = createDeepCopy(perCategoryPrizePotential); 
+		this.perCategoryPrizePotential = createDeepCopyForCDecimalArray(perCategoryPrizePotential); 
 		DB_UPDATE(); 
 	}
 	
-	public void copyCategoryWinningsUnMerged(CDecimal[] perCategoryPrizePotentialUnMerged)
+	public void copyCategoryWinningsUnMerged(ArrayList<CDecimal> perCategoryPrizePotentialUnMerged)
 	{ 
-		this.perCategoryWinningsUnMerged = createDeepCopy(perCategoryPrizePotentialUnMerged); 
+		this.perCategoryWinningsUnMerged = createDeepCopyForCDecimalArray(perCategoryPrizePotentialUnMerged); 
 		DB_UPDATE(); 
 	}
 	
-	public void copyCategoryWinningsMerged(CDecimal[] perCategoryPrizePotentialMerged)
+	public void copyCategoryWinningsMerged(ArrayList<CDecimal> perCategoryPrizePotentialMerged)
 	{ 
-		this.perCategoryWinningsMerged = createDeepCopy(perCategoryPrizePotentialMerged); 
+		this.perCategoryWinningsMerged = createDeepCopyForCDecimalArray(perCategoryPrizePotentialMerged); 
 		DB_UPDATE(); 
 	}
 	
-	public void copyTipsInCategory(Object[] tipsInCategory)
+	public void copyTipsInCategory(ArrayList<LinkedList<SingleTip>> tipsInCategory)
 	{ 
-		this.tipsInCategory = createDeepCopy(tipsInCategory); 
+		this.tipsInCategory = createDeepCopyForSingleTipLLArray(tipsInCategory); 
 		DB_UPDATE(); 
 	}
 	
@@ -128,19 +130,18 @@ public class DrawEvaluationResult extends PersiObject
 	
 	public CDecimal getNormalizationAmount(){ return normalizationAmount; }
 	
-	public CDecimal[] getCategoryPrizePotential(){ return perCategoryPrizePotential; }
-	public CDecimal[] getCategoryWinningsUnMerged(){ return perCategoryWinningsUnMerged; }
-	public CDecimal[] getCategoryWinningsMerged(){ return perCategoryWinningsMerged; }
-	public Object[] getTipsInCategory(){ return tipsInCategory; }
+	public ArrayList<CDecimal> getCategoryPrizePotential(){ return (ArrayList<CDecimal>) perCategoryPrizePotential; }
+	public ArrayList<CDecimal> getCategoryWinningsUnMerged(){ return (ArrayList<CDecimal>) perCategoryWinningsUnMerged; }
+	public ArrayList<CDecimal> getCategoryWinningsMerged(){ return (ArrayList<CDecimal>) perCategoryWinningsMerged; }
+	public ArrayList<LinkedList<SingleTip>> getTipsInCategory(){ return tipsInCategory; }
 	
-	@SuppressWarnings("unchecked")
-	public LinkedList<SingleTip> getTipsInCategory(int categoryID){ return (LinkedList<SingleTip>)(tipsInCategory[categoryID]); }
+	public LinkedList<SingleTip> getTipsInCategory(int categoryID){ return tipsInCategory.get(categoryID); }
 	
 	public ReceiptsDistributionResult getReceiptsDistributionResult(){ return receiptsDistributionResult; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	public DateTime getEvaluationDate(){ return new DateTime(evaluationDate); }
 	
-	public CDecimal[] getJackpotImageBefore(){ return jackpotImageBefore; }
-	public CDecimal[] getJackpotImageAfter(){ return jackpotImageAfter; }
-	public CDecimal[] getUndistributedPrizes(){ return undistributedPrizes; }
+	public ArrayList<CDecimal> getJackpotImageBefore(){ return (ArrayList<CDecimal>) jackpotImageBefore; }
+	public ArrayList<CDecimal> getJackpotImageAfter(){ return (ArrayList<CDecimal>) jackpotImageAfter; }
+	public ArrayList<CDecimal> getUndistributedPrizes(){ return (ArrayList<CDecimal>) undistributedPrizes; }
 }

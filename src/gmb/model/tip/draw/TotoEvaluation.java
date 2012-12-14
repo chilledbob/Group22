@@ -1,5 +1,7 @@
 package gmb.model.tip.draw;
 
+import java.util.ArrayList;
+
 import gmb.model.Lottery;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameResult;
@@ -20,7 +22,7 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	protected FootballGameResult[] results;
+	protected ArrayList<FootballGameResult> results;
 	
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -28,7 +30,7 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	public TotoEvaluation(DateTime planedEvaluationDate, FootballGameResult[] results)
+	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameResult> results)
 	{
 		super(planedEvaluationDate);
 		this.results = results;
@@ -58,7 +60,7 @@ public class TotoEvaluation extends Draw
 		return false;
 	}
 	
-	public void setResult(FootballGameResult[] results){ this.results = results; DB_UPDATE(); }
+	public void setResult(ArrayList<FootballGameResult> results){ this.results = results; DB_UPDATE(); }
 	
 	/**
 	 * [intended for direct usage by controller]
@@ -76,16 +78,16 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public FootballGameResult[] getFootballGameResults(){ return results; }
+	public ArrayList<FootballGameResult> getFootballGameResults(){ return results; }
 	
 	public int[] getResult()
 	{ 
-		int[] goals = new int[results.length * 2];
+		int[] goals = new int[results.size() * 2];
 		
-		for(int i = 0; i < results.length; ++i)
+		for(int i = 0; i < results.size(); ++i)
 		{
-			goals[i*2]   = results[i].getHomeResult().getScore();
-			goals[i*2+1] = results[i].getVisitorResult().getScore();
+			goals[i*2]   = results.get(i).getHomeResult().getScore();
+			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
 		}
 		
 		return goals; 

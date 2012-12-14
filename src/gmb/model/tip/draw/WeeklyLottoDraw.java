@@ -1,6 +1,9 @@
 package gmb.model.tip.draw;
 
+import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import gmb.model.Lottery;
@@ -43,12 +46,11 @@ public class WeeklyLottoDraw extends Draw
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean evaluate() 
 	{
 		super.evaluate();//set actualEvaluationDate and init prizePotential 
 
-		CDecimal[] jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
+		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
 		
 		drawEvaluationResult.createJackpotImageBefore(jackpot);
 
@@ -58,20 +60,17 @@ public class WeeklyLottoDraw extends Draw
 			mustOverallAmount = mustOverallAmount.add(categoryJackpot);
 
 		//calculate the prize potential per prize category:
-		CDecimal[] prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getWeeklyLottoCategories();
+		ArrayList<CDecimal> prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getWeeklyLottoCategories();
 
-		CDecimal[] perCategoryPrizePotential = new CDecimal[8]; 
+		ArrayList<CDecimal> perCategoryPrizePotential = ArrayListFac.new_CDecimalArray(8); 
 
 		for(int i = 0; i < 8; ++i)
-			perCategoryPrizePotential[i] = prizePotential.multiply(prizeCatagories[i]).divide(dec100).add(jackpot[i]);
+			perCategoryPrizePotential.set(i, prizePotential.multiply(prizeCatagories.get(i)).divide(dec100).add(jackpot.get(i)));
 
 		drawEvaluationResult.copyCategoryPrizePotential(perCategoryPrizePotential);
 
 		//array which will store the SingleTips for each prize category in lists:
-		Object[] category = new Object[8];
-		
-		for(int i = 0; i < category.length; ++i)
-			category[i] = new LinkedList<SingleTip>();
+		ArrayList<LinkedList<SingleTip>> category = ArrayListFac.new_SingleTipLinkedListArray(8);
 
 		//put SingleTips in the prize category array:
 		for(SingleTip tip : allSingleTips)
@@ -98,9 +97,9 @@ public class WeeklyLottoDraw extends Draw
 			if(hitCount == 6)//*drum roll...
 			{
 				if(superNumber == this.result[7])
-					((LinkedList<SingleTip>)(category[0])).add(tip);//awesome! 8D
+					category.get(0).add(tip);//awesome! 8D
 				else
-					((LinkedList<SingleTip>)(category[1])).add(tip);//nearly awesome! xD
+					category.get(1).add(tip);//nearly awesome! xD
 			}
 			else
 			{
@@ -118,7 +117,7 @@ public class WeeklyLottoDraw extends Draw
 							}
 
 					int categoryID = 7 - ((hitCount-3)*2 + extraNumberHit);
-					((LinkedList<SingleTip>)(category[categoryID])).add(tip);
+					category.get(categoryID).add(tip);
 				}
 			}
 		}
@@ -126,24 +125,24 @@ public class WeeklyLottoDraw extends Draw
 		drawEvaluationResult.copyTipsInCategory(category);
 
 		//count number of SingleTips in each category:
-		CDecimal[] tipCountPerCategory = new CDecimal[8];
+		ArrayList<CDecimal> tipCountPerCategory = ArrayListFac.new_CDecimalArray(8);
 		for(int i = 0; i < 8; ++i)
-			tipCountPerCategory[i] = new CDecimal(((LinkedList<SingleTip>)(category[i])).size());
+			tipCountPerCategory.set(i, new CDecimal(category.get(i).size()));
 
 		//calculate the winnings for each SingleTip in each category, and build new jackpot from empty categories:
-		CDecimal[] newJackpot = new CDecimal[8];
-		CDecimal[] categoryWinnings = new CDecimal[8];
+		ArrayList<CDecimal> newJackpot = ArrayListFac.new_CDecimalArray(8);
+		ArrayList<CDecimal> categoryWinnings = ArrayListFac.new_CDecimalArray(8);
 		
 		for(int i = 0; i < 8; ++i)
-			if(tipCountPerCategory[i].signum() > 0)
+			if(tipCountPerCategory.get(i).signum() > 0)
 			{
-				categoryWinnings[i] = perCategoryPrizePotential[i].divide(tipCountPerCategory[i]);
-				newJackpot[i] = new CDecimal(0);
+				categoryWinnings.set(i, perCategoryPrizePotential.get(i).divide(tipCountPerCategory.get(i)));
+				newJackpot.set(i, new CDecimal(0));
 			}
 			else
 			{
-				categoryWinnings[i] = new CDecimal(0);
-				newJackpot[i] = perCategoryPrizePotential[i];
+				categoryWinnings.set(i, new CDecimal(0));
+				newJackpot.set(i, perCategoryPrizePotential.get(i));
 			}
 
 		//merge prize categories if lower category has higher winnings per SingleTip:
@@ -165,14 +164,14 @@ public class WeeklyLottoDraw extends Draw
 			{
 				for(int j = i-1; j >= 0; --j)//compare with all higher categories
 				{
-					if(tipCountPerCategory[i].signum() > 0 && tipCountPerCategory[j].signum() > 0)//only compare if there are actually SingleTips in both categories
-						if(categoryWinnings[i].compareTo(categoryWinnings[j]) > 0)//compare if lower category has higher winnings
+					if(tipCountPerCategory.get(i).signum() > 0 && tipCountPerCategory.get(j).signum() > 0)//only compare if there are actually SingleTips in both categories
+						if(categoryWinnings.get(i).compareTo(categoryWinnings.get(j)) > 0)//compare if lower category has higher winnings
 						{
 							noMerge = false;
 
-							CDecimal mergedPrizePotential = (perCategoryPrizePotential[i].add(perCategoryPrizePotential[j])).divide(dec2);//average winnings
-							perCategoryPrizePotential[i] = mergedPrizePotential;
-							perCategoryPrizePotential[j] = mergedPrizePotential;
+							CDecimal mergedPrizePotential = (perCategoryPrizePotential.get(i).add(perCategoryPrizePotential.get(j))).divide(dec2);//average winnings
+							perCategoryPrizePotential.set(i, mergedPrizePotential);
+							perCategoryPrizePotential.set(j, mergedPrizePotential);
 
 							break;
 						}
@@ -185,21 +184,21 @@ public class WeeklyLottoDraw extends Draw
 			
 			//re-calculate the winnings for each SingleTip in each category:
 			for(int i = 0; i < 8; ++i)
-				if(tipCountPerCategory[i].signum() > 0)
-					categoryWinnings[i] = perCategoryPrizePotential[i].divide(tipCountPerCategory[i]);
+				if(tipCountPerCategory.get(i).signum() > 0)
+					categoryWinnings.set(i, perCategoryPrizePotential.get(i).divide(tipCountPerCategory.get(i)));
 		}
 
-		if(m > 15)
+		if(m > 31)
 			System.out.println("UNEXPECTED HIGH MERGE LOOP COUNT! Loop count was: " + (new Integer(m)).toString() + " !");
 
 		//no winner in second highest winning category but in the highest? -> if so add the prize potential to the highest:
-		if(tipCountPerCategory[1].signum() == 0 && tipCountPerCategory[0].signum() > 0)
+		if(tipCountPerCategory.get(1).signum() == 0 && tipCountPerCategory.get(0).signum() > 0)
 		{
-			perCategoryPrizePotential[0] = perCategoryPrizePotential[0].add(perCategoryPrizePotential[1]);
-			categoryWinnings[0] = perCategoryPrizePotential[0].divide(tipCountPerCategory[0]);
+			perCategoryPrizePotential.set(0, perCategoryPrizePotential.get(0).add(perCategoryPrizePotential.get(1)));
+			categoryWinnings.set(0, perCategoryPrizePotential.get(0).divide(tipCountPerCategory.get(0)));
 			
-			perCategoryPrizePotential[1] = new CDecimal(0);
-			newJackpot[1] = new CDecimal(0);
+			perCategoryPrizePotential.set(1, new CDecimal(0));
+			newJackpot.set(1, new CDecimal(0));
 		}
 		
 		Lottery.getInstance().getFinancialManagement().getJackpots().setWeeklyLottoJackpot(newJackpot);//set new jackpot
@@ -212,11 +211,11 @@ public class WeeklyLottoDraw extends Draw
 
 		for(int i = 0; i < 8; ++i)
 		{
-			actualOverallAmount = actualOverallAmount.add(newJackpot[i]);
+			actualOverallAmount = actualOverallAmount.add(newJackpot.get(i));
 			
-			for(SingleTip tip : (LinkedList<SingleTip>)(category[i]))
+			for(SingleTip tip : category.get(i))
 			{
-				Winnings newWinnings = new Winnings(tip, categoryWinnings[i], i + 1);
+				Winnings newWinnings = new Winnings(tip, categoryWinnings.get(i), i + 1);
 				tip.setOverallWinnings(newWinnings);
 				
 				if(tip.getGroupTip() != null)
@@ -226,7 +225,7 @@ public class WeeklyLottoDraw extends Draw
 				}
 				else
 				{
-					actualOverallAmount = actualOverallAmount.add(categoryWinnings[i]);
+					actualOverallAmount = actualOverallAmount.add(categoryWinnings.get(i));
 
 					//directly send all other winnings to their respective customers:
 					newWinnings.init();

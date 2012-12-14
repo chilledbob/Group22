@@ -1,5 +1,9 @@
 package gmb.model.financial.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
@@ -19,22 +23,22 @@ public class Jackpots extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected CDecimal[] weeklyLottoJackpot = new CDecimal[8];
-	protected CDecimal[] dailyLottoJackpot = new CDecimal[10];
-	protected CDecimal[] totoJackpot = new CDecimal[4];
+	protected List<CDecimal> weeklyLottoJackpot = ArrayListFac.new_CDecimalArray(8);
+	protected List<CDecimal> dailyLottoJackpot = ArrayListFac.new_CDecimalArray(10);
+	protected List<CDecimal> totoJackpot = ArrayListFac.new_CDecimalArray(4);
 	
 	public Jackpots()
 	{
-		for(int i = 0; i < weeklyLottoJackpot.length; ++i){ weeklyLottoJackpot[i] = new CDecimal(0); }
-		for(int i = 0; i < dailyLottoJackpot.length; ++i){ dailyLottoJackpot[i] = new CDecimal(0); }
-		for(int i = 0; i < totoJackpot.length; ++i){ totoJackpot[i] = new CDecimal(0); }
+		for(int i = 0; i < weeklyLottoJackpot.size(); ++i){ weeklyLottoJackpot.set(i, new CDecimal(0)); }
+		for(int i = 0; i < dailyLottoJackpot.size(); ++i){ dailyLottoJackpot.set(i, new CDecimal(0)); }
+		for(int i = 0; i < totoJackpot.size(); ++i){ totoJackpot.set(i, new CDecimal(0)); }
 	}
 	
-	public void setWeeklyLottoJackpot(CDecimal[] weeklyLottoJackpot){ this.weeklyLottoJackpot = weeklyLottoJackpot; DB_UPDATE(); }
-	public void setDailyLottoJackpot(CDecimal[] dailyLottoJackpot){ this.dailyLottoJackpot = dailyLottoJackpot; DB_UPDATE(); }
-	public void setTotoJackpot(CDecimal[] totoJackpot){ this.totoJackpot = totoJackpot; DB_UPDATE(); }	
+	public void setWeeklyLottoJackpot(List<CDecimal> weeklyLottoJackpot){ this.weeklyLottoJackpot = weeklyLottoJackpot; DB_UPDATE(); }
+	public void setDailyLottoJackpot(List<CDecimal> dailyLottoJackpot){ this.dailyLottoJackpot = dailyLottoJackpot; DB_UPDATE(); }
+	public void setTotoJackpot(List<CDecimal> totoJackpot){ this.totoJackpot = totoJackpot; DB_UPDATE(); }	
 	
-	public CDecimal[] getWeeklyLottoJackpot(){ return weeklyLottoJackpot; }
-	public CDecimal[] getDailyLottoJackpot(){ return dailyLottoJackpot; }
-	public CDecimal[] getTotoJackpot(){ return totoJackpot; }
+	public ArrayList<CDecimal> getWeeklyLottoJackpot(){ return (ArrayList<CDecimal>)weeklyLottoJackpot; }
+	public ArrayList<CDecimal> getDailyLottoJackpot(){ return (ArrayList<CDecimal>)dailyLottoJackpot; }
+	public ArrayList<CDecimal> getTotoJackpot(){ return (ArrayList<CDecimal>)totoJackpot; }
 }

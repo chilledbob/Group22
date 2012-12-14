@@ -3,6 +3,7 @@ package gmb.junit;
 import static org.junit.Assert.*;
 
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -551,36 +552,36 @@ public class Test01
 			++i1;
 		}
 		
-		Object[] tipsPerCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
+		ArrayList<LinkedList<SingleTip>> tipsPerCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
 		for(int i = 0; i < 8; ++i)
 		{
-			System.out.print(((LinkedList<SingleTip>)(tipsPerCategory[i])).size());
+			System.out.print(tipsPerCategory.get(i).size());
 			System.out.print(" ");
 		}
 		
 		System.out.println(" ");
 		
 		//--------------------------------------------------------//check whether lower prize categories have lower/equal per tip winnings:
-		CDecimal[] categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
+		ArrayList<CDecimal> categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
-			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0 && ((LinkedList<SingleTip>)(tipsPerCategory[i-1])).size() > 0)
-			assertEquals(true, categoryWinnings[i].compareTo(categoryWinnings[i-1]) < 1);
+			if(tipsPerCategory.get(i).size() > 0 && tipsPerCategory.get(i-1).size() > 0)
+			assertEquals(true, categoryWinnings.get(i).compareTo(categoryWinnings.get(i-1)) < 1);
 		//--------------------------------------------------------//
 		
 		//--------------------------------------------------------//check whether the distribution of the winners due sums up correctly:
-		CDecimal[] jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
-		CDecimal[] jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
+		ArrayList<CDecimal> jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
+		ArrayList<CDecimal> jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
 		
 		CDecimal checkWinnersDue = new CDecimal(0);
 		for(int i = 0; i < 8; ++i)
 		{
-			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0)
+			if(tipsPerCategory.get(i).size() > 0)
 			{
-				checkWinnersDue = checkWinnersDue.add(categoryWinnings[i].multiply(new CDecimal(((LinkedList<SingleTip>)(tipsPerCategory[i])).size())));
+				checkWinnersDue = checkWinnersDue.add(categoryWinnings.get(i).multiply(new CDecimal(tipsPerCategory.get(i).size())));
 			}
 			else
 			{
-				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter[i]);
+				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter.get(i));
 			}
 		}
 		checkWinnersDue = checkWinnersDue.add(draw1.getDrawEvaluationResult().getNormalizationAmount());
