@@ -14,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,9 +24,6 @@ import org.joda.time.Duration;
 @Entity
 public abstract class Draw extends PersiObject
 {
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int drawId;
-
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	

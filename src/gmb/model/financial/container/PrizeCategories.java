@@ -9,17 +9,11 @@ import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
 public class PrizeCategories extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int jackpotsId;
-	
+{	
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	

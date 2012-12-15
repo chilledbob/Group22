@@ -17,9 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
@@ -30,10 +27,7 @@ import javax.persistence.CascadeType;
 
 @Entity
 public class LotteryBankAccount extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int lotteryBankAccountId;
-	
+{	
 	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
 	protected CDecimal credit;	

@@ -5,16 +5,10 @@ import gmb.model.Lottery;
 import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 public class ReceiptsDistributionResult extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int receiptsDistributionResultId;
-	
+{	
 	protected CDecimal winnersDue;
 	protected CDecimal treasuryDue;
 	protected CDecimal lotteryTaxDue;

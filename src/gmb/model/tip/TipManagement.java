@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.joda.time.Duration;
@@ -16,9 +15,6 @@ import org.joda.time.Duration;
 @Entity
 public class TipManagement extends PersiObject
 {
-	@Id
-	protected int tipManagementId = 1;
-	
 	@OneToMany(mappedBy="tipManagementId")
 	protected List<WeeklyLottoDraw> weeklyLottoDrawings;
 	@OneToMany(mappedBy="tipManagementId")

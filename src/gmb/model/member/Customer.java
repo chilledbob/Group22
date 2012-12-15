@@ -20,8 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
-import org.salespointframework.core.user.Capability;
-
 @Entity
 public class Customer extends Member 
 {

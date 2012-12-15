@@ -12,9 +12,6 @@ import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -28,9 +25,6 @@ import gmb.model.tip.tip.single.SingleTip;
 @Entity
 public class WeeklyLottoDrawEvaluationResult extends PersiObject
 {
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int drawEvaluationResultId;
-
 	protected ReceiptsDistributionResult receiptsDistributionResult;
 	@ElementCollection
 	protected List<Winnings> winnings;

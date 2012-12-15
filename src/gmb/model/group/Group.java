@@ -16,9 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
@@ -33,10 +30,6 @@ import org.joda.time.DateTime;
 @Table(name="GroupTable")
 public class Group extends PersiObject
 {
-	@Id
-	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int groupId;
-	
 	protected String name;
 	protected String infoText;
 	@Temporal(value = TemporalType.TIMESTAMP)

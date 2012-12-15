@@ -1,7 +1,5 @@
 package gmb.model.member.container;
 
-
-
 import gmb.model.PersiObject;
 
 import java.util.Date;
@@ -10,9 +8,7 @@ import org.joda.time.DateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -23,9 +19,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class MemberData extends PersiObject
 {
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int memberDataId;
-
 	protected String firstName;
 	protected String lastName;
 
