@@ -1,59 +1,66 @@
 package gmb.model.financial.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
 public class PrizeCategories extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int jackpotsId;
-	
+{	
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected CDecimal[] weeklyLottoCategories = new CDecimal[8];
-	protected CDecimal[] dailyLottoCategories = new CDecimal[10];
-	protected CDecimal[] totoCategories = new CDecimal[4];
+	protected List<CDecimal> weeklyLottoCategories;
+	protected List<CDecimal> dailyLottoCategories;
+	protected List<CDecimal> totoCategories;
 	
-	public PrizeCategories()
+	@Deprecated
+	protected PrizeCategories(){}
+	
+	public PrizeCategories(Object dummy)
 	{
-		weeklyLottoCategories[7] = new CDecimal(44);
-		weeklyLottoCategories[6] = new CDecimal(8);
-		weeklyLottoCategories[5] = new CDecimal(10);
-		weeklyLottoCategories[4] = new CDecimal(2);
-		weeklyLottoCategories[3] = new CDecimal(13);
-		weeklyLottoCategories[2] = new CDecimal(5);
-		weeklyLottoCategories[1] = new CDecimal(8);
-		weeklyLottoCategories[0] = new CDecimal(10);
+		weeklyLottoCategories = ArrayListFac.new_CDecimalArray(8);
+		dailyLottoCategories = ArrayListFac.new_CDecimalArray(10);
+		totoCategories = ArrayListFac.new_CDecimalArray(4);
 		
-		dailyLottoCategories[7] = new CDecimal(2);
-		dailyLottoCategories[6] = new CDecimal(8);
-		dailyLottoCategories[5] = new CDecimal(22);
-		dailyLottoCategories[4] = new CDecimal(222);
-		dailyLottoCategories[3] = new CDecimal(888);
-		dailyLottoCategories[2] = new CDecimal(4444);
-		dailyLottoCategories[1] = new CDecimal(6666);
-		dailyLottoCategories[0] = new CDecimal(100000);
+		weeklyLottoCategories.set(7, new CDecimal(44));
+		weeklyLottoCategories.set(6, new CDecimal(8));
+		weeklyLottoCategories.set(5, new CDecimal(10));
+		weeklyLottoCategories.set(4, new CDecimal(2));
+		weeklyLottoCategories.set(3, new CDecimal(13));
+		weeklyLottoCategories.set(2, new CDecimal(5));
+		weeklyLottoCategories.set(1, new CDecimal(8));
+		weeklyLottoCategories.set(0, new CDecimal(10));
 		
-		totoCategories[3] = new CDecimal(0);
-		totoCategories[2] = new CDecimal(0);
-		totoCategories[1] = new CDecimal(0);
-		totoCategories[0] = new CDecimal(0);
+		dailyLottoCategories.set(9, new CDecimal(4));
+		dailyLottoCategories.set(8, new CDecimal(22));
+		dailyLottoCategories.set(7, new CDecimal(44));
+		dailyLottoCategories.set(6, new CDecimal(222));
+		dailyLottoCategories.set(5, new CDecimal(444));
+		dailyLottoCategories.set(4, new CDecimal(888));
+		dailyLottoCategories.set(3, new CDecimal(2222));
+		dailyLottoCategories.set(2, new CDecimal(4444));
+		dailyLottoCategories.set(1, new CDecimal(8888));
+		dailyLottoCategories.set(0, new CDecimal(100000));
+		
+		totoCategories.set(3, new CDecimal(0));
+		totoCategories.set(2, new CDecimal(0));
+		totoCategories.set(1, new CDecimal(0));
+		totoCategories.set(0, new CDecimal(0));
 	}
 	
-	public void setWeeklyLottoCategories(CDecimal[] weeklyLottoCategories){ this.weeklyLottoCategories = weeklyLottoCategories; DB_UPDATE(); }
-	public void setDailyLottoCategories(CDecimal[] dailyLottoCategories){ this.dailyLottoCategories = dailyLottoCategories; DB_UPDATE(); }
-	public void setTotoCategories(CDecimal[] totoCategories){ this.totoCategories = totoCategories; DB_UPDATE(); }	
+	public void setWeeklyLottoCategories(List<CDecimal> weeklyLottoCategories){ this.weeklyLottoCategories = weeklyLottoCategories; DB_UPDATE(); }
+	public void setDailyLottoCategories(List<CDecimal> dailyLottoCategories){ this.dailyLottoCategories = dailyLottoCategories; DB_UPDATE(); }
+	public void setTotoCategories(List<CDecimal> totoCategories){ this.totoCategories = totoCategories; DB_UPDATE(); }	
 	
-	public CDecimal[] getWeeklyLottoCategories(){ return weeklyLottoCategories; }
-	public CDecimal[] getDailyLottoCategories(){ return dailyLottoCategories; }
-	public CDecimal[] getTotoCategories(){ return totoCategories; }
+	public ArrayList<CDecimal> getWeeklyLottoCategories(){ return (ArrayList<CDecimal>)weeklyLottoCategories; }
+	public ArrayList<CDecimal> getDailyLottoCategories(){ return (ArrayList<CDecimal>)dailyLottoCategories; }
+	public ArrayList<CDecimal> getTotoCategories(){ return (ArrayList<CDecimal>)totoCategories; }
 }

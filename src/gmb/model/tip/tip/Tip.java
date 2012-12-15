@@ -3,9 +3,6 @@ package gmb.model.tip.tip;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,17 +18,13 @@ import org.joda.time.DateTime;
 
 @Entity
 public abstract class Tip extends PersiObject
-{	
-	@Id
-	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int tipId;
-	
+{		
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date submissionDate;
 	@ManyToOne
-	protected Draw draw = null;
+	protected Draw draw;
 	
-	protected Winnings overallWinnings = null;
+	protected Winnings overallWinnings;
 	
 	@Deprecated
 	protected Tip(){}
@@ -39,6 +32,9 @@ public abstract class Tip extends PersiObject
 	public Tip(Draw draw)
 	{
 		this.draw = draw;
+		
+		overallWinnings = null;
+		draw = null;
 		
 		submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}

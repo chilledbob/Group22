@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Entity
 public class WeeklyLottoTip extends SingleTip 
 {
-	protected int superNumber = -1;
+	protected int superNumber;
 	
 	@Deprecated
 	protected WeeklyLottoTip(){}
@@ -17,11 +17,13 @@ public class WeeklyLottoTip extends SingleTip
 	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw)
 	{
 		super(tipTicket, draw);
+		superNumber = -1;
 	}
 	
 	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip)
 	{
 		super(tipTicket, groupTip);
+		superNumber = -1;
 	}
 	
 	/**

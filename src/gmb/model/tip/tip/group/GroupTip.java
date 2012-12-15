@@ -4,38 +4,39 @@ import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
-import gmb.model.tip.draw.container.DrawEvaluationResult;
+import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 
 @Entity
 public abstract class GroupTip extends Tip 
 {
 	@ManyToOne
 	protected Group group;
-	protected boolean submitted = false;
+	protected boolean submitted;
 
 	protected int minimumStake;
 	protected int overallMinimumStake;
 
-	protected int currentOverallMinimumStake = 0;
+	protected int currentOverallMinimumStake;
 
 	protected Winnings averageWinnings;
-	protected List<Winnings> allWinnings = new LinkedList<Winnings>();
+	protected List<Winnings> allWinnings;
 
 	@OneToMany(mappedBy="groupTip")
-	protected List<SingleTip> tips = new LinkedList<SingleTip>();
+	protected List<SingleTip> tips;
 
 //"draw" is already used by Tip
 //	@ManyToOne(fetch=FetchType.LAZY)
@@ -48,6 +49,12 @@ public abstract class GroupTip extends Tip
 	public GroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw);
+		
+		allWinnings = new LinkedList<Winnings>();
+		tips = new LinkedList<SingleTip>();
+		currentOverallMinimumStake = 0;
+		submitted = false;
+		
 		this.group = group;
 		this.minimumStake = minimumStake;
 		this.overallMinimumStake = overallMinimumStake;
@@ -59,7 +66,7 @@ public abstract class GroupTip extends Tip
 	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
 	 * @return
 	 */
-	public CDecimal finalizeWinnings(DrawEvaluationResult drawEvaluationResult)
+	public CDecimal finalizeWinnings(WeeklyLottoDrawEvaluationResult drawEvaluationResult)
 	{	
 		if(allWinnings.size() > 0)
 		{
@@ -77,14 +84,14 @@ public abstract class GroupTip extends Tip
 			//send average winnings to all contributers:
 			for(SingleTip tip : tips)
 			{
-				Winnings newWinnings = new Winnings(tip, averageAmount, -1);
+				Winnings newWinnings = GmbFactory.new_Winnings(tip, averageAmount, -1);
 				newWinnings.init();
 
 				drawEvaluationResult.addWinnings(newWinnings);
 			}
 
-			overallWinnings = new Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
-			averageWinnings = new Winnings(this, averageAmount, -1);
+			overallWinnings = GmbFactory.new_Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
+			averageWinnings = GmbFactory.new_Winnings(this, averageAmount, -1);
 			
 			DB_UPDATE(); 
 			
@@ -159,22 +166,54 @@ public abstract class GroupTip extends Tip
 		int stake = getGroupMemberStake((tickets.getFirst()).getOwner());
 
 		if(tickets.size() >= minimumStake || stake != 0)
-		{
-			currentOverallMinimumStake += tips.size();
-					
+		{				
+			ArrayList<SingleTip> cleanupList = new ArrayList<SingleTip>();
+			
+			//first try whether it would work:
 			for(int i = 0; i < tickets.size(); ++i)
 			{
-				SingleTip tip = createSingleTip(tickets.get(i));
-
+				SingleTip tip = this.createSingleTipSimple(tickets.get(i));
+				
 				int result1 = tip.setTip(tipTips.get(i));
-				if(result1 != 0) return result1;	
+				if(result1 != 0) 
+				{
+					//reset changes of the try before error return:
+					for(int j = 0; j < i; ++j)
+						tickets.get(j).removeTip(cleanupList.get(j));
+					
+					return result1;	
+				}					
 
 				int result2 = tickets.get(i).addTip(tip);
-				if(result2 != 0) return result2;		
+				if(result2 != 0) 
+				{
+					//reset changes of the try before error return:
+					for(int j = 0; j < i; ++j)
+						tickets.get(j).removeTip(cleanupList.get(j));
+					
+					return result2;		
+				}
+				
+				//prepare for cleanup:
+				cleanupList.add(tip);		
+			}
+				
+			//reset changes of the try:
+			for(int i = 0; i < tickets.size(); ++i)
+				tickets.get(i).removeTip(cleanupList.get(i));
+			
+			//now for real:
+			for(int i = 0; i < tickets.size(); ++i)
+			{
+				SingleTip tip = this.createSingleTipPersistent(tickets.get(i));
+				tip.setTip(tipTips.get(i));
+				tickets.get(i).addTip(tip);
 				
 				this.tips.add(tip);
 			}
-				
+			
+			currentOverallMinimumStake += tipTips.size();
+			
 			DB_UPDATE(); 
 			
 			return 0;
@@ -183,7 +222,8 @@ public abstract class GroupTip extends Tip
 			return 6;
 	}
 	
-	protected abstract SingleTip createSingleTip(TipTicket ticket);
+	protected abstract SingleTip createSingleTipSimple(TipTicket ticket);
+	protected abstract SingleTip createSingleTipPersistent(TipTicket ticket);
 	
 	/**
 	 * removes a single tip if possible, can lead to annulation of the submission

@@ -2,7 +2,8 @@ package gmb.model.tip.draw;
 
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
-import gmb.model.tip.draw.container.DrawEvaluationResult;
+import gmb.model.ReturnBox;
+import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -13,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,29 +24,32 @@ import org.joda.time.Duration;
 @Entity
 public abstract class Draw extends PersiObject
 {
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int drawId;
-
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	
 
 	//temporary variables used for evaluation:
-	protected CDecimal prizePotential = new CDecimal(0);//temp
-	protected List<SingleTip> allSingleTips = new LinkedList<SingleTip>();//temp
+	protected CDecimal prizePotential;//temp
+	protected List<SingleTip> allSingleTips;//temp
 
-	protected DrawEvaluationResult drawEvaluationResult;
+	protected WeeklyLottoDrawEvaluationResult drawEvaluationResult;
 
 	@OneToMany
-	protected List<SingleTip> singleTips = new LinkedList<SingleTip>();
+	protected List<SingleTip> singleTips;
 	@OneToMany(mappedBy="draw")
-	protected List<GroupTip> groupTips = new LinkedList<GroupTip>();
+	protected List<GroupTip> groupTips;
 
 	@Deprecated
 	protected Draw(){}
 
 	public Draw(DateTime planedEvaluationDate)
 	{
+		prizePotential = new CDecimal(0);
+		allSingleTips = new LinkedList<SingleTip>();
+		
+		singleTips = new LinkedList<SingleTip>();
+		groupTips = new LinkedList<GroupTip>();
+		
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 	}
 
@@ -59,7 +60,7 @@ public abstract class Draw extends PersiObject
 	 */
 	public boolean evaluate()
 	{
-		drawEvaluationResult = new DrawEvaluationResult(1);
+		drawEvaluationResult = new WeeklyLottoDrawEvaluationResult(null);
 
 		evaluated = true;
 
@@ -107,8 +108,47 @@ public abstract class Draw extends PersiObject
 	 * 1 - the "SingleTT" is already associated with another "SingleTip"
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 */
-	public abstract int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip);
+	/**
+	 * [intended for direct usage by controller]
+	 * Return Code:
+	 * 0 - successful
+	 *-2 - not enough time left until the planned evaluation of the draw
+	 *-1 - the duration of the "PermaTT" has expired
+	 * 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 * 3 - a tipped number is smaller than 1 oder greater than 49
+	 * 4 - the same number has been tipped multiple times
+	 */
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	{
+		SingleTip tip = this.createSingleTipSimple(ticket);
 
+		//first try whether it would work:
+		int result1 = tip.setTip(tipTip);
+		if(result1 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result1), null);	
+
+		if(!this.addTip(tip)) return new ReturnBox<Integer, SingleTip>(new Integer(-2), null);
+		this.removeTip(tip);//clean up
+
+		int result2 = ticket.addTip(tip);
+		if(result2 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result2), null);
+
+		ticket.removeTip(tip);//clean up
+
+		//now for real:
+		tip = this.createSingleTipPersistent(ticket);
+		tip.setTip(tipTip);
+		this.addTip(tip);
+		ticket.addTip(tip);
+
+		DB_UPDATE();
+		
+		return new ReturnBox<Integer, SingleTip>(new Integer(0), tip);			
+	}
+
+	protected abstract SingleTip createSingleTipSimple(TipTicket ticket);
+	protected abstract SingleTip createSingleTipPersistent(TipTicket ticket);
+	
 	/**
 	 * [intended for direct usage by controller]
 	 * Returns true if there is still time to change or 'unsubmit' tips, otherwise false.
@@ -222,7 +262,7 @@ public abstract class Draw extends PersiObject
 	public List<SingleTip> getSingleTips(){ return singleTips; }
 	public List<GroupTip> getGroupTips(){ return groupTips; }
 
-	public DrawEvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
+	public WeeklyLottoDrawEvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
 
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }

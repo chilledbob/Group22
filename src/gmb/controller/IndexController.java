@@ -14,9 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.group.GroupManagement;
-import gmb.model.member.Admin;
 import gmb.model.member.Member;
 import gmb.model.member.MemberManagement;
+import gmb.model.member.MemberType;
 import gmb.model.member.container.Adress;
 import gmb.model.member.container.MemberData;
 
@@ -42,7 +42,7 @@ import gmb.model.member.container.MemberData;
 			Adress a = new Adress("m","n","o","p");
 			DateTime d = new DateTime();
 			MemberData md = new MemberData("q","j",d,"k","l",a);
-			Admin user = new Admin("bobob","pw",md);
+			Member user = new Member("bobob","pw",md,MemberType.Admin);
 
 			GmbPersistenceManager.add(a);
 			GmbPersistenceManager.add(md);

@@ -6,21 +6,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
 public class MemberManagement extends PersiObject
 {
-	@Id
-	protected int groupId = 1;
-	
 	@OneToMany(mappedBy="memberManagementID")
-	protected List<Member> members = new LinkedList<Member>();
+	protected List<Member> members;
 	@OneToMany(mappedBy="memberManagementID")
-	protected List<MemberDataUpdateRequest> requests = new LinkedList<MemberDataUpdateRequest>();
+	protected List<MemberDataUpdateRequest> requests;
 			
-	public MemberManagement(){}
+	@Deprecated
+	protected MemberManagement(){}
+	
+	public MemberManagement(Object dummy)
+	{
+		members = new LinkedList<Member>();
+		requests = new LinkedList<MemberDataUpdateRequest>();
+	}
 	
 	public void addMember(Member member){ members.add(member); DB_UPDATE(); }
 	

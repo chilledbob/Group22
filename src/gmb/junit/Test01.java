@@ -3,13 +3,16 @@ package gmb.junit;
 import static org.junit.Assert.*;
 
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
+import gmb.model.ReturnBox;
 import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.container.RealAccountData;
@@ -19,9 +22,10 @@ import gmb.model.financial.transaction.ExternalTransaction;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.group.GroupManagement;
-import gmb.model.member.Admin;
 import gmb.model.member.Customer;
+import gmb.model.member.Member;
 import gmb.model.member.MemberManagement;
+import gmb.model.member.MemberType;
 import gmb.model.member.container.Adress;
 import gmb.model.member.container.MemberData;
 import gmb.model.request.ExternalTransactionRequest;
@@ -29,7 +33,6 @@ import gmb.model.request.Notification;
 import gmb.model.request.RequestState;
 import gmb.model.request.data.MemberDataUpdateRequest;
 import gmb.model.request.data.RealAccountDataUpdateRequest;
-import gmb.model.request.group.GroupInvitation;
 import gmb.model.request.group.GroupMembershipApplication;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.DailyLottoDraw;
@@ -50,7 +53,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 
 public class Test01 
@@ -69,13 +74,13 @@ public class Test01
 	
 	public Customer createStdCustomer(String name)
 	{
-		Adress stdAdress = new Adress("SomeStreet", "111", "010101", "SomeOtherCity");
-		MemberData stdData = new MemberData(name, "Mueller", new DateTime(1970,10,16,0,0), "0735643", "someone@mail.gmb", stdAdress);
-		LotteryBankAccount stdbankacc = new LotteryBankAccount(new RealAccountData("0303003", "0340400"));
-		return  new Customer(name+"_nick", "notsafepassword", stdData, stdbankacc);
+		Adress stdAdress = GmbFactory.new_Adress("SomeStreet", "111", "010101", "SomeOtherCity");
+		MemberData stdData = GmbFactory.new_MemberData(name, "Mueller", new DateTime(1970,10,16,0,0), "0735643", "someone@mail.gmb", stdAdress);
+		LotteryBankAccount stdbankacc = GmbFactory.new_LotteryBankAccount(GmbFactory.new_RealAccountData("0303003", "0340400"));
+		return  GmbFactory.new_Customer(name+"_nick", "notsafepassword", stdData, stdbankacc);
 	}
 	
-	Admin admin1;
+	Member admin1;
 	Customer cus1;
 	Customer cus2;
 	Customer cus3;
@@ -87,34 +92,36 @@ public class Test01
 	Group group3;
 	Group group4;
 	
-	@SuppressWarnings("unchecked")
+//	@BeforeClass
+//	public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
+	
 	@Test
 	public void MasterTest()
 	{
 		//=========================================================================================================================//USER TESTs NO 1
 		
-		FinancialManagement financialManagement = new FinancialManagement(new TipTicketPrices(), new ReceiptsDistribution());
-		MemberManagement memberManagement = new MemberManagement();
-		GroupManagement groupManagement = new GroupManagement();
-		TipManagement tipManagement = new TipManagement();
+		FinancialManagement financialManagement = new FinancialManagement(GmbFactory.new_TipTicketPrices(), GmbFactory.new_ReceiptsDistribution());
+		MemberManagement memberManagement = GmbFactory.new_MemberManagement();
+		GroupManagement groupManagement = GmbFactory.new_GroupManagement();
+		TipManagement tipManagement = GmbFactory.new_TipManagement();
 
 		Lottery.Instanciate(financialManagement, memberManagement, groupManagement, tipManagement);
 		Lottery.getInstance().getTimer().setReferenceDate(new DateTime(2013,1,1,0,0));//HAPPY NEW YEAR! ..it's now..belief it!  
 		printCurrentTimeToConsol("Lottery has opend!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		Adress admin1Adress = new Adress("Eich Strasse", "18", "90378", "SomeTown");
-		MemberData admin1Data = new MemberData("Heinrich", "Siegel", new DateTime(1950,1,1,0,0), "892537", "heino@mail.gmb", admin1Adress);
-		admin1 = new Admin("MegaAdmin", "secretpasswordnonumbers", admin1Data);
+		Adress admin1Adress = GmbFactory.new_Adress("Eich Strasse", "18", "90378", "SomeTown");
+		MemberData admin1Data = GmbFactory.new_MemberData("Heinrich", "Siegel", new DateTime(1950,1,1,0,0), "892537", "heino@mail.gmb", admin1Adress);
+		admin1 = GmbFactory.new_Member("MegaAdmin", "secretpasswordnonumbers", admin1Data, MemberType.Admin);
 		Lottery.getInstance().getMemberManagement().addMember(admin1);
 		
 		printCurrentTimeToConsol("We have an Admin now!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addHours(8);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		Adress cus1Adress = new Adress("PimpfStreet", "044", "08653", "PimpfCity");
-		MemberData cus1Data = new MemberData("Amanda", "Jiggsaw", new DateTime(1970,10,16,0,0), "0735643", "me@mail.gmb", cus1Adress);
-		LotteryBankAccount cus1bankacc = new LotteryBankAccount(new RealAccountData("869823", "0387934"));
-		cus1 = new Customer("MiniAmanda", "iwannaplayagame", cus1Data, cus1bankacc);
+		Adress cus1Adress = GmbFactory.new_Adress("PimpfStreet", "044", "08653", "PimpfCity");
+		MemberData cus1Data = GmbFactory.new_MemberData("Amanda", "Jiggsaw", new DateTime(1970,10,16,0,0), "0735643", "me@mail.gmb", cus1Adress);
+		LotteryBankAccount cus1bankacc = GmbFactory.new_LotteryBankAccount(GmbFactory.new_RealAccountData("869823", "0387934"));
+		cus1 = GmbFactory.new_Customer("MiniAmanda", "iwannaplayagame", cus1Data, cus1bankacc);
 		Lottery.getInstance().getMemberManagement().addMember(cus1);
 		
 		printCurrentTimeToConsol("First Customer!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
@@ -155,7 +162,7 @@ public class Test01
 			}
 			else
 			{
-				request.getMember().addNotification(new Notification("No so much money! You evil!"));
+				request.getMember().addNotification("No so much money! You evil!");
 			}
 		}
 		System.out.println("");
@@ -172,11 +179,11 @@ public class Test01
 		printCurrentTimeToConsol("Most people got their money!");//<-------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addMinutes(23);//<-------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		Adress cus2Adress = new Adress("Bahn Strasse", "96", "436747", "BahnStadt");
-		MemberData cus2Data = new MemberData("Heino", "Heini", new DateTime(1980,10,10,0,0), "74375878", "heinoWHOALREADYTOOKMYNAME@DieVerdammteBahnKommtIMMERzuSpaet.gmb", cus2Adress);
+		Adress cus2Adress = GmbFactory.new_Adress("Bahn Strasse", "96", "436747", "BahnStadt");
+		MemberData cus2Data = GmbFactory.new_MemberData("Heino", "Heini", new DateTime(1980,10,10,0,0), "74375878", "heinoWHOALREADYTOOKMYNAME@DieVerdammteBahnKommtIMMERzuSpaet.gmb", cus2Adress);
 		
 		cus2.sendDataUpdateRequest(cus2Data, "I want real member data! You've created me with default data! D:");
-		cus3.getBankAccount().sendDataUpdateRequest(new RealAccountData("839843789", "7885758"), "Hello, please accept my update. Thanks.");
+		cus3.getBankAccount().sendDataUpdateRequest(GmbFactory.new_RealAccountData("839843789", "7885758"), "Hello, please accept my update. Thanks.");
 		
 		//tired admin work, accepting everything:
 		for(MemberDataUpdateRequest request : Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests())
@@ -195,12 +202,12 @@ public class Test01
 		
 		Lottery.getInstance().getTimer().addHours(1);//<-------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		group1 = new Group("Cutie Mark Crusaders", cus1, "We are a group of people who like to play all kind of lotto and stuff! SRSLY!");
+		group1 = GmbFactory.new_Group("Cutie Mark Crusaders", cus1, "We are a group of people who like to play all kind of lotto and stuff! SRSLY!");
 		group1.sendGroupInvitation(cus2, "Love you, come in my group!");
-		GroupInvitation inv1 = group1.sendGroupInvitation(cus5, "Love for all! Even for ya!");
+		GroupMembershipApplication inv1 = group1.sendGroupInvitation(cus5, "Love for all! Even for ya!");
 		group1.applyForMembership(cus3, "Hello, please accept!");
 		
-		group2 = new Group("ExclusiveGroupDLX", cus5, "Only rich people without real money allowed!");
+		group2 = GmbFactory.new_Group("ExclusiveGroupDLX", cus5, "Only rich people without real money allowed!");
 		group2.applyForMembership(cus4, "");
 		group2.sendGroupInvitation(cus2, "My group DLX! Come!");
 		group2.applyForMembership(cus3, "Hello, please accept!");
@@ -208,7 +215,7 @@ public class Test01
 		Lottery.getInstance().getTimer().addHours(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
 		//smart cus2 browsing his lists:
-		for(GroupInvitation invitation : cus2.getGroupInvitations())
+		for(GroupMembershipApplication invitation : cus2.getGroupInvitations())
 		{
 			if(invitation.getGroup() == group1)
 			{
@@ -227,7 +234,7 @@ public class Test01
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
 		//smart cus1(groupadmin) browsing group1's lists:
-		for(GroupInvitation invitation : group1.getGroupInvitations())
+		for(GroupMembershipApplication invitation : group1.getGroupInvitations())
 		{
 			if(invitation.getMember() == cus5)
 				invitation.withdraw();//if Heino says so then better not...
@@ -253,7 +260,7 @@ public class Test01
 		}
 		
 		//stupid cus5 browsing his lists:
-		for(GroupInvitation invitation : cus5.getGroupInvitations())
+		for(GroupMembershipApplication invitation : cus5.getGroupInvitations())
 		{
 			if(invitation.getGroup() == group1)
 				invitation.accept();//tries to accept even though the request has already been withdrawn (stupid guy) [the View should actually hide this possibility]
@@ -321,46 +328,40 @@ public class Test01
 		assertEquals(false, group3.getGroupMembers().contains(cus1));
 		assertEquals(false, group3.getGroupMembers().contains(cus4));
 		assertEquals(true, group3.getGroupAdmin() == null);
-		assertEquals(RequestState.WITHDRAWN, ((LinkedList<GroupInvitation>)cus3.getGroupInvitations()).getLast().getState());
+		assertEquals(RequestState.WITHDRAWN, ((LinkedList<GroupMembershipApplication>)cus3.getGroupInvitations()).getLast().getState());
 		//=========================================================================================================================//TIPTICKET TESTs NO 1
 		
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		WeeklyLottoSTT ticket0 = new WeeklyLottoSTT();
-		WeeklyLottoSTT ticket1 = new WeeklyLottoSTT();
-		DailyLottoSTT ticket2 = new DailyLottoSTT();
+
 		CDecimal oriCredit1 = cus1.getBankAccount().getCredit();
-		ticket0.purchase(cus1);
-		ticket1.purchase(cus1);
-		ticket2.purchase(cus1);
+		WeeklyLottoSTT ticket0 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var2;
+		WeeklyLottoSTT ticket1 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var2;
+		DailyLottoSTT ticket2 = GmbFactory.createAndPurchase_DailyLottoSTT(cus1).var2;
 		
-		TotoSTT ticket3 = new TotoSTT();
-		DailyLottoPTT ticket4 = new DailyLottoPTT(PTTDuration.MONTH);
 		CDecimal oriCredit2 = cus2.getBankAccount().getCredit();
-		ticket3.purchase(cus2);
-		ticket4.purchase(cus2);
+		TotoSTT ticket3 = GmbFactory.createAndPurchase_TotoSTT(cus2).var2;
+		DailyLottoPTT ticket4 = GmbFactory.createAndPurchase_DailyLottoPTT(cus2, PTTDuration.MONTH).var2;
 		
-		WeeklyLottoPTT ticket5 = new WeeklyLottoPTT(PTTDuration.YEAR);
-		DailyLottoPTT ticket6 = new DailyLottoPTT(PTTDuration.HALFYEAR);
+		
 		CDecimal oriCredit3 = cus3.getBankAccount().getCredit();
-		ticket5.purchase(cus3);
-		ticket6.purchase(cus3);
+		WeeklyLottoPTT ticket5 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus3, PTTDuration.YEAR).var2;
+		DailyLottoPTT ticket6 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.HALFYEAR).var2;
 		
-		WeeklyLottoSTT ticket7 = new WeeklyLottoSTT();
 		CDecimal oriCredit4 = cus4.getBankAccount().getCredit();
-		ticket7.purchase(cus4);
+		WeeklyLottoSTT ticket7 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus4).var2;
 		
-		WeeklyLottoPTT ticket8 = new WeeklyLottoPTT(PTTDuration.YEAR);
-		DailyLottoPTT ticket9 = new DailyLottoPTT(PTTDuration.YEAR);
-		boolean tp_res1 = ticket8.purchase(cus5);
-		ticket9.purchase(cus5);
+
+		ReturnBox<Integer, WeeklyLottoPTT> ticket8_box= GmbFactory.createAndPurchase_WeeklyLottoPTT(cus5, PTTDuration.YEAR);
+
+		DailyLottoPTT ticket9 = GmbFactory.createAndPurchase_DailyLottoPTT(cus5, PTTDuration.YEAR).var2;
 		
-		TipTicketPrices prices = new TipTicketPrices();
+		TipTicketPrices prices = new TipTicketPrices(null);
 		
 		assertEquals(0, ticket4.getDurationType());
 		assertEquals(2, ticket5.getDurationType());
 		assertEquals(1, ticket6.getDurationType());
-		assertEquals(2, ticket8.getDurationType());
+		assertEquals(2, ticket8_box.var2.getDurationType());
 		assertEquals(2, ticket9.getDurationType());
 		
 		assertEquals(1, cus1.getDailyLottoSTTs().size());
@@ -378,7 +379,7 @@ public class Test01
 		assertEquals(1, cus4.getWeeklyLottoSTTs().size());
 		assertEquals(oriCredit4.subtract(prices.getWeeklyLottoSTTPrice()), cus4.getBankAccount().getCredit());
 		
-		assertFalse(tp_res1);
+		assertEquals(1, ticket8_box.var1.intValue());
 		
 		assertEquals(0, cus5.getWeeklyLottoPTTs().size());
 		assertEquals(0, cus5.getDailyLottoPTTs().size());
@@ -388,24 +389,15 @@ public class Test01
 		
 		WeeklyLottoSTT[] cus3WLSTTs = new WeeklyLottoSTT[15];
 		for(int i = 0; i < 15; ++i)
-		{
-			cus3WLSTTs[i] = new WeeklyLottoSTT();
-			cus3WLSTTs[i].purchase(cus3);
-		}
+			cus3WLSTTs[i] = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus3).var2;
 		
 		WeeklyLottoSTT[] cus1WLSTTs = new WeeklyLottoSTT[5];
 		for(int i = 0; i < 5; ++i)
-		{
-			cus1WLSTTs[i] = new WeeklyLottoSTT();
-			cus1WLSTTs[i].purchase(cus1);
-		}
+			cus1WLSTTs[i] = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var2;
 		
 		WeeklyLottoSTT[] cus2WLSTTs = new WeeklyLottoSTT[5];
 		for(int i = 0; i < 5; ++i)
-		{
-			cus2WLSTTs[i] = new WeeklyLottoSTT();
-			cus2WLSTTs[i].purchase(cus2);
-		}
+			cus2WLSTTs[i] = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus2).var2;
 		
 		printCurrentTimeToConsol("Some people purchased TipTickets.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
 		
@@ -419,11 +411,11 @@ public class Test01
 //		TotoEvaluation eval1 = new TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
 		
 		//cus1:
-		int rcode1 = draw1.createAndSubmitSingleTip(ticket1, new int[]{1,2,3,4,5,6});//6 hits!
+		int rcode1 = draw1.createAndSubmitSingleTip(ticket1, new int[]{1,2,3,4,5,6}).var1.intValue();//6 hits!
 		((WeeklyLottoTip)(ticket1.getTip())).setSuperNumber(8);//+superNumber!
 		
 		//cus3:
-		int rcode2 = draw1.createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7});//5 hits + extraNumber
+		int rcode2 = draw1.createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7}).var1.intValue();//5 hits + extraNumber
 		((WeeklyLottoTip)(ticket5.getLastTip())).setSuperNumber(0);//irrelevant
 		
 		assertEquals(0, rcode1);
@@ -445,7 +437,7 @@ public class Test01
 		//=========================================================================================================================//GROUPTIP
 
 		//cus1 creates group tip:
-		WeeklyLottoGroupTip gwtip1 = new WeeklyLottoGroupTip(draw1, group1, 2, 5);
+		WeeklyLottoGroupTip gwtip1 = GmbFactory.new_WeeklyLottoGroupTip(draw1, group1, 2, 5);
 		
 		//cus1 contributes tips:
 		LinkedList<int[]> cus1_tipTips1 = new LinkedList<int[]>();
@@ -520,7 +512,7 @@ public class Test01
 		assertEquals(false, gwtip1.unsubmit());
 
 		//cus4:
-		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}));
+		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}).var1.intValue());
 		
 		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't been 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addMinutes(145);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
@@ -551,36 +543,36 @@ public class Test01
 			++i1;
 		}
 		
-		Object[] tipsPerCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
+		ArrayList<LinkedList<SingleTip>> tipsPerCategory = draw1.getDrawEvaluationResult().getTipsInCategory();
 		for(int i = 0; i < 8; ++i)
 		{
-			System.out.print(((LinkedList<SingleTip>)(tipsPerCategory[i])).size());
+			System.out.print(tipsPerCategory.get(i).size());
 			System.out.print(" ");
 		}
 		
 		System.out.println(" ");
 		
 		//--------------------------------------------------------//check whether lower prize categories have lower/equal per tip winnings:
-		CDecimal[] categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
+		ArrayList<CDecimal> categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
-			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0 && ((LinkedList<SingleTip>)(tipsPerCategory[i-1])).size() > 0)
-			assertEquals(true, categoryWinnings[i].compareTo(categoryWinnings[i-1]) < 1);
+			if(tipsPerCategory.get(i).size() > 0 && tipsPerCategory.get(i-1).size() > 0)
+			assertEquals(true, categoryWinnings.get(i).compareTo(categoryWinnings.get(i-1)) < 1);
 		//--------------------------------------------------------//
 		
 		//--------------------------------------------------------//check whether the distribution of the winners due sums up correctly:
-		CDecimal[] jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
-		CDecimal[] jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
+		ArrayList<CDecimal> jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
+		ArrayList<CDecimal> jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
 		
 		CDecimal checkWinnersDue = new CDecimal(0);
 		for(int i = 0; i < 8; ++i)
 		{
-			if(((LinkedList<SingleTip>)(tipsPerCategory[i])).size() > 0)
+			if(tipsPerCategory.get(i).size() > 0)
 			{
-				checkWinnersDue = checkWinnersDue.add(categoryWinnings[i].multiply(new CDecimal(((LinkedList<SingleTip>)(tipsPerCategory[i])).size())));
+				checkWinnersDue = checkWinnersDue.add(categoryWinnings.get(i).multiply(new CDecimal(tipsPerCategory.get(i).size())));
 			}
 			else
 			{
-				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter[i]);
+				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter.get(i));
 			}
 		}
 		checkWinnersDue = checkWinnersDue.add(draw1.getDrawEvaluationResult().getNormalizationAmount());
