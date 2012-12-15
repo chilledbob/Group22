@@ -2,6 +2,7 @@ package gmb.model.tip.draw.container;
 
 import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
 import gmb.model.PersiObject;
 
 import java.util.ArrayList;
@@ -102,7 +103,8 @@ public class WeeklyLottoDrawEvaluationResult extends PersiObject
 
 	public CDecimal initReceiptsDistributionResult(CDecimal drawReceipts)
 	{
-		receiptsDistributionResult = new ReceiptsDistributionResult(drawReceipts);
+		receiptsDistributionResult = GmbFactory.new_ReceiptsDistributionResult(drawReceipts);
+		
 		DB_UPDATE(); 
 
 		return receiptsDistributionResult.getWinnersDue();

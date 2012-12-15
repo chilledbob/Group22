@@ -76,7 +76,7 @@ public class Group extends PersiObject
 		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
-		this.groupAdmin.addGroup(this);
+//		this.groupAdmin.addGroup(this);
 		
 		groupMembers =  new LinkedList<Customer>();
 		
@@ -88,7 +88,7 @@ public class Group extends PersiObject
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
-		Lottery.getInstance().getGroupManagement().addGroup(this);
+//		Lottery.getInstance().getGroupManagement().addGroup(this);
 	}
 	
 	/**

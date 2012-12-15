@@ -59,11 +59,6 @@ public class Customer extends Member
 		
 		this.lotteryBankAccount = lotteryBankAccount;
 		
-		//currently not possible
-		//membermanager must be updated first
-		//better do this separately
-		lotteryBankAccount.setOwner(this);
-		
 		groups = new LinkedList<Group>();
 		
 		weeklyLottoSTTs = new LinkedList<WeeklyLottoSTT>();

@@ -1,7 +1,6 @@
 package gmb.model.tip.draw;
 
 import gmb.model.GmbFactory;
-import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
@@ -30,7 +29,6 @@ public class DailyLottoDraw extends Draw
 	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
-		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 
 	public boolean evaluate() 

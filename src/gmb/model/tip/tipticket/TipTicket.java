@@ -1,6 +1,7 @@
 package gmb.model.tip.tipticket;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
 import gmb.model.PersiObject;
 
 import java.util.Date;
@@ -67,7 +68,7 @@ public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, D
 
 			perTicketPaidPurchasePrice = this.getPricePerTicket();
 
-			new TicketPurchase(this);
+			(GmbFactory.new_TicketPurchase(this)).init();
 			this.addToOwner();
 
 			DB_UPDATE(); 

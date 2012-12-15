@@ -37,7 +37,7 @@ public class ReceiptsDistributionResult extends PersiObject
 		//normalize receipts:
 		treasuryDue = treasuryDue.add(drawReceipts.subtract(winnersDue.add(treasuryDue.add(lotteryTaxDue.add(managementDue)))));
 		
-		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
+//		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
 	}
 	
 	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); DB_UPDATE(); }

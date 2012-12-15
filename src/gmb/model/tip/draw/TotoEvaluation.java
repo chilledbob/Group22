@@ -3,7 +3,6 @@ package gmb.model.tip.draw;
 import java.util.ArrayList;
 
 import gmb.model.GmbFactory;
-import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameData;
@@ -24,7 +23,7 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	protected ArrayList<FootballGameData> results;
+	protected ArrayList<FootballGameData> games;
 	
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -32,11 +31,10 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> results)
+	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> games)
 	{
 		super(planedEvaluationDate);
-		this.results = results;
-		Lottery.getInstance().getTipManagement().addDraw(this);
+		this.games = games;
 	}
 	
 	public boolean evaluate() 
@@ -62,7 +60,7 @@ public class TotoEvaluation extends Draw
 		return false;
 	}
 	
-	public void setResult(ArrayList<FootballGameData> results){ this.results = results; DB_UPDATE(); }
+	public void setGames(ArrayList<FootballGameData> games){ this.games = games; DB_UPDATE(); }
 	
 	/**
 	 * [intended for direct usage by controller]
@@ -80,11 +78,11 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public ArrayList<FootballGameData> getFootballGameResults(){ return results; }
+	public ArrayList<FootballGameData> getGames(){ return games; }
 	
 	public int[] getResult()
 	{ 
-		int[] goals = new int[results.size() * 2];
+		int[] goals = new int[games.size() * 2];
 		
 //		for(int i = 0; i < results.size(); ++i)
 //		{

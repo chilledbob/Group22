@@ -44,7 +44,10 @@ public class TicketPurchase extends InternalTransaction
 	{
 		super(ticket.getOwner(),  ticket.getPrice().negate());
 		this.ticket = ticket;
-		
+	}
+	
+	public void init()
+	{
 		super.init();//update user credit		
 		Lottery.getInstance().getFinancialManagement().addTransaction(this);
 	}

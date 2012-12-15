@@ -40,9 +40,7 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
-
 		result = null;
-		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 
 	/**
