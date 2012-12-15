@@ -147,6 +147,8 @@ public abstract class Draw extends PersiObject
 		this.addTip(tip);
 		ticket.addTip(tip);
 
+		DB_UPDATE();
+		
 		return new ReturnBox<Integer, SingleTip>(new Integer(0), tip);			
 	}
 

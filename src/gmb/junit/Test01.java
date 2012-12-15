@@ -53,7 +53,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 
 public class Test01 
@@ -89,6 +91,9 @@ public class Test01
 	Group group2;
 	Group group3;
 	Group group4;
+	
+//	@BeforeClass
+//	public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
 	
 	@Test
 	public void MasterTest()
@@ -157,7 +162,7 @@ public class Test01
 			}
 			else
 			{
-				request.getMember().addNotification(GmbFactory.new_Notification("No so much money! You evil!"));
+				request.getMember().addNotification("No so much money! You evil!");
 			}
 		}
 		System.out.println("");

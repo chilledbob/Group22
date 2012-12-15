@@ -1,5 +1,6 @@
 package gmb.model.group;
 
+import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.member.Customer;
@@ -99,7 +100,7 @@ public class Group extends PersiObject
 	 */
 	public GroupMembershipApplication applyForMembership(Customer customer, String note)
 	{
-		GroupMembershipApplication application = new GroupMembershipApplication(this, customer, note);
+		GroupMembershipApplication application =  GmbFactory.new_GroupMembershipApplication(this, customer, note);
 
 		customer.addGroupMembershipApplication(application);
 		this.groupMembershipApplications.add(application);
@@ -117,7 +118,7 @@ public class Group extends PersiObject
 	 */
 	public GroupMembershipApplication sendGroupInvitation(Customer customer, String note)
 	{
-		GroupMembershipApplication invitation = new GroupMembershipApplication(this, customer, note);
+		GroupMembershipApplication invitation =  GmbFactory.new_GroupMembershipApplication(this, customer, note);
 
 		customer.addGroupInvitation(invitation);
 		this.groupInvitations.add(invitation);
@@ -135,7 +136,7 @@ public class Group extends PersiObject
 	 */
 	public GroupAdminRightsTransfereOffering sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
-		GroupAdminRightsTransfereOffering offering = new GroupAdminRightsTransfereOffering(this, groupMember, note);
+		GroupAdminRightsTransfereOffering offering =  GmbFactory.new_GroupAdminRightsTransfereOffering(this, groupMember, note);
 
 		groupMember.addGroupAdminRightsTransfereOffering(offering);
 		this.groupAdminRightsTransfereOfferings.add(offering);

@@ -217,7 +217,7 @@ public class WeeklyLottoDraw extends Draw
 
 			for(SingleTip tip : category.get(i))
 			{
-				Winnings newWinnings = new Winnings(tip, categoryWinnings.get(i), i + 1);
+				Winnings newWinnings = GmbFactory.new_Winnings(tip, categoryWinnings.get(i), i + 1);
 				tip.setOverallWinnings(newWinnings);
 
 				if(tip.getGroupTip() != null)

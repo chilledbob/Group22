@@ -1,4 +1,5 @@
 package gmb.model.financial;
+import gmb.model.GmbFactory;
 import gmb.model.PersiObject;
 import gmb.model.financial.container.Jackpots;
 import gmb.model.financial.container.LotteryCredits;
@@ -63,9 +64,9 @@ public class FinancialManagement extends PersiObject
 
 	public FinancialManagement(TipTicketPrices tipTicketPrices, ReceiptsDistribution receiptsDistribution)
 	{	
-		lotteryCredits = new LotteryCredits(null);
-		jackpots = new Jackpots(null);
-		prizeCategories = new PrizeCategories(null);
+		lotteryCredits = GmbFactory.new_LotteryCredits();
+		jackpots = GmbFactory.new_Jackpots();
+		prizeCategories = GmbFactory.new_PrizeCategories();
 
 		this.tipTicketPrices = tipTicketPrices;
 		this.receiptsDistribution = receiptsDistribution;

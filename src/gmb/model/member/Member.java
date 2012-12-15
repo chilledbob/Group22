@@ -1,5 +1,6 @@
 package gmb.model.member;
 
+import gmb.model.GmbFactory;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.member.container.MemberData;
@@ -109,13 +110,13 @@ public class Member extends PersistentUser
 	 * [intended for direct usage by controller]
 	 * @param notification
 	 */
-	public void addNotification(Notification notification){ this.notifications.add(notification); DB_UPDATE(); }
+//	public void addNotification(Notification notification){ this.notifications.add(notification); DB_UPDATE(); }
 	
 	/**
 	 * [intended for direct usage by controller]
 	 * @param notification
 	 */
-	public void addNotification(String notification){ this.notifications.add(new Notification(notification)); DB_UPDATE(); }
+	public void addNotification(String notification){ this.notifications.add(GmbFactory.new_Notification(notification)); DB_UPDATE(); }
 
 	public MemberData getMemberData(){ return memberData; }	
 	public DateTime getRegistrationDate(){ return new DateTime(registrationDate); }
@@ -144,7 +145,7 @@ public class Member extends PersistentUser
 	 */
 	public void sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
-		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
+		MemberDataUpdateRequest request =  GmbFactory.new_MemberDataUpdateRequest(updatedData, this, note);
 
 		Lottery.getInstance().getMemberManagement().addMemberDataUpdateRequest(request);
 

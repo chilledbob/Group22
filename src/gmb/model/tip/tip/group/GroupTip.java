@@ -10,6 +10,7 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -83,14 +84,14 @@ public abstract class GroupTip extends Tip
 			//send average winnings to all contributers:
 			for(SingleTip tip : tips)
 			{
-				Winnings newWinnings = new Winnings(tip, averageAmount, -1);
+				Winnings newWinnings = GmbFactory.new_Winnings(tip, averageAmount, -1);
 				newWinnings.init();
 
 				drawEvaluationResult.addWinnings(newWinnings);
 			}
 
-			overallWinnings = new Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
-			averageWinnings = new Winnings(this, averageAmount, -1);
+			overallWinnings = GmbFactory.new_Winnings(this, averageAmount.multiply(new CDecimal(allWinnings.size())), highestPrizeCategory);
+			averageWinnings = GmbFactory.new_Winnings(this, averageAmount, -1);
 			
 			DB_UPDATE(); 
 			

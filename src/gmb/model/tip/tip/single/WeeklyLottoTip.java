@@ -1,10 +1,7 @@
 package gmb.model.tip.tip.single;
 
-import java.util.LinkedList;
-
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.group.GroupTip;
-import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;

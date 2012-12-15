@@ -40,11 +40,11 @@ public class TipTicketPrices extends PersiObject
 		  dailyLottoSTTPrice = new CDecimal("0.50");
 		
 		  weeklyLottoPTTPrice_Month = new CDecimal("2.75");
-		  dailyLottoPTTPrice_Month = new CDecimal("1.75");
+		  dailyLottoPTTPrice_Month = new CDecimal("12");
 		  weeklyLottoPTTPrice_HalfYear = new CDecimal("14");
-		  dailyLottoPTTPrice_HalfYear = new CDecimal("9");
+		  dailyLottoPTTPrice_HalfYear = new CDecimal("65");
 		  weeklyLottoPTTPrice_Year = new CDecimal("25");
-		  dailyLottoPTTPrice_Year = new CDecimal("15");
+		  dailyLottoPTTPrice_Year = new CDecimal("110");
 	}
 	
 	public TipTicketPrices(CDecimal weeklyLottoSTTPrice, CDecimal totoSTTPrice, CDecimal dailyLottoSTTPrice, 

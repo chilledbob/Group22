@@ -57,8 +57,95 @@ import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 public class GmbFactory 
 {
-	//--------------------------------------------------------------------------------------------------------------------------------> FOR USAGE IN CONTROLLER:
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//====================================================================================================================// FOR USAGE IN CONTROLLER:
 
+	////financial:
+	//container:
+	
+	public static RealAccountData new_RealAccountData(String bankCode, String accountNumber)
+	{
+		RealAccountData obj = new RealAccountData(bankCode, accountNumber);
+		return (RealAccountData) obj.DB_ADD();
+	}
+	
+	//..
+	public static LotteryBankAccount new_LotteryBankAccount(RealAccountData realAccountData)
+	{
+		LotteryBankAccount obj = new LotteryBankAccount(realAccountData);
+		return (LotteryBankAccount) obj.DB_ADD();
+	}
+	
+	////group:
+	public static Group new_Group(String name, Customer groupAdmin, String infoText)
+	{
+		Group obj = new Group(name, groupAdmin, infoText);
+		obj = (Group) obj.DB_ADD();
+		
+		obj.getGroupAdmin().addGroup(obj);
+		Lottery.getInstance().getGroupManagement().addGroup(obj);
+		
+		return obj;
+	}
+	
+	//////tip:
+	////draw:
+	public static DailyLottoDraw new_DailyLottoDraw(DateTime planedEvaluationDate)
+	{
+		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
+		obj = (DailyLottoDraw) obj.DB_ADD();
+		Lottery.getInstance().getTipManagement().addDraw(obj);
+		
+		return obj;
+	}
+	
+	public static TotoEvaluation new_TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> results)
+	{
+		TotoEvaluation obj = new TotoEvaluation(planedEvaluationDate, results);
+		obj = (TotoEvaluation) obj.DB_ADD();
+		Lottery.getInstance().getTipManagement().addDraw(obj);
+		
+		return obj;
+	}
+	
+	public static WeeklyLottoDraw new_WeeklyLottoDraw(DateTime planedEvaluationDate)
+	{
+		WeeklyLottoDraw obj = new WeeklyLottoDraw(planedEvaluationDate);
+		obj = (WeeklyLottoDraw) obj.DB_ADD();
+		Lottery.getInstance().getTipManagement().addDraw(obj);
+		
+		return obj;
+	}
+	
+	////tip:
+	//group:
+	public static DailyLottoGroupTip new_DailyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
+	{
+		DailyLottoGroupTip obj = new DailyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
+		obj = (DailyLottoGroupTip) obj.DB_ADD();
+		group.addGroupTip(obj);
+		
+		return obj;
+	}
+	
+	public static TotoGroupTip new_TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
+	{
+		TotoGroupTip obj = new TotoGroupTip(draw, group, minimumStake, overallMinimumStake);
+		obj = (TotoGroupTip) obj.DB_ADD();
+		group.addGroupTip(obj);
+		
+		return obj;
+	}
+	
+	public static WeeklyLottoGroupTip new_WeeklyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
+	{
+		WeeklyLottoGroupTip obj = new WeeklyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
+		obj = (WeeklyLottoGroupTip) obj.DB_ADD();
+		group.addGroupTip(obj);
+		
+		return obj;
+	}
+	
 	////tipticket:
 	//single:
 	public static ReturnBox<Integer, DailyLottoSTT> createAndPurchase_DailyLottoSTT(Customer customer)
@@ -156,7 +243,11 @@ public class GmbFactory
 		return (Customer) obj.DB_ADD();
 	}
 	
-	//------------------------------------------------------------------------------------------------------------------------------------------------> ONLY MODEL INTERNALLY USED:
+	//====================================================================================================================//
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//========================================================================================================================// ONLY MODEL INTERNALLY USED:
 	
 	////financial:
 	//container:
@@ -176,12 +267,6 @@ public class GmbFactory
 	{
 		PrizeCategories obj = new PrizeCategories(null);
 		return (PrizeCategories) obj.DB_ADD();
-	}
-	
-	public static RealAccountData new_RealAccountData(String bankCode, String accountNumber)
-	{
-		RealAccountData obj = new RealAccountData(bankCode, accountNumber);
-		return (RealAccountData) obj.DB_ADD();
 	}
 	
 	public static ReceiptsDistribution new_PrizeCategories(int winnersDue, int treasuryDue, int lotteryTaxDue, int managementDue)
@@ -230,30 +315,20 @@ public class GmbFactory
 		return (TicketPurchase) obj.DB_ADD();
 	}
 	
+	public static ExternalTransaction new_ExternalTransaction(Customer affectedCustomer, CDecimal amount)
+	{
+		ExternalTransaction obj = new ExternalTransaction(affectedCustomer, amount);
+		return (ExternalTransaction) obj.DB_ADD();
+	}
+	
+	//..
 	public static FinancialManagement new_FinancialManagement(TipTicketPrices tipTicketPrices, ReceiptsDistribution receiptsDistribution)
 	{
 		FinancialManagement obj = new FinancialManagement(tipTicketPrices, receiptsDistribution);
 		return (FinancialManagement) obj.DB_ADD();
 	}
 	
-	public static LotteryBankAccount new_LotteryBankAccount(RealAccountData realAccountData)
-	{
-		LotteryBankAccount obj = new LotteryBankAccount(realAccountData);
-		return (LotteryBankAccount) obj.DB_ADD();
-	}
-	
 	////group:
-	public static Group new_Group(String name, Customer groupAdmin, String infoText)
-	{
-		Group obj = new Group(name, groupAdmin, infoText);
-		obj = (Group) obj.DB_ADD();
-		
-		obj.getGroupAdmin().addGroup(obj);
-		Lottery.getInstance().getGroupManagement().addGroup(obj);
-		
-		return obj;
-	}
-	
 	public static GroupManagement new_GroupManagement()
 	{
 		GroupManagement obj = new GroupManagement(null);
@@ -294,7 +369,7 @@ public class GmbFactory
 		return (GroupMembershipApplication) obj.DB_ADD();
 	}
 	
-	public static ExternalTransactionRequest new_GroupRequest(ExternalTransaction transaction, String note)
+	public static ExternalTransactionRequest new_ExternalTransactionRequest(ExternalTransaction transaction, String note)
 	{
 		ExternalTransactionRequest obj = new ExternalTransactionRequest(transaction, note);
 		return (ExternalTransactionRequest) obj.DB_ADD();
@@ -315,63 +390,7 @@ public class GmbFactory
 		return (WeeklyLottoDrawEvaluationResult) obj.DB_ADD();
 	}
 	
-	//..
-	public static DailyLottoDraw new_DailyLottoDraw(DateTime planedEvaluationDate)
-	{
-		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
-		obj = (DailyLottoDraw) obj.DB_ADD();
-		Lottery.getInstance().getTipManagement().addDraw(obj);
-		
-		return obj;
-	}
-	
-	public static TotoEvaluation new_TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> results)
-	{
-		TotoEvaluation obj = new TotoEvaluation(planedEvaluationDate, results);
-		obj = (TotoEvaluation) obj.DB_ADD();
-		Lottery.getInstance().getTipManagement().addDraw(obj);
-		
-		return obj;
-	}
-	
-	public static WeeklyLottoDraw new_WeeklyLottoDraw(DateTime planedEvaluationDate)
-	{
-		WeeklyLottoDraw obj = new WeeklyLottoDraw(planedEvaluationDate);
-		obj = (WeeklyLottoDraw) obj.DB_ADD();
-		Lottery.getInstance().getTipManagement().addDraw(obj);
-		
-		return obj;
-	}
-	
 	////tip:
-	//group:
-	public static DailyLottoGroupTip new_DailyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
-	{
-		DailyLottoGroupTip obj = new DailyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
-		obj = (DailyLottoGroupTip) obj.DB_ADD();
-		group.addGroupTip(obj);
-		
-		return obj;
-	}
-	
-	public static TotoGroupTip new_TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
-	{
-		TotoGroupTip obj = new TotoGroupTip(draw, group, minimumStake, overallMinimumStake);
-		obj = (TotoGroupTip) obj.DB_ADD();
-		group.addGroupTip(obj);
-		
-		return obj;
-	}
-	
-	public static WeeklyLottoGroupTip new_WeeklyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
-	{
-		WeeklyLottoGroupTip obj = new WeeklyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
-		obj = (WeeklyLottoGroupTip) obj.DB_ADD();
-		group.addGroupTip(obj);
-		
-		return obj;
-	}
-	
 	//single:
 	public static DailyLottoTip new_DailyLottoTip(DailyLottoTT tipTicket, DailyLottoDraw draw)
 	{
@@ -415,4 +434,7 @@ public class GmbFactory
 		TipManagement obj = new TipManagement(null);
 		return (TipManagement) obj.DB_ADD();
 	}
+	
+	//========================================================================================================================//
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
