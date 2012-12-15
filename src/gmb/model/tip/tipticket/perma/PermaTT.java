@@ -22,7 +22,7 @@ public abstract class PermaTT extends TipTicket
 	protected int durationType;	
 	protected final static long millisecondsOfDay = 1000*60*60*24;
 
-	protected boolean expired = false;
+	protected boolean expired;
 
 	@Deprecated
 	protected PermaTT(){}
@@ -30,6 +30,7 @@ public abstract class PermaTT extends TipTicket
 	public PermaTT(PTTDuration duration)
 	{
 		super();
+		expired = false;
 		setDuration(duration);
 		tips = new LinkedList<SingleTip>();
 	}

@@ -194,7 +194,7 @@ public class LogicController {
 			@RequestParam("scope")String scope) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("stuffMember");
-		modelAndView.addObject("currentUser", pManager.get(Employee.class, uid));
+		modelAndView.addObject("currentUser", pManager.get(Member.class, uid));
 		modelAndView.addObject("scope", scope);
 		return modelAndView;
 	}

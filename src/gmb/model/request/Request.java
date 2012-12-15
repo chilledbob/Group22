@@ -14,7 +14,7 @@ import gmb.model.member.Member;
 public abstract class Request extends Notification
 { 
 	protected Member member;
-	protected int state = 0;//RequestState.UNHANDELED
+	protected int state;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date lastStateChangeDate;
 
@@ -25,7 +25,9 @@ public abstract class Request extends Notification
 	{
 		super(note);
 		this.member = member;
-
+		
+		this.state = 0;//RequestState.UNHANDELED
+		
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 

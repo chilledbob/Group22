@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 import javax.persistence.Entity;
 
+import gmb.model.GmbFactory;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.TotoTip;
-import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.single.TotoSTT;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
@@ -22,7 +22,6 @@ public class TotoGroupTip extends GroupTip
 	public TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		super(draw, group, minimumStake, overallMinimumStake);
-		group.addGroupTip(this);
 	}
 	
 	/**
@@ -51,8 +50,13 @@ public class TotoGroupTip extends GroupTip
 		return super.createAndSubmitSingleTipList(tickets,  tipTips);
 	}
 	
-	protected SingleTip createSingleTip(TipTicket ticket)
+	protected SingleTip createSingleTipSimple(TipTicket ticket)
 	{
 		return new TotoTip((TotoSTT)ticket, this);
+	}
+	
+	protected SingleTip createSingleTipPersistent(TipTicket ticket)
+	{
+		return GmbFactory.new_TotoTip((TotoSTT)ticket, this);
 	}
 }

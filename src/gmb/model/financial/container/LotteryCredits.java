@@ -5,25 +5,27 @@ import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
 public class LotteryCredits extends PersiObject
 {
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int lotteryCreditId;
-	
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected CDecimal treasuryCedit = new CDecimal(0);
-	protected CDecimal lotteryTaxCedit = new CDecimal(0);
-	protected CDecimal managementCedit = new CDecimal(0);
+	protected CDecimal treasuryCedit;
+	protected CDecimal lotteryTaxCedit;
+	protected CDecimal managementCedit;
 	
-	public LotteryCredits(){}
+	@Deprecated
+	protected LotteryCredits(){}
+	
+	public LotteryCredits(Object dummy)
+	{
+		treasuryCedit = new CDecimal(0);
+		lotteryTaxCedit = new CDecimal(0);
+		managementCedit = new CDecimal(0);
+	}
 	
 	public void setTreasuryDue(CDecimal treasuryCedit){ this.treasuryCedit = treasuryCedit; DB_UPDATE(); }
 	public void setLotteryTaxDue(CDecimal lotteryTaxCedit){ this.lotteryTaxCedit = lotteryTaxCedit; DB_UPDATE(); }

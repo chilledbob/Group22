@@ -1,5 +1,6 @@
 package gmb.model.financial;
 
+import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.financial.container.RealAccountData;
@@ -16,9 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
@@ -29,10 +27,7 @@ import javax.persistence.CascadeType;
 
 @Entity
 public class LotteryBankAccount extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int lotteryBankAccountId;
-	
+{	
 	@OneToOne(fetch=FetchType.LAZY)
 	protected Customer owner;
 	protected CDecimal credit;	
@@ -85,7 +80,7 @@ public class LotteryBankAccount extends PersiObject
 	 */
 	public void sendDataUpdateRequest(RealAccountData updatedData, String note)
 	{
-		RealAccountDataUpdateRequest request = new RealAccountDataUpdateRequest(updatedData, owner, note);
+		RealAccountDataUpdateRequest request = GmbFactory.new_RealAccountDataUpdateRequest(updatedData, owner, note);
 		
 		Lottery.getInstance().getFinancialManagement().addRealAccountDataUpdateRequest(request);
 
@@ -108,7 +103,7 @@ public class LotteryBankAccount extends PersiObject
 	{
 		if(amount.signum() != -1 || owner.hasEnoughMoneyToPurchase(amount))
 		{
-			ExternalTransactionRequest request = new ExternalTransactionRequest(new ExternalTransaction(owner, amount), note);
+			ExternalTransactionRequest request = GmbFactory.new_ExternalTransactionRequest(GmbFactory.new_ExternalTransaction(owner, amount), note);
 			
 			externalTransactionRequests.add(request);
 			Lottery.getInstance().getFinancialManagement().addExternalTransactionRequest(request);

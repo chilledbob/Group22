@@ -5,16 +5,10 @@ import gmb.model.Lottery;
 import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 public class ReceiptsDistributionResult extends PersiObject
-{
-	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
-	protected int receiptsDistributionResultId;
-	
+{	
 	protected CDecimal winnersDue;
 	protected CDecimal treasuryDue;
 	protected CDecimal lotteryTaxDue;
@@ -37,7 +31,7 @@ public class ReceiptsDistributionResult extends PersiObject
 		//normalize receipts:
 		treasuryDue = treasuryDue.add(drawReceipts.subtract(winnersDue.add(treasuryDue.add(lotteryTaxDue.add(managementDue)))));
 		
-		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
+//		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
 	}
 	
 	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); DB_UPDATE(); }

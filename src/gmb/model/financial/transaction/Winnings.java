@@ -18,7 +18,7 @@ public class Winnings extends InternalTransaction
 	@Deprecated
 	protected Winnings(){}
 	
-	protected int prizeCategory = 11;
+	protected int prizeCategory;
 
 	/**
 	 * initializes an internal transaction

@@ -17,6 +17,7 @@ public class CDecimal extends BigDecimal
 	
 	protected static final BigDecimal decN1 = new BigDecimal(-1);
 	
+	public CDecimal(){ super("0", CMC); setScale(scale, round); }
 	public CDecimal(int num){ super(num, CMC); setScale(scale, round); }
 	public CDecimal(long num){ super(num, CMC); setScale(scale, round);}
 	public CDecimal(String num){ super(num, CMC); setScale(scale, round);}
@@ -29,7 +30,4 @@ public class CDecimal extends BigDecimal
 
 	public CDecimal negate(){ return new CDecimal( super.plus(CMC).multiply(decN1, CMC).setScale(scale, round) ); }
 	public CDecimal abs(){ return new CDecimal( super.plus(CMC).setScale(scale, round) ); }
-	
-//	@Override
-//	public int compareTo(CDecimal dec){ return ((BigDecimal)this).compareTo((BigDecimal)dec); }
 }

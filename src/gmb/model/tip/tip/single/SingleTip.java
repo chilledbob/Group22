@@ -19,7 +19,7 @@ public abstract class SingleTip extends Tip
 	protected PermaTT permaTT;
 	protected TipTicket tipTicket;
 	@ManyToOne
-	protected GroupTip groupTip = null;
+	protected GroupTip groupTip;
 
 	
 	@Deprecated
@@ -38,6 +38,7 @@ public abstract class SingleTip extends Tip
 	{
 		super(draw);
 		
+		groupTip = null;
 		this.tipTicket = (TipTicket)tipTicket;
 	}
 	
