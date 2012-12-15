@@ -11,9 +11,12 @@ import javax.persistence.Entity;
 @Entity
 public class TotoSTT extends SingleTT 
 {
-	public TotoSTT()
+	@Deprecated
+	protected TotoSTT(){}
+	
+	public TotoSTT(Object dummy)
 	{
-		super();
+		super(null);
 		drawType = 2;
 	}
 

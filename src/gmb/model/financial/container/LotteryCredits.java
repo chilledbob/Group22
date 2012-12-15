@@ -19,11 +19,19 @@ public class LotteryCredits extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected CDecimal treasuryCedit = new CDecimal(0);
-	protected CDecimal lotteryTaxCedit = new CDecimal(0);
-	protected CDecimal managementCedit = new CDecimal(0);
+	protected CDecimal treasuryCedit;
+	protected CDecimal lotteryTaxCedit;
+	protected CDecimal managementCedit;
 	
-	public LotteryCredits(){}
+	@Deprecated
+	protected LotteryCredits(){}
+	
+	public LotteryCredits(Object dummy)
+	{
+		treasuryCedit = new CDecimal(0);
+		lotteryTaxCedit = new CDecimal(0);
+		managementCedit = new CDecimal(0);
+	}
 	
 	public void setTreasuryDue(CDecimal treasuryCedit){ this.treasuryCedit = treasuryCedit; DB_UPDATE(); }
 	public void setLotteryTaxDue(CDecimal lotteryTaxCedit){ this.lotteryTaxCedit = lotteryTaxCedit; DB_UPDATE(); }

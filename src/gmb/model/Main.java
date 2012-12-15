@@ -10,9 +10,10 @@ import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.financial.*;
 import gmb.model.financial.container.RealAccountData;
 import gmb.model.group.GroupManagement;
-import gmb.model.member.Admin;
 import gmb.model.member.Customer;
+import gmb.model.member.Member;
 import gmb.model.member.MemberManagement;
+import gmb.model.member.MemberType;
 import gmb.model.member.container.Adress;
 import gmb.model.member.container.MemberData;
 import gmb.model.group.Group;
@@ -34,9 +35,9 @@ public class Main {
 	//Testdata
 
 	private void initMm(){
-		MemberManagement mm = new MemberManagement();
+		MemberManagement mm = new MemberManagement(null);
 		FinancialManagement fm = new FinancialManagement(null,null);
-		GmbPersistenceManager.add(new TipManagement());
+		GmbPersistenceManager.add(new TipManagement(null));
 		GmbPersistenceManager.add(fm);
 		GmbPersistenceManager.add(mm);
 	}
@@ -46,7 +47,7 @@ public class Main {
 		Adress a = new Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = new MemberData("a","b",d,"c","d",a);
-		Admin user = new Admin("bob","bob",md);		
+		Member user = new Member("bob","bob",md, MemberType.Admin);		
 		Lottery.getInstance().getMemberManagement().addMember(user);
 
 		GmbPersistenceManager.add(a);
@@ -68,7 +69,7 @@ public class Main {
 		DateTime db = new DateTime();
 		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
 		
-		WeeklyLottoSTT wl = new WeeklyLottoSTT();
+		WeeklyLottoSTT wl = new WeeklyLottoSTT(null);
 		
 		GmbPersistenceManager.add(wl);
 

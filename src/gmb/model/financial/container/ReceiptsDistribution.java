@@ -18,12 +18,21 @@ public class ReceiptsDistribution extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected int winnersDue = 50;
-	protected int treasuryDue = 27;
-	protected int lotteryTaxDue = 20;
-	protected int managementDue = 3;
+	protected int winnersDue;
+	protected int treasuryDue;
+	protected int lotteryTaxDue;
+	protected int managementDue;
 	
-	public ReceiptsDistribution(){}
+	@Deprecated
+	protected ReceiptsDistribution(){}
+	
+	public ReceiptsDistribution(Object dummy)
+	{
+		winnersDue = 50;
+		treasuryDue = 27;
+		lotteryTaxDue = 20;
+		managementDue = 3;
+	}
 	
 	public ReceiptsDistribution(int winnersDue, int treasuryDue, int lotteryTaxDue, int managementDue)
 	{

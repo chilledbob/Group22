@@ -1,6 +1,8 @@
 package gmb.model.tip.draw;
 
+import gmb.model.GmbFactory;
 import gmb.model.Lottery;
+import gmb.model.ReturnBox;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
@@ -94,20 +96,20 @@ public class DailyLottoDraw extends Draw
 	 * 1 - the "SingleTT" is already associated with another "SingleTip"
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 */
-	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoTT!";
 
-		DailyLottoTip tip = new DailyLottoTip((DailyLottoTT)ticket, this);
-
-		if(!this.addTip(tip)) return -2;
-		
-		int result1 = tip.setTip(tipTip);
-		if(result1 != 0) return result1;	
-
-		int result2 = ticket.addTip(tip);
-		if(result2 != 0) return result2;
-
-		return 0;	
+	return super.createAndSubmitSingleTip(ticket, tipTip);	
+	}
+	
+	protected SingleTip createSingleTipSimple(TipTicket ticket)
+	{
+		return new DailyLottoTip((DailyLottoTT)ticket, this);
+	}
+	
+	protected SingleTip createSingleTipPersistent(TipTicket ticket)
+	{
+		return GmbFactory.new_DailyLottoTip((DailyLottoTT)ticket, this);
 	}
 }

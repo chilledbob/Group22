@@ -48,7 +48,6 @@ public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, D
 	public TipTicket(){}
 
 	/**
-	 * [intended for direct usage by controller]
 	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
 	 * will be added to the "customers" list and "true" will be returned, otherwise "false".
 	 * Also the actually paid price will be saved in "paidPurchasePrice".

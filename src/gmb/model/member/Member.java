@@ -27,7 +27,7 @@ import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
 @Entity
-public abstract class Member extends PersistentUser 
+public class Member extends PersistentUser 
 {
 	@Column(name="activated")
 	protected boolean activated = false;
@@ -46,16 +46,42 @@ public abstract class Member extends PersistentUser
 	@JoinColumn(name="member", referencedColumnName="member_ID")
 	protected List<Notification> notifications;
 	
-	public void DB_ADD(){ GmbPersistenceManager.add(this); }
+	protected int type;//0-Employee, 1-Admin, 2-Notary, 3-Customer
+	
+	public Member DB_ADD(){ return GmbPersistenceManager.add(this); }
 	public void DB_UPDATE(){ GmbPersistenceManager.update(this); }
 	public void DB_REMOVE(){ GmbPersistenceManager.remove(this); }
 	
 	@Deprecated
 	protected Member(){}
 	
-	public Member(String nickName, String password, MemberData memberData)
+	public Member(String nickName, String password, MemberData memberData, MemberType type)
 	{
 		super(new UserIdentifier(nickName), password);
+		
+		if(type == MemberType.Employee)
+		{
+			this.type = 0;
+			this.addCapability(new Capability("employee"));
+		}
+		else
+			if(type == MemberType.Admin)
+			{
+				this.type = 1;
+				this.addCapability(new Capability("admin"));
+			}
+			else
+				if(type == MemberType.Notary)
+				{
+					this.type = 2;
+					this.addCapability(new Capability("notary"));
+				}
+				else
+				{
+					this.type = 3;
+					this.addCapability(new Capability("customer"));
+				}
+		
 		this.memberData = memberData;
 		
 		registrationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
@@ -63,6 +89,19 @@ public abstract class Member extends PersistentUser
 		memberDataUpdateRequest = new LinkedList<MemberDataUpdateRequest>();
 		notifications = new LinkedList<Notification>();
 	}	
+	
+	public MemberType getType()
+	{
+		switch(this.type)
+		{
+		case 0: return MemberType.Employee;
+		case 1: return MemberType.Admin;
+		case 2: return MemberType.Notary;
+		default : return MemberType.Customer;
+		}
+	}
+	
+	public int getTypeAsInt(){ return type; }
 	
 	public void setMemberData(MemberData memberData){ this.memberData = memberData; DB_UPDATE(); }
 	

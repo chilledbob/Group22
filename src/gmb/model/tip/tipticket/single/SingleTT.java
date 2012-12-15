@@ -10,14 +10,15 @@ import javax.persistence.Entity;
 @Entity
 public abstract class SingleTT extends TipTicket
 {	
-	protected SingleTip tip = null;
+	protected SingleTip tip;
 
-//	@Deprecated
-//	protected SingleTT(){}
+	@Deprecated
+	protected SingleTT(){}
 	
-	public SingleTT()
+	public SingleTT(Object dummy)
 	{
 		super();
+		this.tip = null;
 	}
 	
 	public boolean removeTip(SingleTip tip)

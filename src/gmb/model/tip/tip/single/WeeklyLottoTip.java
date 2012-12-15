@@ -1,7 +1,10 @@
 package gmb.model.tip.tip.single;
 
+import java.util.LinkedList;
+
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.group.GroupTip;
+import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
@@ -9,7 +12,7 @@ import javax.persistence.Entity;
 @Entity
 public class WeeklyLottoTip extends SingleTip 
 {
-	protected int superNumber = -1;
+	protected int superNumber;
 	
 	@Deprecated
 	protected WeeklyLottoTip(){}
@@ -17,11 +20,13 @@ public class WeeklyLottoTip extends SingleTip
 	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoDraw draw)
 	{
 		super(tipTicket, draw);
+		superNumber = -1;
 	}
 	
 	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip)
 	{
 		super(tipTicket, groupTip);
+		superNumber = -1;
 	}
 	
 	/**

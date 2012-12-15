@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import javax.persistence.Entity;
 
+import gmb.model.GmbFactory;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.SingleTip;
@@ -64,8 +65,13 @@ public class WeeklyLottoGroupTip extends GroupTip
 		return super.createAndSubmitSingleTipList(tickets,  tipTips);
 	}
 	
-	protected SingleTip createSingleTip(TipTicket ticket)
+	protected SingleTip createSingleTipSimple(TipTicket ticket)
 	{
 		return new WeeklyLottoTip((WeeklyLottoTT)ticket, this);
+	}
+	
+	protected SingleTip createSingleTipPersistent(TipTicket ticket)
+	{
+		return GmbFactory.new_WeeklyLottoTip((WeeklyLottoTT)ticket, this);
 	}
 }

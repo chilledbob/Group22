@@ -29,14 +29,16 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	public static Object get(Class<?> classType, int id){ return initContainer(classType, id); }
 //	
-//	public static void add(Object obj)
-//	{
-//		EntityManager em = emf.createEntityManager();
-//		
-//		em.getTransaction().begin();
-//		em.persist(obj);
-//		em.getTransaction().commit();
-//	}
+//public static PersiObject add(PersiObject obj)
+//{
+//	EntityManager em = emf.createEntityManager();
+//
+//	em.getTransaction().begin();
+//	em.persist(obj);
+//	em.getTransaction().commit();
+//
+//	return em.find(obj.getClass(), obj.getId());
+//}
 //	
 //	public static void remove(Object obj)
 //	{
@@ -81,11 +83,13 @@ public class GmbPersistenceManager
 {		
 	public static void get(Class<?> classType, int id){}
 	
-	public static void add(Object obj){}
+	public static Member add(Member obj){ return obj; }
+	public static void remove(Member obj){}
+	public static void update(Member obj){}
 	
-	public static void remove(Object obj){}
-	
-	public static void update(Object obj){}
+	public static PersiObject add(PersiObject obj){ return obj; }	
+	public static void remove(PersiObject obj){}	
+	public static void update(PersiObject obj){}
 	
 	public static void initLottery(){}	
 }

@@ -23,12 +23,19 @@ public class PrizeCategories extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected List<CDecimal> weeklyLottoCategories = ArrayListFac.new_CDecimalArray(8);
-	protected List<CDecimal> dailyLottoCategories = ArrayListFac.new_CDecimalArray(10);
-	protected List<CDecimal> totoCategories = ArrayListFac.new_CDecimalArray(4);
+	protected List<CDecimal> weeklyLottoCategories;
+	protected List<CDecimal> dailyLottoCategories;
+	protected List<CDecimal> totoCategories;
 	
-	public PrizeCategories()
+	@Deprecated
+	protected PrizeCategories(){}
+	
+	public PrizeCategories(Object dummy)
 	{
+		weeklyLottoCategories = ArrayListFac.new_CDecimalArray(8);
+		dailyLottoCategories = ArrayListFac.new_CDecimalArray(10);
+		totoCategories = ArrayListFac.new_CDecimalArray(4);
+		
 		weeklyLottoCategories.set(7, new CDecimal(44));
 		weeklyLottoCategories.set(6, new CDecimal(8));
 		weeklyLottoCategories.set(5, new CDecimal(10));

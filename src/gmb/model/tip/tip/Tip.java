@@ -29,9 +29,9 @@ public abstract class Tip extends PersiObject
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date submissionDate;
 	@ManyToOne
-	protected Draw draw = null;
+	protected Draw draw;
 	
-	protected Winnings overallWinnings = null;
+	protected Winnings overallWinnings;
 	
 	@Deprecated
 	protected Tip(){}
@@ -39,6 +39,9 @@ public abstract class Tip extends PersiObject
 	public Tip(Draw draw)
 	{
 		this.draw = draw;
+		
+		overallWinnings = null;
+		draw = null;
 		
 		submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}

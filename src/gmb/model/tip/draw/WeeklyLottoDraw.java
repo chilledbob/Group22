@@ -2,6 +2,8 @@ package gmb.model.tip.draw;
 
 import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
+import gmb.model.ReturnBox;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,7 +26,7 @@ import javax.persistence.*;
 @Entity
 public class WeeklyLottoDraw extends Draw
 {
-	protected int[] result = null;
+	protected int[] result;
 
 	protected static final CDecimal dec100 = new CDecimal(100);
 	protected static final CDecimal dec2 = new CDecimal(2);
@@ -38,6 +40,8 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+
+		result = null;
 		Lottery.getInstance().getTipManagement().addDraw(this);
 	}
 
@@ -51,7 +55,7 @@ public class WeeklyLottoDraw extends Draw
 		super.evaluate();//set actualEvaluationDate and init prizePotential 
 
 		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
-		
+
 		drawEvaluationResult.createJackpotImageBefore(jackpot);
 
 		//calculate the overall amount of money to be processed (must stay the same):
@@ -77,12 +81,12 @@ public class WeeklyLottoDraw extends Draw
 		{
 			//tip specific random superNumber 0-9:
 			int superNumber = (int)(Math.random() * 100000) % 10;//not nicely generated, I know
-			
+
 			if(((WeeklyLottoTip)tip).getSuperNumber() != -1)//only use random number if a test hasn't set a specific one
 				superNumber = ((WeeklyLottoTip)tip).getSuperNumber();
 			else
 				((WeeklyLottoTip)tip).setSuperNumber(superNumber);
-			
+
 			boolean[] hits = new boolean[]{false,false,false,false,false,false};
 			int hitCount = 0;
 
@@ -132,7 +136,7 @@ public class WeeklyLottoDraw extends Draw
 		//calculate the winnings for each SingleTip in each category, and build new jackpot from empty categories:
 		ArrayList<CDecimal> newJackpot = ArrayListFac.new_CDecimalArray(8);
 		ArrayList<CDecimal> categoryWinnings = ArrayListFac.new_CDecimalArray(8);
-		
+
 		for(int i = 0; i < 8; ++i)
 			if(tipCountPerCategory.get(i).signum() > 0)
 			{
@@ -147,19 +151,19 @@ public class WeeklyLottoDraw extends Draw
 
 		//merge prize categories if lower category has higher winnings per SingleTip:
 		drawEvaluationResult.copyCategoryWinningsUnMerged(categoryWinnings);
-		
+
 		int m = 0;
 		for(; m < 100; ++m)//limit loop count for the case of unpredicted rounding behavior which would lead to infinite looping
 		{		
 			boolean noMerge = true;
 
-//			for(int i = 0; i < 8; ++i)
-//			{
-//				System.out.print(perCategoryPrizePotential[i]);
-//				System.out.print(" ");
-//			}
-//			System.out.println(" ");
-			
+			//			for(int i = 0; i < 8; ++i)
+			//			{
+			//				System.out.print(perCategoryPrizePotential[i]);
+			//				System.out.print(" ");
+			//			}
+			//			System.out.println(" ");
+
 			for(int i = 7; i > 0; --i)//start with lowest category
 			{
 				for(int j = i-1; j >= 0; --j)//compare with all higher categories
@@ -181,7 +185,7 @@ public class WeeklyLottoDraw extends Draw
 			}
 
 			if(noMerge) break;//only exit if there hasn't been another merge
-			
+
 			//re-calculate the winnings for each SingleTip in each category:
 			for(int i = 0; i < 8; ++i)
 				if(tipCountPerCategory.get(i).signum() > 0)
@@ -196,14 +200,14 @@ public class WeeklyLottoDraw extends Draw
 		{
 			perCategoryPrizePotential.set(0, perCategoryPrizePotential.get(0).add(perCategoryPrizePotential.get(1)));
 			categoryWinnings.set(0, perCategoryPrizePotential.get(0).divide(tipCountPerCategory.get(0)));
-			
+
 			perCategoryPrizePotential.set(1, new CDecimal(0));
 			newJackpot.set(1, new CDecimal(0));
 		}
-		
+
 		Lottery.getInstance().getFinancialManagement().getJackpots().setWeeklyLottoJackpot(newJackpot);//set new jackpot
 		drawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
-		
+
 		drawEvaluationResult.copyCategoryWinningsMerged(categoryWinnings);
 
 		//create and send winnings, also calculate the actual overall amount of money that has been processed in the end:
@@ -212,12 +216,12 @@ public class WeeklyLottoDraw extends Draw
 		for(int i = 0; i < 8; ++i)
 		{
 			actualOverallAmount = actualOverallAmount.add(newJackpot.get(i));
-			
+
 			for(SingleTip tip : category.get(i))
 			{
 				Winnings newWinnings = new Winnings(tip, categoryWinnings.get(i), i + 1);
 				tip.setOverallWinnings(newWinnings);
-				
+
 				if(tip.getGroupTip() != null)
 				{
 					//add group associated winnings to list in group:
@@ -234,7 +238,7 @@ public class WeeklyLottoDraw extends Draw
 				}				
 			}
 		}
-		
+
 		//evaluate average winnings for all contributers of a group tip and send them the respective winnings:
 		for(GroupTip tip : groupTips)
 		{
@@ -243,12 +247,12 @@ public class WeeklyLottoDraw extends Draw
 
 		//normalize overall amount of processed money:
 		CDecimal normalizationAmount = mustOverallAmount.subtract(actualOverallAmount);
-		
+
 		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(normalizationAmount);
 		drawEvaluationResult.setNormalizationAmount(normalizationAmount);
 
 		DB_UPDATE(); 
-		
+
 		return true;
 	}
 
@@ -274,11 +278,11 @@ public class WeeklyLottoDraw extends Draw
 	{
 		DateTime peDate = new DateTime(planedEvaluationDate);
 		DateTime endDate = new DateTime(peDate.getYear(), peDate.getMonthOfYear(), peDate.getDayOfMonth(), 0, 0, 0);//reset hours, minutes, seconds
-		
+
 		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), endDate);
 		return duration.isLongerThan(new Duration(0));	
 	}
-	
+
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, WeeklyLottoTip.class); }
 	public boolean addTip(GroupTip tip){ return super.addTip(tip, WeeklyLottoGroupTip.class); }
 
@@ -298,21 +302,20 @@ public class WeeklyLottoDraw extends Draw
 	 * 3 - a tipped number is smaller than 1 oder greater than 49
 	 * 4 - the same number has been tipped multiple times
 	 */
-	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof WeeklyLottoTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoTT!";
 
-		WeeklyLottoTip tip = new WeeklyLottoTip((WeeklyLottoTT)ticket, this);
-
-		if(!this.addTip(tip)) return -2;
-		
-		int result1 = tip.setTip(tipTip);
-		if(result1 != 0) return result1;	
-
-		int result2 = ticket.addTip(tip);
-		if(result2 != 0) return result2;
-
-		return 0;			
-
+	return super.createAndSubmitSingleTip(ticket, tipTip);		
+	}
+	
+	protected SingleTip createSingleTipSimple(TipTicket ticket)
+	{
+		return new WeeklyLottoTip((WeeklyLottoTT)ticket, this);
+	}
+	
+	protected SingleTip createSingleTipPersistent(TipTicket ticket)
+	{
+		return GmbFactory.new_WeeklyLottoTip((WeeklyLottoTT)ticket, this);
 	}
 }

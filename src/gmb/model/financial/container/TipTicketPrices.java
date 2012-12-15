@@ -19,18 +19,33 @@ public class TipTicketPrices extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected CDecimal weeklyLottoSTTPrice = new CDecimal("0.75");
-	protected CDecimal totoSTTPrice = new CDecimal("0.50");
-	protected CDecimal dailyLottoSTTPrice = new CDecimal("0.50");
+	protected CDecimal weeklyLottoSTTPrice;
+	protected CDecimal totoSTTPrice;
+	protected CDecimal dailyLottoSTTPrice;
 	
-	protected CDecimal weeklyLottoPTTPrice_Month = new CDecimal("2.75");
-	protected CDecimal dailyLottoPTTPrice_Month = new CDecimal("1.75");
-	protected CDecimal weeklyLottoPTTPrice_HalfYear = new CDecimal("14");
-	protected CDecimal dailyLottoPTTPrice_HalfYear = new CDecimal("9");
-	protected CDecimal weeklyLottoPTTPrice_Year = new CDecimal("25");
-	protected CDecimal dailyLottoPTTPrice_Year = new CDecimal("15");
+	protected CDecimal weeklyLottoPTTPrice_Month;
+	protected CDecimal dailyLottoPTTPrice_Month;
+	protected CDecimal weeklyLottoPTTPrice_HalfYear;
+	protected CDecimal dailyLottoPTTPrice_HalfYear;
+	protected CDecimal weeklyLottoPTTPrice_Year;
+	protected CDecimal dailyLottoPTTPrice_Year;
 	
-	public TipTicketPrices(){}
+	@Deprecated
+	protected TipTicketPrices(){}
+	
+	public TipTicketPrices(Object dummy)
+	{
+		  weeklyLottoSTTPrice = new CDecimal("0.75");
+		  totoSTTPrice = new CDecimal("0.50");
+		  dailyLottoSTTPrice = new CDecimal("0.50");
+		
+		  weeklyLottoPTTPrice_Month = new CDecimal("2.75");
+		  dailyLottoPTTPrice_Month = new CDecimal("1.75");
+		  weeklyLottoPTTPrice_HalfYear = new CDecimal("14");
+		  dailyLottoPTTPrice_HalfYear = new CDecimal("9");
+		  weeklyLottoPTTPrice_Year = new CDecimal("25");
+		  dailyLottoPTTPrice_Year = new CDecimal("15");
+	}
 	
 	public TipTicketPrices(CDecimal weeklyLottoSTTPrice, CDecimal totoSTTPrice, CDecimal dailyLottoSTTPrice, 
 			CDecimal weeklyLottoPTTPrice_Month, CDecimal dailyLottoPTTPrice_Month,

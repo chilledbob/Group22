@@ -23,12 +23,19 @@ public class Jackpots extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
-	protected List<CDecimal> weeklyLottoJackpot = ArrayListFac.new_CDecimalArray(8);
-	protected List<CDecimal> dailyLottoJackpot = ArrayListFac.new_CDecimalArray(10);
-	protected List<CDecimal> totoJackpot = ArrayListFac.new_CDecimalArray(4);
+	protected List<CDecimal> weeklyLottoJackpot;
+	protected List<CDecimal> dailyLottoJackpot;
+	protected List<CDecimal> totoJackpot;
 	
-	public Jackpots()
+	@Deprecated
+	protected Jackpots(){}
+	
+	public Jackpots(Object dummy)
 	{
+		weeklyLottoJackpot = ArrayListFac.new_CDecimalArray(8);
+		dailyLottoJackpot = ArrayListFac.new_CDecimalArray(10);
+		totoJackpot = ArrayListFac.new_CDecimalArray(4);
+		
 		for(int i = 0; i < weeklyLottoJackpot.size(); ++i){ weeklyLottoJackpot.set(i, new CDecimal(0)); }
 		for(int i = 0; i < dailyLottoJackpot.size(); ++i){ dailyLottoJackpot.set(i, new CDecimal(0)); }
 		for(int i = 0; i < totoJackpot.size(); ++i){ totoJackpot.set(i, new CDecimal(0)); }

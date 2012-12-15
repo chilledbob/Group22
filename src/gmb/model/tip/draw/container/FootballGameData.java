@@ -14,26 +14,28 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class FootballGameResult extends PersiObject
+public class FootballGameData extends PersiObject
 {
 	@Id @GeneratedValue (strategy=GenerationType.IDENTITY)
 	protected int footballGameResultId;
+	
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date matchDay;
-	protected PartialResult homeResult;
-	protected PartialResult visitorResult;
+	
+	protected String homeClubName;
+	protected String visitorClubName;
 	
 	@Deprecated
-	protected FootballGameResult(){}
+	protected FootballGameData(){}
 	
-	public FootballGameResult(DateTime matchDay, PartialResult homeResult, PartialResult visitorResult)
+	public FootballGameData(DateTime matchDay, String homeClubName, String visitorClubName)
 	{
 		this.matchDay = matchDay.toDate();
-		this.homeResult = homeResult;
-		this.visitorResult = visitorResult;
+		this.homeClubName = homeClubName;
+		this.visitorClubName = visitorClubName;
 	}
 
 	public DateTime getMatchDay(){ return new DateTime(matchDay); }
-	public PartialResult getHomeResult(){ return homeResult; }
-	public PartialResult getVisitorResult(){ return visitorResult; }
+	public String getHomeClubName(){ return homeClubName; }
+	public String getVisitorClubName(){ return visitorClubName; }
 }

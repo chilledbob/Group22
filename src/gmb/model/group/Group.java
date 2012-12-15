@@ -5,7 +5,6 @@ import gmb.model.PersiObject;
 import gmb.model.member.Customer;
 import gmb.model.request.RequestState;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
-import gmb.model.request.group.GroupInvitation;
 import gmb.model.request.group.GroupMembershipApplication;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.TotoGroupTip;
@@ -41,7 +40,7 @@ public class Group extends PersiObject
 	protected String infoText;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date foundingDate;
-	protected Boolean closed = false;
+	protected Boolean closed;
 	
 	@ManyToOne
 	protected GroupManagement groupManagementId;
@@ -59,7 +58,7 @@ public class Group extends PersiObject
 	protected List<TotoGroupTip> totoGroupTips;
 
 	@OneToMany(mappedBy="group")
-	protected List<GroupInvitation> groupInvitations;
+	protected List<GroupMembershipApplication> groupInvitations;
 	@OneToMany(mappedBy="group")
 	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
 	@OneToMany(mappedBy="group")
@@ -70,6 +69,8 @@ public class Group extends PersiObject
 
 	public Group(String name, Customer groupAdmin, String infoText)
 	{
+		this.closed = false;
+		
 		this.name = name;
 		this.infoText = infoText;
 		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
@@ -83,7 +84,7 @@ public class Group extends PersiObject
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
 		totoGroupTips = new LinkedList<TotoGroupTip>();
 
-		groupInvitations = new LinkedList<GroupInvitation>();
+		groupInvitations = new LinkedList<GroupMembershipApplication>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
@@ -114,9 +115,9 @@ public class Group extends PersiObject
 	 * @param customer
 	 * @param note
 	 */
-	public GroupInvitation sendGroupInvitation(Customer customer, String note)
+	public GroupMembershipApplication sendGroupInvitation(Customer customer, String note)
 	{
-		GroupInvitation invitation = new GroupInvitation(this, customer, note);
+		GroupMembershipApplication invitation = new GroupMembershipApplication(this, customer, note);
 
 		customer.addGroupInvitation(invitation);
 		this.groupInvitations.add(invitation);
@@ -221,7 +222,7 @@ public class Group extends PersiObject
 				application.withdraw();
 		}
 
-		for(GroupInvitation invitation : groupInvitations)
+		for(GroupMembershipApplication invitation : groupInvitations)
 		{
 			if(invitation.getMember() == groupMember && invitation.getState() == RequestState.UNHANDLED)
 				invitation.withdraw();
@@ -269,7 +270,7 @@ public class Group extends PersiObject
 			if(application.getState() == RequestState.UNHANDLED)
 				application.withdraw();
 
-		for(GroupInvitation invitation : groupInvitations)
+		for(GroupMembershipApplication invitation : groupInvitations)
 			if(invitation.getState() == RequestState.UNHANDLED)
 				invitation.withdraw();
 		
@@ -309,7 +310,7 @@ public class Group extends PersiObject
 	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipApplication> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }

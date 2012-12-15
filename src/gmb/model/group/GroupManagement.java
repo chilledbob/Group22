@@ -1,7 +1,5 @@
 package gmb.model.group;
 
-
-
 import gmb.model.PersiObject;
 
 import java.util.LinkedList;
@@ -18,9 +16,15 @@ public class GroupManagement extends PersiObject
 	protected int groupManagementId = 1;
 	
 	@OneToMany(mappedBy="groupManagementId")
-	protected List<Group> groups = new LinkedList<Group>();
+	protected List<Group> groups;
 	
-	public GroupManagement(){}
+	@Deprecated
+	protected GroupManagement(){}
+	
+	public GroupManagement(Object dummy)
+	{
+		groups = new LinkedList<Group>();
+	}
 	
 	public boolean removeGroup(Group group){ boolean result = groups.remove(group); DB_UPDATE();  return result; }
 	

@@ -26,10 +26,15 @@ public class TipManagement extends PersiObject
 	@OneToMany(mappedBy="tipManagementId")
 	protected List<TotoEvaluation> totoEvaluations;
 	
-	protected long tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
+	protected long tipSubmissionTimeLimitInMilliSeconds;
 	
-	public TipManagement()
+	@Deprecated
+	protected TipManagement(){}
+	
+	public TipManagement(Object dummy)
 	{
+		tipSubmissionTimeLimitInMilliSeconds = 5*60*1000;//five minutes
+		
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
 		dailyLottoDrawings = new LinkedList<DailyLottoDraw>();
 		totoEvaluations = new LinkedList<TotoEvaluation>();

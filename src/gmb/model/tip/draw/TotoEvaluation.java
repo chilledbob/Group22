@@ -2,9 +2,11 @@ package gmb.model.tip.draw;
 
 import java.util.ArrayList;
 
+import gmb.model.GmbFactory;
 import gmb.model.Lottery;
+import gmb.model.ReturnBox;
 import gmb.model.tip.TipManagement;
-import gmb.model.tip.draw.container.FootballGameResult;
+import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.group.TotoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
@@ -22,7 +24,7 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	protected ArrayList<FootballGameResult> results;
+	protected ArrayList<FootballGameData> results;
 	
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -30,7 +32,7 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameResult> results)
+	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> results)
 	{
 		super(planedEvaluationDate);
 		this.results = results;
@@ -60,7 +62,7 @@ public class TotoEvaluation extends Draw
 		return false;
 	}
 	
-	public void setResult(ArrayList<FootballGameResult> results){ this.results = results; DB_UPDATE(); }
+	public void setResult(ArrayList<FootballGameData> results){ this.results = results; DB_UPDATE(); }
 	
 	/**
 	 * [intended for direct usage by controller]
@@ -78,17 +80,17 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public ArrayList<FootballGameResult> getFootballGameResults(){ return results; }
+	public ArrayList<FootballGameData> getFootballGameResults(){ return results; }
 	
 	public int[] getResult()
 	{ 
 		int[] goals = new int[results.size() * 2];
 		
-		for(int i = 0; i < results.size(); ++i)
-		{
-			goals[i*2]   = results.get(i).getHomeResult().getScore();
-			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
-		}
+//		for(int i = 0; i < results.size(); ++i)
+//		{
+//			goals[i*2]   = results.get(i).getHomeResult().getScore();
+//			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
+//		}
 		
 		return goals; 
 	}
@@ -101,20 +103,20 @@ public class TotoEvaluation extends Draw
 	 * 1 - the "SingleTT" is already associated with another "SingleTip"
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 */
-	public int createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to TotoEvaluation.createAndSubmitSingleTip()! Expected TotoSTT!";
 		
-		TotoTip tip = new TotoTip((TotoSTT)ticket, this);
-
-		if(!this.addTip(tip)) return -2;
-		
-		int result1 = tip.setTip(tipTip);
-		if(result1 != 0) return result1;	
-
-		int result2 = ticket.addTip(tip);
-		if(result2 != 0) return result2;
-
-		return 0;	
+	return super.createAndSubmitSingleTip(ticket, tipTip);		
+	}
+	
+	protected SingleTip createSingleTipSimple(TipTicket ticket)
+	{
+		return new TotoTip((TotoSTT)ticket, this);
+	}
+	
+	protected SingleTip createSingleTipPersistent(TipTicket ticket)
+	{
+		return GmbFactory.new_TotoTip((TotoSTT)ticket, this);
 	}
 }

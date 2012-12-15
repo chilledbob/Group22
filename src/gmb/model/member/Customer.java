@@ -3,7 +3,6 @@ import gmb.model.financial.LotteryBankAccount;
 import gmb.model.group.Group;
 import gmb.model.member.container.MemberData;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
-import gmb.model.request.group.GroupInvitation;
 import gmb.model.request.group.GroupMembershipApplication;
 import gmb.model.tip.tipticket.perma.DailyLottoPTT;
 import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
@@ -44,7 +43,7 @@ public class Customer extends Member
 	protected List<DailyLottoPTT> dailyLottoPTTs;
 	
 	@OneToMany
-	protected List<GroupInvitation> groupInvitations;
+	protected List<GroupMembershipApplication> groupInvitations;
 	@OneToMany
 	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
 	@OneToMany
@@ -56,8 +55,7 @@ public class Customer extends Member
 	
 	public Customer(String nickName, String password, MemberData memberData, LotteryBankAccount lotteryBankAccount)
 	{
-		super(nickName, password, memberData);
-		this.addCapability(new Capability("customer"));
+		super(nickName, password, memberData, MemberType.Customer);
 		
 		this.lotteryBankAccount = lotteryBankAccount;
 		
@@ -74,7 +72,7 @@ public class Customer extends Member
 		weeklyLottoPTTs = new LinkedList<WeeklyLottoPTT>();
 		dailyLottoPTTs = new LinkedList<DailyLottoPTT>();
 		
-		groupInvitations = new LinkedList<GroupInvitation>();
+		groupInvitations = new LinkedList<GroupMembershipApplication>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 	}
@@ -98,7 +96,7 @@ public class Customer extends Member
 	public void addTipTicket(WeeklyLottoPTT ticket){ weeklyLottoPTTs.add(ticket); DB_UPDATE(); }
 	public void addTipTicket(DailyLottoPTT ticket){ dailyLottoPTTs.add(ticket); DB_UPDATE(); }
 	
-	public void addGroupInvitation(GroupInvitation invitation){ groupInvitations.add(invitation); DB_UPDATE(); }
+	public void addGroupInvitation(GroupMembershipApplication invitation){ groupInvitations.add(invitation); DB_UPDATE(); }
 	public void addGroupAdminRightsTransfereOffering(GroupAdminRightsTransfereOffering offering){ groupAdminRightsTransfereOfferings.add(offering); DB_UPDATE(); }
 	public void addGroupMembershipApplication(GroupMembershipApplication application){ groupMembershipApplications.add(application); DB_UPDATE(); }
 	public void addGroup(Group group){ groups.add(group); DB_UPDATE(); }
@@ -114,7 +112,7 @@ public class Customer extends Member
 	public List<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
 	public List<DailyLottoPTT> getDailyLottoPTTs(){ return dailyLottoPTTs; }
 	
-	public List<GroupInvitation> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipApplication> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 }
