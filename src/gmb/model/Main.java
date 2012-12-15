@@ -82,6 +82,7 @@ public class Main {
 		GmbPersistenceManager.update(c);
 		Group g = new Group("The Savages",c,"Don't hunt what you can't kill!");
 		GmbPersistenceManager.add(g);
+		
 		GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
 		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 		//GmbPersistenceManager.update(Lottery.getInstance().getFinancialManagement());
