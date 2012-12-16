@@ -145,8 +145,8 @@ public class Member extends PersistentUser
 	 */
 	public void sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
-		MemberDataUpdateRequest request =  GmbFactory.new_MemberDataUpdateRequest(updatedData, this, note);
-
+		//MemberDataUpdateRequest request =  GmbFactory.new_MemberDataUpdateRequest(updatedData, this, note);
+		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
 		Lottery.getInstance().getMemberManagement().addMemberDataUpdateRequest(request);
 
 		memberDataUpdateRequest.add(request);

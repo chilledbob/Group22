@@ -46,7 +46,8 @@
 		<div class="current_content">
 			<h3 style="text-align:center;">Willkommen bei der gmb-Lotterie</h3>
 			<sp:forEach var="u" items="${userListe}">
-				${u.getClass() } | Loginname: ${ u.getIdentifier() } | Loginpw: ${u.getIdentifier() } | und hier existiert evtl ein MemberDataUpdateRequest-Objekt${u.getMemberDataUpdateRequests() }<br>
+				${u.getClass() } | Loginname: ${ u.getIdentifier() } | Loginpw: ${u.getIdentifier() } | und hier existiert evtl ein MemberDataUpdateRequest-Objekt${u.getMemberDataUpdateRequests() }
+				${u.getMemberData().getAdress().getStreetName() } ${ u.memberData.adress.postCode }<br>
 			</sp:forEach><br>
 			<sp:forEach var="g" items="${groupList}">
 				${g.getName() } | Admin: ${ g.getGroupAdmin().getIdentifier() } | Gruppenbeschreibung: ${g.getInfoText() }<br>

@@ -13,7 +13,7 @@ import gmb.model.member.Member;
 @Entity
 public abstract class Request extends Notification
 { 
-	protected Member member;
+	//protected Member member;
 	protected int state;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date lastStateChangeDate;
