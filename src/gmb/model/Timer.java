@@ -1,5 +1,7 @@
 package gmb.model;
 
+import gmb.model.tip.draw.DailyLottoDraw;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.salespointframework.core.time.DefaultTime;
@@ -20,12 +22,23 @@ public class Timer extends DefaultTime
 		offset2 = new Duration(0);
 	}
 	
-	public void addMinutes(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60 * minuteCount)); }
-	public void addHours(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60 * minuteCount)); }
-	public void addDays(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24 * minuteCount)); }
-	public void addWeeks(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*7 * minuteCount)); }
-	public void addMonths(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*30 * minuteCount)); }
-	public void addYears(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*365 * minuteCount)); }
+	protected void evaluateUnevaluatedDailyLottoDrawings()
+	{
+		for(DailyLottoDraw draw : Lottery.getInstance().getTipManagement().getDailyLottoDrawings())
+		{
+			Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), draw.getPlanedEvaluationDate());
+
+			if(duration.isShorterThan(new Duration(0)))
+				draw.evaluate();
+		}
+	}
+	
+	public void addMinutes(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60 * minuteCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addHours(int hoursCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60 * hoursCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addDays(int daysCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24 * daysCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addWeeks(int weeksCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*7 * weeksCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addMonths(int monthCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*30 * monthCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addYears(int yearCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*365 * yearCount)); evaluateUnevaluatedDailyLottoDrawings(); }
 	
 	public void addToOffset(Duration offset){ this.offset2 = this.offset2.plus(offset); }
 	

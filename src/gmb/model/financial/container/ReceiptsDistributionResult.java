@@ -35,6 +35,7 @@ public class ReceiptsDistributionResult extends PersiObject
 	}
 	
 	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); DB_UPDATE(); }
+	public void addWinnersDueToTreasuryDue(){ treasuryDue = treasuryDue.add(winnersDue); winnersDue = new CDecimal(0); DB_UPDATE(); }
 	
 	public CDecimal getWinnersDue(){ return winnersDue; }
 	public CDecimal getTreasuryDue(){ return treasuryDue; }

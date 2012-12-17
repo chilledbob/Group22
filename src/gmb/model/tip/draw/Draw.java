@@ -3,7 +3,7 @@ package gmb.model.tip.draw;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.ReturnBox;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -32,7 +32,7 @@ public abstract class Draw extends PersiObject
 	protected CDecimal prizePotential;//temp
 	protected List<SingleTip> allSingleTips;//temp
 
-	protected WeeklyLottoDrawEvaluationResult drawEvaluationResult;
+	protected EvaluationResult drawEvaluationResult;
 
 	@OneToMany
 	protected List<SingleTip> singleTips;
@@ -60,8 +60,6 @@ public abstract class Draw extends PersiObject
 	 */
 	public boolean evaluate()
 	{
-		drawEvaluationResult = new WeeklyLottoDrawEvaluationResult(null);
-
 		evaluated = true;
 
 		//accumulate the amount of spent money and all SingleTips:
@@ -77,10 +75,9 @@ public abstract class Draw extends PersiObject
 			for(SingleTip tip :  groupTip.getTips())
 				prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 		}
-
+		
 		prizePotential = drawEvaluationResult.initReceiptsDistributionResult(prizePotential);
 		
-		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
 			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
@@ -94,11 +91,13 @@ public abstract class Draw extends PersiObject
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
 		}
 		
+		
 		DB_UPDATE(); 
 		
 		return true;
 	}
 
+	
 	/**
 	 * [intended for direct usage by controller]
 	 * Return Code:
@@ -262,7 +261,7 @@ public abstract class Draw extends PersiObject
 	public List<SingleTip> getSingleTips(){ return singleTips; }
 	public List<GroupTip> getGroupTips(){ return groupTips; }
 
-	public WeeklyLottoDrawEvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
+	public EvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
 
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }

@@ -38,6 +38,7 @@ import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
+import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
@@ -399,13 +400,27 @@ public class Test01
 		for(int i = 0; i < 5; ++i)
 			cus2WLSTTs[i] = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus2).var2;
 		
+		//-----------//
+		
+		DailyLottoSTT[] cus3DLSTTs = new DailyLottoSTT[15];
+		for(int i = 0; i < 15; ++i)
+			cus3DLSTTs[i] = GmbFactory.createAndPurchase_DailyLottoSTT(cus3).var2;
+		
+		DailyLottoSTT[] cus1DLSTTs = new DailyLottoSTT[5];
+		for(int i = 0; i < 5; ++i)
+			cus1DLSTTs[i] = GmbFactory.createAndPurchase_DailyLottoSTT(cus1).var2;
+		
+		DailyLottoSTT[] cus2DLSTTs = new DailyLottoSTT[5];
+		for(int i = 0; i < 5; ++i)
+			cus2DLSTTs[i] = GmbFactory.createAndPurchase_DailyLottoSTT(cus2).var2;
+		
 		printCurrentTimeToConsol("Some people purchased TipTickets.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
 		
 		//=========================================================================================================================//DRAW AND SINGLETIP TESTs No 1
 		
 		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		
-		WeeklyLottoDraw draw1 = new WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
+		WeeklyLottoDraw draw1 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
 		
 //		DailyLottoDraw draw2 = new DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
 //		TotoEvaluation eval1 = new TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
@@ -553,15 +568,16 @@ public class Test01
 		System.out.println(" ");
 		
 		//--------------------------------------------------------//check whether lower prize categories have lower/equal per tip winnings:
-		ArrayList<CDecimal> categoryWinnings = draw1.getDrawEvaluationResult().getCategoryWinningsMerged();
+		WeeklyLottoDrawEvaluationResult wDrawEvaluationResult = (WeeklyLottoDrawEvaluationResult) draw1.getDrawEvaluationResult();
+		ArrayList<CDecimal> categoryWinnings = wDrawEvaluationResult.getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
 			if(tipsPerCategory.get(i).size() > 0 && tipsPerCategory.get(i-1).size() > 0)
 			assertEquals(true, categoryWinnings.get(i).compareTo(categoryWinnings.get(i-1)) < 1);
 		//--------------------------------------------------------//
 		
 		//--------------------------------------------------------//check whether the distribution of the winners due sums up correctly:
-		ArrayList<CDecimal> jackpotImageBefore = draw1.getDrawEvaluationResult().getJackpotImageBefore();
-		ArrayList<CDecimal> jackpotImageAfter = draw1.getDrawEvaluationResult().getJackpotImageAfter();
+		ArrayList<CDecimal> jackpotImageBefore = wDrawEvaluationResult.getJackpotImageBefore();
+		ArrayList<CDecimal> jackpotImageAfter = wDrawEvaluationResult.getJackpotImageAfter();
 		
 		CDecimal checkWinnersDue = new CDecimal(0);
 		for(int i = 0; i < 8; ++i)
@@ -575,13 +591,13 @@ public class Test01
 				checkWinnersDue = checkWinnersDue.add(jackpotImageAfter.get(i));
 			}
 		}
-		checkWinnersDue = checkWinnersDue.add(draw1.getDrawEvaluationResult().getNormalizationAmount());
+		checkWinnersDue = checkWinnersDue.add(wDrawEvaluationResult.getNormalizationAmount());
 
 		assertEquals(draw1.getDrawEvaluationResult().getReceiptsDistributionResult().getWinnersDue(), checkWinnersDue);
 		//--------------------------------------------------------//
 		
 		//not auto-testing here, just some stuff for manual checks:
-		for(CDecimal dec : draw1.getDrawEvaluationResult().getCategoryWinningsUnMerged())
+		for(CDecimal dec : wDrawEvaluationResult.getCategoryWinningsUnMerged())
 			System.out.print(dec.toString() + " ");
 		
 		System.out.println(" ");
@@ -606,7 +622,7 @@ public class Test01
 		
 		System.out.println(" ");
 		
-		System.out.println(draw1.getDrawEvaluationResult().getNormalizationAmount().toString());
+		System.out.println(wDrawEvaluationResult.getNormalizationAmount().toString());
 		
 		
 //		int findNoti = 0;
@@ -629,6 +645,66 @@ public class Test01
 //				,Lottery.getInstance().getFinancialManagement().getWeeklyLottoPrize());
 		
 		printCurrentTimeToConsol("WeeklyLottoDraw (draw1) has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//DRAW AND SINGLETIP TESTs No 2
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		DailyLottoDraw draw2 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
+		
+		//cus1:
+		int rcode11 = draw2.createAndSubmitSingleTip(cus1DLSTTs[0], new int[]{1,2,3,4,5,6,7,8,9,0}).var1.intValue();//10 hits!
+		
+		//cus3:
+		int rcode22 = draw2.createAndSubmitSingleTip(cus2DLSTTs[0], new int[]{1,2,3,4,5,6,0,0,0,0}).var1.intValue();//6 hits!
+		
+		assertEquals(0, rcode11);
+		assertEquals(0, rcode22);
+		assertEquals(2, draw2.getSingleTips().size());
+		
+		assertEquals(true, (cus1DLSTTs[0].getTip() != null));
+		
+		for(int i = 0; i < 7; ++i)
+		draw2.createAndSubmitSingleTip(cus3DLSTTs[i], new int[]{0,0,0,0,0,0,0,0,0,1});//0 hits
+		
+		draw2.createAndSubmitSingleTip(cus3DLSTTs[7], new int[]{1,2,3,0,0,0,0,0,0,0});//3 hits
+		draw2.createAndSubmitSingleTip(cus3DLSTTs[8], new int[]{1,2,0,4,5,6,7,8,9,0});//2 hits
+		draw2.createAndSubmitSingleTip(cus3DLSTTs[9], new int[]{0,2,3,4,5,6,7,8,9,0});//0 hits
+		
+		printCurrentTimeToConsol("Two people submitted tips to a DailyLottoDraw (draw2).");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//DAILYDRAW EVALUATION
+		
+		draw2.setResult(new int[]{1,2,3,4,5,6,7,8,9,0});
+		
+		assertEquals(false, draw2.getEvaluated());	
+		
+		printCurrentTimeToConsol("Auto-Evaluation of DailyLottoDraw (draw2).");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(true, draw2.getEvaluated());
+		
+		assertEquals(3+1, cus1.getBankAccount().getWinnings().size());
+		assertEquals(2+1, cus2.getBankAccount().getWinnings().size());
+		assertEquals(6+2, cus3.getBankAccount().getWinnings().size());
+		
+		assertEquals(1, draw2.getDrawEvaluationResult().getTipsInCategory(0).size());
+		assertEquals(1, draw2.getDrawEvaluationResult().getTipsInCategory(4).size());
+		assertEquals(1, draw2.getDrawEvaluationResult().getTipsInCategory(7).size());
+		assertEquals(1, draw2.getDrawEvaluationResult().getTipsInCategory(8).size());
+		
+		assertEquals(11+4, Lottery.getInstance().getFinancialManagement().getWinnings().size());
+		
+		int[] shouldPrizeCat2 = new int[]{1,3,7,8,8,-1,-1,-1,-1,-1,-1, 1, 5, 8, 9};
+		int i2 = 0;
+		for(Winnings winnings : Lottery.getInstance().getFinancialManagement().getWinnings())
+		{
+			assertEquals(shouldPrizeCat2[i2], winnings.getPrizeCategory());
+			++i2;
+		}
+		
+		System.out.println(" ");
+		
 	}
 
 //	@Test(expected=AssertionError.class)

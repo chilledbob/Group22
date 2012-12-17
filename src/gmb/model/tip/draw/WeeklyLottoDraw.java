@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import gmb.model.Lottery;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.TipManagement;
+import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
@@ -50,11 +51,13 @@ public class WeeklyLottoDraw extends Draw
 	 */
 	public boolean evaluate() 
 	{
-		super.evaluate();//set actualEvaluationDate and init prizePotential 
-
+		drawEvaluationResult = new WeeklyLottoDrawEvaluationResult(null);
+		
+		super.evaluate();//init prizePotential 
+		
 		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
 
-		drawEvaluationResult.createJackpotImageBefore(jackpot);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageBefore(jackpot);
 
 		//calculate the overall amount of money to be processed (must stay the same):
 		CDecimal mustOverallAmount = prizePotential;
@@ -69,7 +72,7 @@ public class WeeklyLottoDraw extends Draw
 		for(int i = 0; i < 8; ++i)
 			perCategoryPrizePotential.set(i, prizePotential.multiply(prizeCatagories.get(i)).divide(dec100).add(jackpot.get(i)));
 
-		drawEvaluationResult.copyCategoryPrizePotential(perCategoryPrizePotential);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryPrizePotential(perCategoryPrizePotential);
 
 		//array which will store the SingleTips for each prize category in lists:
 		ArrayList<LinkedList<SingleTip>> category = ArrayListFac.new_SingleTipLinkedListArray(8);
@@ -124,7 +127,7 @@ public class WeeklyLottoDraw extends Draw
 			}
 		}
 
-		drawEvaluationResult.copyTipsInCategory(category);
+		drawEvaluationResult.setTipsInCategory(category);
 
 		//count number of SingleTips in each category:
 		ArrayList<CDecimal> tipCountPerCategory = ArrayListFac.new_CDecimalArray(8);
@@ -148,7 +151,7 @@ public class WeeklyLottoDraw extends Draw
 			}
 
 		//merge prize categories if lower category has higher winnings per SingleTip:
-		drawEvaluationResult.copyCategoryWinningsUnMerged(categoryWinnings);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsUnMerged(categoryWinnings);
 
 		int m = 0;
 		for(; m < 100; ++m)//limit loop count for the case of unpredicted rounding behavior which would lead to infinite looping
@@ -204,9 +207,9 @@ public class WeeklyLottoDraw extends Draw
 		}
 
 		Lottery.getInstance().getFinancialManagement().getJackpots().setWeeklyLottoJackpot(newJackpot);//set new jackpot
-		drawEvaluationResult.createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
 
-		drawEvaluationResult.copyCategoryWinningsMerged(categoryWinnings);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsMerged(categoryWinnings);
 
 		//create and send winnings, also calculate the actual overall amount of money that has been processed in the end:
 		CDecimal actualOverallAmount = new CDecimal(0);
@@ -219,7 +222,8 @@ public class WeeklyLottoDraw extends Draw
 			{
 				Winnings newWinnings = GmbFactory.new_Winnings(tip, categoryWinnings.get(i), i + 1);
 				tip.setOverallWinnings(newWinnings);
-
+				drawEvaluationResult.addWinnings(newWinnings);
+				
 				if(tip.getGroupTip() != null)
 				{
 					//add group associated winnings to list in group:
@@ -231,8 +235,6 @@ public class WeeklyLottoDraw extends Draw
 
 					//directly send all other winnings to their respective customers:
 					newWinnings.init();
-
-					drawEvaluationResult.addWinnings(newWinnings);
 				}				
 			}
 		}
@@ -247,8 +249,10 @@ public class WeeklyLottoDraw extends Draw
 		CDecimal normalizationAmount = mustOverallAmount.subtract(actualOverallAmount);
 
 		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(normalizationAmount);
-		drawEvaluationResult.setNormalizationAmount(normalizationAmount);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).setNormalizationAmount(normalizationAmount);
 
+		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(drawEvaluationResult.getReceiptsDistributionResult());
+		
 		DB_UPDATE(); 
 
 		return true;

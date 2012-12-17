@@ -291,7 +291,7 @@ public class GmbFactory
 	{
 		ReceiptsDistributionResult obj = new ReceiptsDistributionResult(drawReceipts);
 		obj = (ReceiptsDistributionResult) obj.DB_ADD();
-		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(obj);
+//		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(obj);
 		
 		return obj;
 	}

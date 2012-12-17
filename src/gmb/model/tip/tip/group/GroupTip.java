@@ -4,6 +4,7 @@ import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
+import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
@@ -66,7 +67,7 @@ public abstract class GroupTip extends Tip
 	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
 	 * @return
 	 */
-	public CDecimal finalizeWinnings(WeeklyLottoDrawEvaluationResult drawEvaluationResult)
+	public CDecimal finalizeWinnings(EvaluationResult drawEvaluationResult)
 	{	
 		if(allWinnings.size() > 0)
 		{
