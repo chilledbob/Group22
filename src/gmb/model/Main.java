@@ -3,6 +3,7 @@ package gmb.model;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.salespointframework.core.shop.Shop;
+import org.salespointframework.core.user.UserIdentifier;
 
 import gmb.model.Lottery;
 import gmb.model.tip.*;
@@ -26,7 +27,7 @@ public class Main {
 	 */
 	public Main(){
 		Shop.INSTANCE.initializePersistent();
-		initMm();
+//		initMm();
 		GmbPersistenceManager.initLottery();
 		initData();
 	}
@@ -34,27 +35,26 @@ public class Main {
 
 	//Testdata
 
-	private void initMm(){
-		MemberManagement mm = new MemberManagement(null);
-		FinancialManagement fm = new FinancialManagement(null,null);
-		GmbPersistenceManager.add(new TipManagement(null));
-		GmbPersistenceManager.add(new GroupManagement(null));
-		GmbPersistenceManager.add(fm);
-		GmbPersistenceManager.add(mm);
-	}
+//	private void initMm(){
+//		if(GmbPersistenceManager.get(MemberManagement.class, 0) == null){
+//			MemberManagement mm = new MemberManagement(null);
+//			FinancialManagement fm = new FinancialManagement(null,null);
+//			GmbPersistenceManager.add(new TipManagement(null));
+//			GmbPersistenceManager.add(new GroupManagement(null));
+//			//GmbPersistenceManager.add(fm);
+//			GmbPersistenceManager.add(mm);
+//		}
+//	}
 
 	private void initData() {
-
-		Adress a = new Adress("a","b","c","d");
+		if(GmbPersistenceManager.get(new UserIdentifier("bob")) == null){
+		Adress a = GmbFactory.new_Adress("a","b","c","d");
 		DateTime d = new DateTime();
-		MemberData md = new MemberData("a","b",d,"c","d",a);
+		MemberData md = GmbFactory.new_MemberData("a","b",d,"c","d",a);
 		Member admin = new Member("bob","bob",md, MemberType.Admin);		
 		Lottery.getInstance().getMemberManagement().addMember(admin);
 
-		//GmbPersistenceManager.add(a);
-		//GmbPersistenceManager.add(md);
-		GmbPersistenceManager.add(admin.getMemberData());
-		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
+		//GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 
 		
 		RealAccountData rad = GmbFactory.new_RealAccountData("0010","0815");
@@ -70,22 +70,17 @@ public class Main {
 		Adress ab = new Adress("ee","f","g","h");
 		DateTime db = new DateTime();
 		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
-
-//		GmbPersistenceManager.add(aa);
-//		GmbPersistenceManager.add(mda);
-//		GmbPersistenceManager.add(rad);
-//		GmbPersistenceManager.add(lba);
-
 		
 		c.sendDataUpdateRequest(mdb, "");
-		GmbPersistenceManager.update(c);
+		
+		//GmbPersistenceManager.update(c);
 		Group g = GmbFactory.new_Group("The Savages",c,"Don't hunt what you can't kill!");
 		//GmbPersistenceManager.add(g);
 		
-		GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
-		GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
+		//GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
+		//GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 		//GmbPersistenceManager.update(Lottery.getInstance().getFinancialManagement());
-
+		}
 		}
 	
 

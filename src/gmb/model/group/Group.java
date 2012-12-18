@@ -15,7 +15,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
@@ -30,6 +32,7 @@ import org.joda.time.DateTime;
 @Table(name="GroupTable")
 public class Group extends PersiObject
 {
+	@Column(unique=true)
 	protected String name;
 	protected String infoText;
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -37,6 +40,7 @@ public class Group extends PersiObject
 	protected Boolean closed;
 	
 	@ManyToOne
+	@JoinColumn
 	protected GroupManagement groupManagementId;
 
 	@OneToOne
@@ -70,9 +74,9 @@ public class Group extends PersiObject
 		foundingDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		
 		this.groupAdmin = groupAdmin;
-//		this.groupAdmin.addGroup(this);
 		
 		groupMembers =  new LinkedList<Customer>();
+		groupMembers.add(groupAdmin);
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
@@ -82,7 +86,7 @@ public class Group extends PersiObject
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
-//		Lottery.getInstance().getGroupManagement().addGroup(this);
+		this.groupManagementId = Lottery.getInstance().getGroupManagement();
 	}
 	
 	/**

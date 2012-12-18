@@ -8,6 +8,7 @@ import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -17,8 +18,11 @@ public class PrizeCategories extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
+	@ElementCollection
 	protected List<CDecimal> weeklyLottoCategories;
+	@ElementCollection
 	protected List<CDecimal> dailyLottoCategories;
+	@ElementCollection
 	protected List<CDecimal> totoCategories;
 	
 	@Deprecated

@@ -4,6 +4,7 @@ import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -13,15 +14,24 @@ public class TipTicketPrices extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
+	@Embedded
 	protected CDecimal weeklyLottoSTTPrice;
+	@Embedded
 	protected CDecimal totoSTTPrice;
+	@Embedded
 	protected CDecimal dailyLottoSTTPrice;
 	
+	@Embedded
 	protected CDecimal weeklyLottoPTTPrice_Month;
+	@Embedded
 	protected CDecimal dailyLottoPTTPrice_Month;
+	@Embedded
 	protected CDecimal weeklyLottoPTTPrice_HalfYear;
+	@Embedded
 	protected CDecimal dailyLottoPTTPrice_HalfYear;
+	@Embedded
 	protected CDecimal weeklyLottoPTTPrice_Year;
+	@Embedded
 	protected CDecimal dailyLottoPTTPrice_Year;
 	
 	@Deprecated

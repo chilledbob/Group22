@@ -26,7 +26,7 @@ public class MemberData extends PersiObject
 	protected Date birthDate;
 	protected String phoneNumber;
 	protected String eMail;
-	@OneToOne(cascade=CascadeType.ALL) 
+	@OneToOne//(cascade=CascadeType.ALL) 
     @JoinColumn(name="adrId") 
 	protected Adress adress;
 	

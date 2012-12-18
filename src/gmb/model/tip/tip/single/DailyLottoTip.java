@@ -5,9 +5,10 @@ import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-@Embeddable
+@Entity
 public class DailyLottoTip extends SingleTip 
 {
 	@ManyToOne

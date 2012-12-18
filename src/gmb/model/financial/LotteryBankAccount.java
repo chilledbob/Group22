@@ -32,17 +32,17 @@ public class LotteryBankAccount extends PersiObject
 	protected Customer owner;
 	protected CDecimal credit;	
 	@OneToOne//(cascade=CascadeType.ALL)
-    @JoinColumn(name="realAccountDataId") 
+    @JoinColumn(name="REALACCOUNTDATAID") 
 	protected RealAccountData realAccountData;
-	@OneToMany(mappedBy="lotteryBankAccount")
+	@OneToMany
 	protected List<TicketPurchase> ticketPurchases;
-	@ElementCollection
+	@OneToMany
 	protected List<Winnings> winnings;
-	@ElementCollection
+	@OneToMany
 	protected List<ExternalTransaction> externalTransactions;
 	@OneToMany
 	protected List<ExternalTransactionRequest> externalTransactionRequests;	
-	@ElementCollection
+	@OneToMany
 	protected List<RealAccountDataUpdateRequest> realAccountDataUpdateRequests;
 	
 	@Deprecated

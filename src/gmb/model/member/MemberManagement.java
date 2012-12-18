@@ -1,19 +1,27 @@
 package gmb.model.member;
+import gmb.model.GmbPersistenceManager;
 import gmb.model.PersiObject;
 import gmb.model.request.data.MemberDataUpdateRequest;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
 
 @Entity
 public class MemberManagement extends PersiObject
 {
-	@OneToMany(mappedBy="memberManagementID")
+	@OneToMany(mappedBy="memberManagement",fetch=FetchType.EAGER)
+	@JoinColumn(name="MEMBERMANAGEMENT_PERSISTENCEID")
 	protected List<Member> members;
-	@OneToMany(mappedBy="memberManagementID")
+	@OneToMany(mappedBy="memberManagementID",fetch=FetchType.EAGER)
+	@JoinColumn(name="MEMBERMANAGEMENTID")
 	protected List<MemberDataUpdateRequest> requests;
 			
 	@Deprecated

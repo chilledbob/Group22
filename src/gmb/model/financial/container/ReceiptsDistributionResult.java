@@ -4,14 +4,19 @@ import gmb.model.CDecimal;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 @Entity
 public class ReceiptsDistributionResult extends PersiObject
 {	
+	@Embedded
 	protected CDecimal winnersDue;
+	@Embedded
 	protected CDecimal treasuryDue;
+	@Embedded
 	protected CDecimal lotteryTaxDue;
+	@Embedded
 	protected CDecimal managementDue;
 	
 	protected static final CDecimal dec100 = new CDecimal(100);

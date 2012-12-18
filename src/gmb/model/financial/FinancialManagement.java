@@ -1,5 +1,6 @@
 package gmb.model.financial;
 import gmb.model.GmbFactory;
+import gmb.model.GmbPersistenceManager;
 import gmb.model.PersiObject;
 import gmb.model.financial.container.Jackpots;
 import gmb.model.financial.container.LotteryCredits;
@@ -41,18 +42,18 @@ public class FinancialManagement extends PersiObject
 	@OneToOne(mappedBy="financialManagementId")
 	protected ReceiptsDistribution receiptsDistribution;
 
-	@OneToMany(mappedBy="financialManagementId")
+	@OneToMany
 	protected List<TicketPurchase> ticketPurchases;
 
-	@ElementCollection
+	@OneToMany
 	protected List<Winnings> winnings;
 
-	@ElementCollection
+	@OneToMany
 	protected List<ExternalTransaction> externalTransactions;
 
 	@OneToMany(mappedBy="financialManagementId")
 	protected List<ExternalTransactionRequest> externalTransactionRequests;	
-	@ElementCollection
+	@OneToMany
 	protected List<RealAccountDataUpdateRequest> realAccounDataUpdateRequests;
 
 	@Deprecated
@@ -73,6 +74,7 @@ public class FinancialManagement extends PersiObject
 
 		externalTransactionRequests = new LinkedList<ExternalTransactionRequest>();
 		realAccounDataUpdateRequests = new LinkedList<RealAccountDataUpdateRequest>();
+		
 	}
 
 	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request);  DB_UPDATE(); }

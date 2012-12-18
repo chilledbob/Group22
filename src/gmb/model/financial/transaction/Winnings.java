@@ -1,6 +1,6 @@
 package gmb.model.financial.transaction;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 import gmb.model.CDecimal;
@@ -9,7 +9,7 @@ import gmb.model.Lottery;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
-@Embeddable
+@Entity
 public class Winnings extends InternalTransaction
 {
 	@OneToOne

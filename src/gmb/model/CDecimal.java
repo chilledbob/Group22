@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import javax.persistence.Embeddable;
+
 /**
  * BigDecimal type for currency calculations with scale of 2 an rounding mode HALF_UP
  * @author some pony
  */
 @SuppressWarnings("serial")
+@Embeddable
 public class CDecimal extends BigDecimal
 {
 	protected static final int scale = 2;
