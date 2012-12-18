@@ -24,6 +24,8 @@ import org.joda.time.Duration;
 @Entity
 public abstract class Draw extends PersiObject
 {
+	protected int[] result;
+	
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	
@@ -39,6 +41,9 @@ public abstract class Draw extends PersiObject
 	@OneToMany(mappedBy="draw")
 	protected List<GroupTip> groupTips;
 
+	protected static final CDecimal dec100 = new CDecimal(100);
+	protected static final CDecimal dec2 = new CDecimal(2);
+	
 	@Deprecated
 	protected Draw(){}
 
@@ -51,6 +56,8 @@ public abstract class Draw extends PersiObject
 		groupTips = new LinkedList<GroupTip>();
 		
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
+		
+		result = null;
 	}
 
 	/**
@@ -58,10 +65,13 @@ public abstract class Draw extends PersiObject
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return
 	 */
-	public boolean evaluate()
+	public boolean evaluate(int[] result)
 	{
 		evaluated = true;
-
+		
+		if(this.result == null)
+		this.result = result; 
+		
 		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
 			prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
@@ -267,7 +277,7 @@ public abstract class Draw extends PersiObject
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 
-	public abstract int[] getResult();
+	public int[] getResult(){ return result; }
 	
 	/**
 	 * [intended for direct usage by controller]

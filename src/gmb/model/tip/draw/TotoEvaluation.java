@@ -1,15 +1,22 @@
 package gmb.model.tip.draw;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import gmb.model.ArrayListFac;
+import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
+import gmb.model.Lottery;
 import gmb.model.ReturnBox;
+import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameData;
+import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.group.TotoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.TotoTip;
+import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.single.TotoSTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
@@ -23,7 +30,9 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	protected ArrayList<FootballGameData> games;
+	protected ArrayList<FootballGameData> gameData;
+	
+	protected static final int categoryCount = 5;
 	
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -31,36 +40,201 @@ public class TotoEvaluation extends Draw
 	@Deprecated
 	protected TotoEvaluation(){}
 
-	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> games)
+	public TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> gameData)
 	{
 		super(planedEvaluationDate);
-		this.games = games;
+		
+		assert gameData.size() == 9 : "Wrong gameData size (!=9) given to TotoEvaluation.setGameData(ArrayList<FootballGameData> gameData)!";
+		this.gameData = gameData;
 	}
 	
-	public boolean evaluate() 
+	public boolean evaluate(int[] result) 
 	{
-		super.evaluate();//set actualEvaluationDate and init prizePotential 
+		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
+		
+		//create the actual result array containing only the general results of the games, copy exact results to gameData:
+		int[] newResult = new int[9];
+		for(int i = 0; i < 9; ++i)
+		{
+			gameData.get(i).setResults(result[i*2], result[i*2+1]);
+			
+			if(result[i*2] == result[i*2+1])
+				newResult[i] = 0;//standoff
+			else
+				if(result[i*2] > result[i*2+1])
+					newResult[i] = 1;//home club wins
+				else
+					newResult[i] = 2;//visitor club wins
+		}
+		result = newResult;//just to make sure the right array is used later
+		
+		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
+		
+		super.evaluate(newResult);//set actualEvaluationDate and init prizePotential 
 
-//		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getTotoPrize());
-//		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
-//
-//		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
-//		for(SingleTip tip : singleTips)
-//			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-//
-//		for(GroupTip groupTip : groupTips)
-//			for(SingleTip tip :  groupTip.getTips())
-//				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-//		
-//		Lottery.getInstance().getFinancialManagement().setTotoPrize(prizePotential);//everything for the lottery!
-//		//////////////////////////
+		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getTotoJackpot();
 
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageBefore(jackpot);
+
+		//calculate the overall amount of money to be processed (must stay the same):
+		CDecimal mustOverallAmount = prizePotential;
+		for(CDecimal categoryJackpot : jackpot)
+			mustOverallAmount = mustOverallAmount.add(categoryJackpot);
+
+		//calculate the prize potential per prize category:
+		ArrayList<CDecimal> prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getTotoCategories();
+
+		ArrayList<CDecimal> perCategoryPrizePotential = ArrayListFac.new_CDecimalArray(categoryCount); 
+
+		for(int i = 0; i < categoryCount; ++i)
+			perCategoryPrizePotential.set(i, prizePotential.multiply(prizeCatagories.get(i)).divide(dec100).add(jackpot.get(i)));
+
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryPrizePotential(perCategoryPrizePotential);
+
+		//array which will store the SingleTips for each prize category in lists:
+		ArrayList<LinkedList<SingleTip>> category = ArrayListFac.new_SingleTipLinkedListArray(categoryCount);
+
+		//put SingleTips in the prize category array:
+		for(SingleTip tip : allSingleTips)
+		{
+			int hitCount = -5;
+
+			for(int i = 0; i < 9; ++i)
+					if(tip.getTip()[i] == this.result[i])
+						++hitCount;
+
+			if(hitCount > -1)
+			category.get(4 - hitCount).add(tip);
+		}
+
+		drawEvaluationResult.setTipsInCategory(category);
+
+		//count number of SingleTips in each category:
+		ArrayList<CDecimal> tipCountPerCategory = ArrayListFac.new_CDecimalArray(categoryCount);
+		for(int i = 0; i < categoryCount; ++i)
+			tipCountPerCategory.set(i, new CDecimal(category.get(i).size()));
+
+		//calculate the winnings for each SingleTip in each category, and build new jackpot from empty categories:
+		ArrayList<CDecimal> newJackpot = ArrayListFac.new_CDecimalArray(categoryCount);
+		ArrayList<CDecimal> categoryWinnings = ArrayListFac.new_CDecimalArray(categoryCount);
+
+		for(int i = 0; i < categoryCount; ++i)
+			if(tipCountPerCategory.get(i).signum() > 0)
+			{
+				categoryWinnings.set(i, perCategoryPrizePotential.get(i).divide(tipCountPerCategory.get(i)));
+				newJackpot.set(i, new CDecimal(0));
+			}
+			else
+			{
+				categoryWinnings.set(i, new CDecimal(0));
+				newJackpot.set(i, perCategoryPrizePotential.get(i));
+			}
+
+		//merge prize categories if lower category has higher winnings per SingleTip:
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsUnMerged(categoryWinnings);
+
+		int m = 0;
+		for(; m < 100; ++m)//limit loop count for the case of unpredicted rounding behavior which would lead to infinite looping
+		{		
+			boolean noMerge = true;
+
+			//			for(int i = 0; i < 8; ++i)
+			//			{
+			//				System.out.print(perCategoryPrizePotential[i]);
+			//				System.out.print(" ");
+			//			}
+			//			System.out.println(" ");
+
+			for(int i = categoryCount-1; i > 0; --i)//start with lowest category
+			{
+				for(int j = i-1; j >= 0; --j)//compare with all higher categories
+				{
+					if(tipCountPerCategory.get(i).signum() > 0 && tipCountPerCategory.get(j).signum() > 0)//only compare if there are actually SingleTips in both categories
+						if(categoryWinnings.get(i).compareTo(categoryWinnings.get(j)) > 0)//compare if lower category has higher winnings
+						{
+							noMerge = false;
+
+							CDecimal mergedPrizePotential = (perCategoryPrizePotential.get(i).add(perCategoryPrizePotential.get(j))).divide(dec2);//average winnings
+							perCategoryPrizePotential.set(i, mergedPrizePotential);
+							perCategoryPrizePotential.set(j, mergedPrizePotential);
+
+							break;
+						}
+				}
+
+				if(!noMerge) break;//break to start with lowest category again
+			}
+
+			if(noMerge) break;//only exit if there hasn't been another merge
+
+			//re-calculate the winnings for each SingleTip in each category:
+			for(int i = 0; i < categoryCount; ++i)
+				if(tipCountPerCategory.get(i).signum() > 0)
+					categoryWinnings.set(i, perCategoryPrizePotential.get(i).divide(tipCountPerCategory.get(i)));
+		}
+
+		if(m > 31)
+			System.out.println("UNEXPECTED HIGH MERGE LOOP COUNT! Loop count was: " + (new Integer(m)).toString() + " !");
+
+		Lottery.getInstance().getFinancialManagement().getJackpots().setWeeklyLottoJackpot(newJackpot);//set new jackpot
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
+
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsMerged(categoryWinnings);
+
+		//create and send winnings, also calculate the actual overall amount of money that has been processed in the end:
+		CDecimal actualOverallAmount = new CDecimal(0);
+
+		for(int i = 0; i < categoryCount; ++i)
+		{
+			actualOverallAmount = actualOverallAmount.add(newJackpot.get(i));
+
+			for(SingleTip tip : category.get(i))
+			{
+				Winnings newWinnings = GmbFactory.new_Winnings(tip, categoryWinnings.get(i), i + 1);
+				tip.setOverallWinnings(newWinnings);
+				drawEvaluationResult.addWinnings(newWinnings);
+				
+				if(tip.getGroupTip() != null)
+				{
+					//add group associated winnings to list in group:
+					tip.getGroupTip().addWinnings(newWinnings);
+				}
+				else
+				{
+					actualOverallAmount = actualOverallAmount.add(categoryWinnings.get(i));
+
+					//directly send all other winnings to their respective customers:
+					newWinnings.init();
+				}				
+			}
+		}
+
+		//evaluate average winnings for all contributers of a group tip and send them the respective winnings:
+		for(GroupTip tip : groupTips)
+		{
+			actualOverallAmount = actualOverallAmount.add(tip.finalizeWinnings(drawEvaluationResult));
+		}
+
+		//normalize overall amount of processed money:
+		CDecimal normalizationAmount = mustOverallAmount.subtract(actualOverallAmount);
+
+		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(normalizationAmount);
+		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).setNormalizationAmount(normalizationAmount);
+
+		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(drawEvaluationResult.getReceiptsDistributionResult());
+		
 		DB_UPDATE(); 
 		
 		return false;
 	}
 	
-	public void setGames(ArrayList<FootballGameData> games){ this.games = games; DB_UPDATE(); }
+//	public void setGameData(ArrayList<FootballGameData> gameData)
+//	{ 
+//		assert gameData.size() == 9 : "Wrong gameData size (!=9) given to TotoEvaluation.setGameData(ArrayList<FootballGameData> gameData)!";
+//		this.gameData = gameData; 
+//		
+//		DB_UPDATE(); 
+//	}
 	
 	/**
 	 * [intended for direct usage by controller]
@@ -78,20 +252,20 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public ArrayList<FootballGameData> getGames(){ return games; }
+	public ArrayList<FootballGameData> getGameData(){ return gameData; }
 	
-	public int[] getResult()
-	{ 
-		int[] goals = new int[games.size() * 2];
-		
-//		for(int i = 0; i < results.size(); ++i)
-//		{
-//			goals[i*2]   = results.get(i).getHomeResult().getScore();
-//			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
-//		}
-		
-		return goals; 
-	}
+//	public int[] getResult()
+//	{ 
+//		int[] goals = new int[games.size() * 2];
+//		
+////		for(int i = 0; i < results.size(); ++i)
+////		{
+////			goals[i*2]   = results.get(i).getHomeResult().getScore();
+////			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
+////		}
+//		
+//		return goals; 
+//	}
 	
 	/**
 	 * Return Code:
@@ -103,7 +277,7 @@ public class TotoEvaluation extends Draw
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
-		assert ticket instanceof WeeklyLottoSTT : "Wrong TipTicket type given to TotoEvaluation.createAndSubmitSingleTip()! Expected TotoSTT!";
+		assert ticket instanceof TotoSTT : "Wrong TipTicket type given to TotoEvaluation.createAndSubmitSingleTip()! Expected TotoSTT!";
 		
 	return super.createAndSubmitSingleTip(ticket, tipTip);		
 	}

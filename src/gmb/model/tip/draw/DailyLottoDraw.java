@@ -26,7 +26,7 @@ import org.joda.time.DateTime;
 @Entity
 public class DailyLottoDraw extends Draw 
 {
-	protected int[] result;
+
 
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -39,12 +39,22 @@ public class DailyLottoDraw extends Draw
 		super(planedEvaluationDate);
 	}
 
-	public boolean evaluate() 
+	public boolean evaluate(int[] result) 
 	{
-		drawEvaluationResult = new EvaluationResult(null);
-		drawEvaluationResult.setTipsInCategory(ArrayListFac.new_SingleTipLinkedListArray(10));
+		//generate random result if no result has been set:
+		if(this.result == null && result == null)
+		{
+			result = new int[10];
+			
+			for(int i = 0; i < 10; ++i)
+				result[i] = (int)(Math.random() * 100000) % 10;
+		}
+		
+		assert this.result != null || result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.evaluate(int[] result)!";
+		
+		drawEvaluationResult = GmbFactory.new_EvaluationResult(10);
 
-		super.evaluate();//init prizePotential 
+		super.evaluate(result);//init prizePotential 
 
 		//WinnersDue not used for this evaluation:
 		drawEvaluationResult.getReceiptsDistributionResult().addWinnersDueToTreasuryDue();
@@ -131,7 +141,6 @@ public class DailyLottoDraw extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, DailyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, DailyLottoGroupTip.class); }
 
-	public int[] getResult(){ return result; }
 
 	/**
 	 * Return Code:

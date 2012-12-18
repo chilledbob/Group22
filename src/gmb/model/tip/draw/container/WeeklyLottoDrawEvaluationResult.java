@@ -23,14 +23,14 @@ public class WeeklyLottoDrawEvaluationResult extends EvaluationResult
 	@Deprecated
 	protected WeeklyLottoDrawEvaluationResult(){}
 
-	public WeeklyLottoDrawEvaluationResult(Object dummy)
+	public WeeklyLottoDrawEvaluationResult(int categoryCount)
 	{
-		super(null);
+		super(categoryCount);
 
-		perCategoryPrizePotential = ArrayListFac.new_CDecimalArray(8);
-		perCategoryWinningsUnMerged = ArrayListFac.new_CDecimalArray(8);
-		perCategoryWinningsMerged = ArrayListFac.new_CDecimalArray(8);
-		tipsInCategory = ArrayListFac.new_SingleTipLinkedListArray(8);
+		perCategoryPrizePotential = ArrayListFac.new_CDecimalArray(categoryCount);
+		perCategoryWinningsUnMerged = ArrayListFac.new_CDecimalArray(categoryCount);
+		perCategoryWinningsMerged = ArrayListFac.new_CDecimalArray(categoryCount);
+		tipsInCategory = ArrayListFac.new_SingleTipLinkedListArray(categoryCount);
 	}
 
 	public void createJackpotImageBefore(ArrayList<CDecimal> jackpot){ jackpotImageBefore = createDeepCopyForCDecimalArray(jackpot); DB_UPDATE(); }

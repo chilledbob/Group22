@@ -35,6 +35,7 @@ import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
+import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.tip.Tip;
@@ -90,6 +91,13 @@ public class GmbFactory
 	
 	//////tip:
 	////draw:
+	//container:
+	public static FootballGameData new_FootballGameData(DateTime matchDay, String homeClubName, String visitorClubName)
+	{
+		FootballGameData obj = new FootballGameData(matchDay, homeClubName, visitorClubName);
+		return (FootballGameData) obj.DB_ADD();
+	}
+	//..
 	public static DailyLottoDraw new_DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
@@ -384,9 +392,15 @@ public class GmbFactory
 	//////tip:
 	////draw:
 	//container:	
-	public static WeeklyLottoDrawEvaluationResult new_DrawEvaluationResult()
+	public static EvaluationResult new_EvaluationResult(int categoryCount)
 	{
-		WeeklyLottoDrawEvaluationResult obj = new WeeklyLottoDrawEvaluationResult(null);
+		EvaluationResult obj = new EvaluationResult(categoryCount);
+		return (EvaluationResult) obj.DB_ADD();
+	}
+	
+	public static WeeklyLottoDrawEvaluationResult new_WeeklyLottoDrawEvaluationResult(int categoryCount)
+	{
+		WeeklyLottoDrawEvaluationResult obj = new WeeklyLottoDrawEvaluationResult(categoryCount);
 		return (WeeklyLottoDrawEvaluationResult) obj.DB_ADD();
 	}
 	

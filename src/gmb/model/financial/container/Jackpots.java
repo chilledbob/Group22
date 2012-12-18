@@ -26,7 +26,7 @@ public class Jackpots extends PersiObject
 	public Jackpots(Object dummy)
 	{
 		weeklyLottoJackpot = ArrayListFac.new_CDecimalArray(8);
-		totoJackpot = ArrayListFac.new_CDecimalArray(4);
+		totoJackpot = ArrayListFac.new_CDecimalArray(5);
 		
 		for(int i = 0; i < weeklyLottoJackpot.size(); ++i){ weeklyLottoJackpot.set(i, new CDecimal(0)); }
 		for(int i = 0; i < totoJackpot.size(); ++i){ totoJackpot.set(i, new CDecimal(0)); }

@@ -37,11 +37,12 @@ public class EvaluationResult extends PersiObject
 	@Deprecated
 	protected EvaluationResult(){}
 
-	public EvaluationResult(Object dummy)
+	public EvaluationResult(int categoryCount)
 	{
 		receiptsDistributionResult = null;
 		winnings = new LinkedList<Winnings>();
-
+		tipsInCategory = ArrayListFac.new_SingleTipLinkedListArray(categoryCount);
+		
 		evaluationDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
