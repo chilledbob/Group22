@@ -1,4 +1,6 @@
 package gmb.model.tip;
+import gmb.model.DrawEventBox;
+import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
@@ -10,6 +12,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 @Entity
@@ -24,6 +27,8 @@ public class TipManagement extends PersiObject
 	
 	protected long tipSubmissionTimeLimitInMilliSeconds;
 	
+	protected static final Duration zeroDuration = new Duration(0);
+	
 	@Deprecated
 	protected TipManagement(){}
 	
@@ -34,6 +39,34 @@ public class TipManagement extends PersiObject
 		weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();
 		dailyLottoDrawings = new LinkedList<DailyLottoDraw>();
 		totoEvaluations = new LinkedList<TotoEvaluation>();
+	}
+	
+	public DrawEventBox getDrawEventsOnDate(DateTime date)
+	{
+		DrawEventBox box = new DrawEventBox();
+		
+		DateTime lowerBound = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0);
+		DateTime upperBound = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59);
+		
+		for(WeeklyLottoDraw draw : weeklyLottoDrawings)
+		{
+			if(draw.getPlanedEvaluationDate().isAfter(lowerBound) && draw.getPlanedEvaluationDate().isBefore(upperBound))
+				box.addWeeklyLottoDrawing(draw);		
+		}
+		
+		for(DailyLottoDraw draw : dailyLottoDrawings)
+		{
+			if(draw.getPlanedEvaluationDate().isAfter(lowerBound) && draw.getPlanedEvaluationDate().isBefore(upperBound))
+				box.addDailyLottoDrawing(draw);
+		}
+		
+		for(TotoEvaluation eval : totoEvaluations)
+		{
+			if(eval.getPlanedEvaluationDate().isAfter(lowerBound) && eval.getPlanedEvaluationDate().isBefore(upperBound))
+				box.addTotoEvaluation(eval);
+		}
+		
+		return box;
 	}
 	
 	public void addDraw(WeeklyLottoDraw draw){ weeklyLottoDrawings.add(draw); DB_UPDATE(); }

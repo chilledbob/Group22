@@ -5,13 +5,14 @@ import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.container.EvaluationResult;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
+import gmb.model.ReturnBox;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -168,7 +169,7 @@ public abstract class GroupTip extends Tip
 	 * @return
 	 */
 	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
-	{
+	{	
 		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
 		if(!(this.draw.isTimeLeftUntilEvaluationForSubmission())) return -2;
 	

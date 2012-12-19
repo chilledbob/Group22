@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import gmb.model.CDecimal;
+import gmb.model.DrawEventBox;
 import gmb.model.GmbFactory;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
@@ -39,7 +40,7 @@ import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.draw.container.FootballGameData;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
@@ -292,7 +293,7 @@ public class Test01
 		assertEquals(1, group1.getGroupMembershipApplications().size());
 		assertEquals(2, group2.getGroupMembershipApplications().size());
 
-		assertEquals(RequestState.WITHDRAWN, inv1.getState());
+		assertEquals(RequestState.Withdrawn, inv1.getState());
 
 		printCurrentTimeToConsol("2 new groups and some applications + invitations.");//<------------------------------------------------------------------------------<TIMELINE UPDATE>
 
@@ -330,7 +331,7 @@ public class Test01
 		assertEquals(false, group3.getGroupMembers().contains(cus1));
 		assertEquals(false, group3.getGroupMembers().contains(cus4));
 		assertEquals(true, group3.getGroupAdmin() == null);
-		assertEquals(RequestState.WITHDRAWN, ((LinkedList<GroupMembershipApplication>)cus3.getGroupInvitations()).getLast().getState());
+		assertEquals(RequestState.Withdrawn, ((LinkedList<GroupMembershipApplication>)cus3.getGroupInvitations()).getLast().getState());
 		//=========================================================================================================================//TIPTICKET TESTs NO 1
 
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
@@ -343,28 +344,28 @@ public class Test01
 
 		CDecimal oriCredit2 = cus2.getBankAccount().getCredit();
 		TotoSTT ticket3 = GmbFactory.createAndPurchase_TotoSTT(cus2).var2;
-		DailyLottoPTT ticket4 = GmbFactory.createAndPurchase_DailyLottoPTT(cus2, PTTDuration.MONTH).var2;
+		DailyLottoPTT ticket4 = GmbFactory.createAndPurchase_DailyLottoPTT(cus2, PTTDuration.Month).var2;
 
 
 		CDecimal oriCredit3 = cus3.getBankAccount().getCredit();
-		WeeklyLottoPTT ticket5 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus3, PTTDuration.YEAR).var2;
-		DailyLottoPTT ticket6 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.HALFYEAR).var2;
+		WeeklyLottoPTT ticket5 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus3, PTTDuration.Year).var2;
+		DailyLottoPTT ticket6 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Halfyear).var2;
 
 		CDecimal oriCredit4 = cus4.getBankAccount().getCredit();
 		WeeklyLottoSTT ticket7 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus4).var2;
 
 
-		ReturnBox<Integer, WeeklyLottoPTT> ticket8_box= GmbFactory.createAndPurchase_WeeklyLottoPTT(cus5, PTTDuration.YEAR);
+		ReturnBox<Integer, WeeklyLottoPTT> ticket8_box= GmbFactory.createAndPurchase_WeeklyLottoPTT(cus5, PTTDuration.Year);
 
-		DailyLottoPTT ticket9 = GmbFactory.createAndPurchase_DailyLottoPTT(cus5, PTTDuration.YEAR).var2;
+		DailyLottoPTT ticket9 = GmbFactory.createAndPurchase_DailyLottoPTT(cus5, PTTDuration.Year).var2;
 
 		TipTicketPrices prices = new TipTicketPrices(null);
 
-		assertEquals(0, ticket4.getDurationType());
-		assertEquals(2, ticket5.getDurationType());
-		assertEquals(1, ticket6.getDurationType());
-		assertEquals(2, ticket8_box.var2.getDurationType());
-		assertEquals(2, ticket9.getDurationType());
+		assertEquals(0, ticket4.getDurationTypeAsInt());
+		assertEquals(2, ticket5.getDurationTypeAsInt());
+		assertEquals(1, ticket6.getDurationTypeAsInt());
+		assertEquals(2, ticket8_box.var2.getDurationTypeAsInt());
+		assertEquals(2, ticket9.getDurationTypeAsInt());
 
 		assertEquals(1, cus1.getDailyLottoSTTs().size());
 		assertEquals(2, cus1.getWeeklyLottoSTTs().size());
@@ -583,7 +584,7 @@ public class Test01
 		System.out.println(" ");
 
 		//--------------------------------------------------------//check whether lower prize categories have lower/equal per tip winnings:
-		WeeklyLottoDrawEvaluationResult wDrawEvaluationResult = (WeeklyLottoDrawEvaluationResult) draw1.getDrawEvaluationResult();
+		ExtendedEvaluationResult wDrawEvaluationResult = (ExtendedEvaluationResult) draw1.getDrawEvaluationResult();
 		ArrayList<CDecimal> categoryWinnings = wDrawEvaluationResult.getCategoryWinningsMerged();
 		for(int i = 7; i > 0; --i)
 			if(tipsPerCategory.get(i).size() > 0 && tipsPerCategory.get(i-1).size() > 0)
@@ -665,7 +666,7 @@ public class Test01
 
 		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
-		DailyLottoDraw draw2 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
+		DailyLottoDraw draw2 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(2));
 
 		//cus1:
 		int rcode11 = draw2.createAndSubmitSingleTip(cus1DLSTTs[0], new int[]{1,2,3,4,5,6,7,8,9,0}).var1.intValue();//10 hits!
@@ -692,8 +693,12 @@ public class Test01
 
 		draw2.setResult(new int[]{1,2,3,4,5,6,7,8,9,0});
 
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		assertEquals(false, draw2.getEvaluated());	
 
+		int rcode33 = draw2.createAndSubmitSingleTip(cus3DLSTTs[10], new int[]{0,2,3,4,5,6,7,8,9,0}).var1;//TOO LATE!!!
+		assertEquals(-2, rcode33);
+		
 		printCurrentTimeToConsol("Auto-Evaluation of DailyLottoDraw (draw2).");//<------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
@@ -738,7 +743,7 @@ public class Test01
 		gameData.add(GmbFactory.new_FootballGameData(new DateTime(), "Hammel", "Bammel"));
 		gameData.add(GmbFactory.new_FootballGameData(new DateTime(), "Gammel", "Rammel"));
 
-		TotoEvaluation draw3 = GmbFactory.new_TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(1), gameData);
+		TotoEvaluation draw3 = GmbFactory.new_TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(2), gameData);
 
 		//cus1:
 		int rcode111 = draw3.createAndSubmitSingleTip(cus1TSTTs[0], new int[]{0,0,0,1,1,1,2,2,2}).var1.intValue();//9 hits!
@@ -764,7 +769,7 @@ public class Test01
 
 		//=========================================================================================================================//TOTO-EVAL EVALUATION
 		
-		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		draw3.evaluate(new int[]{1,1, 2,2, 0,0, 2,0, 1,0, 3,2, 1,3, 0,2, 0,1});
 
 		assertEquals(1, draw3.getDrawEvaluationResult().getTipsInCategory(0).size());
@@ -786,7 +791,90 @@ public class Test01
 			assertEquals(shouldPrizeCat3[i3], winnings.getPrizeCategory());
 			++i3;
 		}			
-
+		
+		printCurrentTimeToConsol("TotoEvaluatation (draw3) has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		//=========================================================================================================================//
+		Lottery.getInstance().getTimer().addDays(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		DrawEventBox box = Lottery.getInstance().getTipManagement().getDrawEventsOnDate(Lottery.getInstance().getTimer().getDateTime().minusDays(5));
+		
+		assertEquals(0, box.getWeeklyLottoDrawings().size());
+		assertEquals(0, box.getDailyLottoDrawings().size());
+		assertEquals(1, box.getTotoEvaluations().size());
+		
+		printCurrentTimeToConsol("Checked some drawing events.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//
+		
+		WeeklyLottoDraw draw0 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime());
+		draw0.evaluate(new int[]{0,0,0,0,0,0,0,0});
+		
+		assertEquals(0, draw0.getDrawEvaluationResult().getWinnings().size());
+		
+		printCurrentTimeToConsol("A drawing without submitted tickets has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//PERMA-TT DURATION TEST:
+		
+		DailyLottoPTT pptTicketM1 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Month).var2;
+		DailyLottoPTT pptTicketM2 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Month).var2;
+		
+		Lottery.getInstance().getTimer().addMonths(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addDays(-1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		printCurrentTimeToConsol("A month days later minus one day.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		DailyLottoDraw pptTestDraw1 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(4));
+		pptTestDraw1.setResult(new int[]{1,1,1,1,1,1,1,1,1,1});
+		assertEquals(0, pptTestDraw1.createAndSubmitSingleTip(pptTicketM1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		assertEquals(5, pptTestDraw1.createAndSubmitSingleTip(pptTicketM1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		printCurrentTimeToConsol("two days later.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		System.out.println( pptTicketM1.getDurationDate().toString());
+		assertEquals(-1, pptTestDraw1.createAndSubmitSingleTip(pptTicketM2, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());//duration expired
+		
+		//===========================================//
+		
+		DailyLottoPTT pptTicketHY1 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Halfyear).var2;
+		DailyLottoPTT pptTicketHY2 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Halfyear).var2;
+		
+		Lottery.getInstance().getTimer().addMonths(6);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addDays(-1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		DailyLottoDraw pptTestDraw2 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(4));
+		pptTestDraw2.setResult(new int[]{1,1,1,1,1,1,1,1,1,1});
+		
+		assertEquals(1, pptTicketHY1.getDurationTypeAsInt());
+		
+		assertEquals(0, pptTestDraw2.createAndSubmitSingleTip(pptTicketHY1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		assertEquals(5, pptTestDraw2.createAndSubmitSingleTip(pptTicketHY1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(-1, pptTestDraw2.createAndSubmitSingleTip(pptTicketHY2, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());//duration expired
+		
+		//===========================================//
+		
+		DailyLottoPTT pptTicketY1 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Year).var2;
+		DailyLottoPTT pptTicketY2 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Year).var2;
+		
+		Lottery.getInstance().getTimer().addYears(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addDays(-1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		DailyLottoDraw pptTestDraw3 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(4));
+		pptTestDraw3.setResult(new int[]{1,1,1,1,1,1,1,1,1,1});
+		
+		assertEquals(2, pptTicketY1.getDurationTypeAsInt());
+		
+		assertEquals(0, pptTestDraw3.createAndSubmitSingleTip(pptTicketY1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		assertEquals(5, pptTestDraw3.createAndSubmitSingleTip(pptTicketY1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(-1, pptTestDraw3.createAndSubmitSingleTip(pptTicketY2, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());//duration expired
+		
+		printCurrentTimeToConsol("PermaTT duration stuff has been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		//=========================================================================================================================//
 	}
 
 	//	@Test(expected=AssertionError.class)

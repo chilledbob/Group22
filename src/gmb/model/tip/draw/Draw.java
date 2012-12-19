@@ -110,16 +110,8 @@ public abstract class Draw extends PersiObject
 	
 	/**
 	 * [intended for direct usage by controller]
-	 * Return Code:
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
-	 */
-	/**
-	 * [intended for direct usage by controller]
-	 * Return Code:
+	 * Creates and submits a SingleTip. Returns the created tip (var2).
+	 * Return Code (var1):
 	 * 0 - successful
 	 *-2 - not enough time left until the planned evaluation of the draw
 	 *-1 - the duration of the "PermaTT" has expired
@@ -127,9 +119,10 @@ public abstract class Draw extends PersiObject
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 * 3 - a tipped number is smaller than 1 oder greater than 49
 	 * 4 - the same number has been tipped multiple times
+	 * 5 - the ticket is already associated with this draw
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
-	{
+	{	
 		SingleTip tip = this.createSingleTipSimple(ticket);
 
 		//first try whether it would work:

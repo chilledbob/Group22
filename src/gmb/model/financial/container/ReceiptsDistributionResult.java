@@ -4,6 +4,8 @@ import gmb.model.CDecimal;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
@@ -11,12 +13,16 @@ import javax.persistence.Entity;
 public class ReceiptsDistributionResult extends PersiObject
 {	
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="winnersDue"))
 	protected CDecimal winnersDue;
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="treasuryDue"))
 	protected CDecimal treasuryDue;
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxDue"))
 	protected CDecimal lotteryTaxDue;
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="managementDue"))
 	protected CDecimal managementDue;
 	
 	protected static final CDecimal dec100 = new CDecimal(100);

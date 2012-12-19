@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 
 
 @Entity
-public class WeeklyLottoDrawEvaluationResult extends EvaluationResult
+public class ExtendedEvaluationResult extends EvaluationResult
 {
 	protected List<CDecimal> jackpotImageBefore;
 	protected List<CDecimal> jackpotImageAfter;
@@ -21,9 +21,9 @@ public class WeeklyLottoDrawEvaluationResult extends EvaluationResult
 	protected CDecimal normalizationAmount;
 
 	@Deprecated
-	protected WeeklyLottoDrawEvaluationResult(){}
+	protected ExtendedEvaluationResult(){}
 
-	public WeeklyLottoDrawEvaluationResult(int categoryCount)
+	public ExtendedEvaluationResult(int categoryCount)
 	{
 		super(categoryCount);
 

@@ -141,12 +141,12 @@ public class Member extends PersistentUser
 	
 	/**
 	 * [intended for direct usage by controller]
-	 * Create a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
-	 * and the "Member" himself.
+	 * Creates a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
+	 * and the "Member" himself. Returns the created request.
 	 * @param note
 	 * @param updatedData
 	 */
-	public void sendDataUpdateRequest(MemberData updatedData, String note)	
+	public MemberDataUpdateRequest sendDataUpdateRequest(MemberData updatedData, String note)	
 	{
 		//MemberDataUpdateRequest request =  GmbFactory.new_MemberDataUpdateRequest(updatedData, this, note);
 		MemberDataUpdateRequest request = new MemberDataUpdateRequest(updatedData, this, note);
@@ -155,5 +155,7 @@ public class Member extends PersistentUser
 		memberDataUpdateRequest.add(request);
 		
 		DB_UPDATE(); 
+		
+		return request;
 	}	
 }

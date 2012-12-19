@@ -34,13 +34,16 @@ public class Timer extends DefaultTime
 			}
 	}
 
-	public void addMinutes(int minuteCount){ this.offset2 = this.offset2.plus(new Duration(1000*60 * minuteCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-	public void addHours(int hoursCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60 * hoursCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-	public void addDays(int daysCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24 * daysCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-	public void addWeeks(int weeksCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*7 * weeksCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-	public void addMonths(int monthCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*30 * monthCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-	public void addYears(int yearCount){ this.offset2 = this.offset2.plus(new Duration(1000*60*60*24*365 * yearCount)); evaluateUnevaluatedDailyLottoDrawings(); }
-
+	public void addMinutes(long minuteCount){ this.offset2 = this.offset2.plus(new Duration(minuteCount * 1000*60)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addHours(long hoursCount){ this.offset2 = this.offset2.plus(new Duration(hoursCount * 1000*60*60)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addDays(long daysCount){ this.offset2 = this.offset2.plus(new Duration(daysCount * 1000*60*60*24)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addWeeks(long weeksCount){ this.offset2 = this.offset2.plus(new Duration(weeksCount * 1000*60*60*24*7)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addMonths(long monthCount){ this.offset2 = this.offset2.plus(new Duration(monthCount * 1000*60*60*24*30)); evaluateUnevaluatedDailyLottoDrawings(); }
+	public void addYears(long yearCount){ this.offset2 = this.offset2.plus(new Duration(yearCount * 1000*60*60*24*365)); evaluateUnevaluatedDailyLottoDrawings(); }
+	
+	//this didn't work, produced an int overflow: (LONG EVERYWHERE AND JAVA CASTS BACK TO INT! WHY JAVA, WHY?!! *$%^*'?°§%C#####!!! >.<)
+//	public void addMonths(long monthCount){ this.offset2 = this.offset2.plus(new Duration((long)1000*(long)60*(long)60*(long)24*(long)30 * monthCount)); evaluateUnevaluatedDailyLottoDrawings(); }
+	
 	public void addToOffset(Duration offset){ this.offset2 = this.offset2.plus(offset); }
 
 	public DateTime getDateTime()

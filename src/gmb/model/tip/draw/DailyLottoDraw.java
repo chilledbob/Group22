@@ -22,6 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 @Entity
 public class DailyLottoDraw extends Draw 
@@ -132,7 +133,7 @@ public class DailyLottoDraw extends Draw
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()
 	{
-		return isTimeLeftUntilEvaluationForChanges();
+		return Lottery.getInstance().getTimer().getDateTime().isBefore((new DateTime(planedEvaluationDate)).minusHours(24));
 	}
 
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }

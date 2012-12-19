@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import gmb.model.Lottery;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.TipManagement;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
@@ -55,7 +55,7 @@ public class WeeklyLottoDraw extends Draw
 		
 		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getWeeklyLottoJackpot();
 
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageBefore(jackpot);
+		((ExtendedEvaluationResult) drawEvaluationResult).createJackpotImageBefore(jackpot);
 
 		//calculate the overall amount of money to be processed (must stay the same):
 		CDecimal mustOverallAmount = prizePotential;
@@ -70,7 +70,7 @@ public class WeeklyLottoDraw extends Draw
 		for(int i = 0; i < categoryCount; ++i)
 			perCategoryPrizePotential.set(i, prizePotential.multiply(prizeCatagories.get(i)).divide(dec100).add(jackpot.get(i)));
 
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryPrizePotential(perCategoryPrizePotential);
+		((ExtendedEvaluationResult) drawEvaluationResult).createCategoryPrizePotential(perCategoryPrizePotential);
 
 		//array which will store the SingleTips for each prize category in lists:
 		ArrayList<LinkedList<SingleTip>> category = ArrayListFac.new_SingleTipLinkedListArray(categoryCount);
@@ -149,7 +149,7 @@ public class WeeklyLottoDraw extends Draw
 			}
 
 		//merge prize categories if lower category has higher winnings per SingleTip:
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsUnMerged(categoryWinnings);
+		((ExtendedEvaluationResult) drawEvaluationResult).createCategoryWinningsUnMerged(categoryWinnings);
 
 		int m = 0;
 		for(; m < 100; ++m)//limit loop count for the case of unpredicted rounding behavior which would lead to infinite looping
@@ -205,9 +205,9 @@ public class WeeklyLottoDraw extends Draw
 		}
 
 		Lottery.getInstance().getFinancialManagement().getJackpots().setWeeklyLottoJackpot(newJackpot);//set new jackpot
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
+		((ExtendedEvaluationResult) drawEvaluationResult).createJackpotImageAfterAndUndistributedPrizes(newJackpot);//create image of new jackpot and calculate the difference to the old jackpot
 
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).createCategoryWinningsMerged(categoryWinnings);
+		((ExtendedEvaluationResult) drawEvaluationResult).createCategoryWinningsMerged(categoryWinnings);
 
 		//create and send winnings, also calculate the actual overall amount of money that has been processed in the end:
 		CDecimal actualOverallAmount = new CDecimal(0);
@@ -247,7 +247,7 @@ public class WeeklyLottoDraw extends Draw
 		CDecimal normalizationAmount = mustOverallAmount.subtract(actualOverallAmount);
 
 		drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(normalizationAmount);
-		((WeeklyLottoDrawEvaluationResult) drawEvaluationResult).setNormalizationAmount(normalizationAmount);
+		((ExtendedEvaluationResult) drawEvaluationResult).setNormalizationAmount(normalizationAmount);
 
 		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(drawEvaluationResult.getReceiptsDistributionResult());
 		

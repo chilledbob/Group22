@@ -8,6 +8,8 @@ import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -19,10 +21,13 @@ public class PrizeCategories extends PersiObject
 	protected FinancialManagement financialManagementId;
 	
 	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="weeklyLottoCategories"))
 	protected List<CDecimal> weeklyLottoCategories;//%
 	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="dailyLottoCategories"))
 	protected List<CDecimal> dailyLottoCategories;//currency
 	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="totoCategories"))
 	protected List<CDecimal> totoCategories;//%
 	
 	@Deprecated
