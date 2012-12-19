@@ -76,7 +76,7 @@ public class Group extends PersiObject
 		this.groupAdmin = groupAdmin;
 		
 		groupMembers =  new LinkedList<Customer>();
-		groupMembers.add(groupAdmin);
+//		groupMembers.add(groupAdmin);
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
