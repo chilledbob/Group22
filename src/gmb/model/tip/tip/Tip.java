@@ -3,7 +3,10 @@ package gmb.model.tip.tip;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,6 +27,8 @@ public abstract class Tip extends PersiObject
 	@ManyToOne
 	protected Draw draw;
 	
+	@OneToOne
+	@PrimaryKeyJoinColumn(name="TIP_PERSISTENCEID")
 	protected Winnings overallWinnings;
 	
 	@Deprecated

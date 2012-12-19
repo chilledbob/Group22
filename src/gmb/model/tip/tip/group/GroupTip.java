@@ -17,9 +17,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public abstract class GroupTip extends Tip 
@@ -33,9 +37,13 @@ public abstract class GroupTip extends Tip
 
 	protected int currentOverallMinimumStake;
 
+	@OneToOne
+	@JoinColumn(name="TIP_PERSISTENCEID")
 	protected Winnings averageWinnings;
+	@OneToMany
+	@JoinColumn(name="TIP_PERSISTENCEID")
 	protected List<Winnings> allWinnings;
-
+	
 	@OneToMany(mappedBy="groupTip")
 	protected List<SingleTip> tips;
 

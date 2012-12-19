@@ -5,8 +5,9 @@ import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.single.TotoSTT;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
-@Embeddable
+@Entity
 public class TotoTip extends SingleTip 
 {
 	@Deprecated

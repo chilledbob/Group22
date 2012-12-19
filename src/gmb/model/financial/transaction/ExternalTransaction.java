@@ -5,9 +5,9 @@ import gmb.model.member.Customer;
 
 import gmb.model.CDecimal;
 
-import javax.persistence.Embeddable;;
+import javax.persistence.Entity;
 
-@Embeddable
+@Entity
 public class ExternalTransaction extends Transaction 
 {
 	@Deprecated

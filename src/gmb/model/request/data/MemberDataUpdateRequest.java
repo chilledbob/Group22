@@ -1,5 +1,6 @@
 package gmb.model.request.data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,6 +19,7 @@ public class MemberDataUpdateRequest extends Request
 	protected MemberData updatedData;
 	
 	@ManyToOne
+	@JoinColumn(name="memberManagementID")
 	protected MemberManagement memberManagementID;
 	
 	@Deprecated

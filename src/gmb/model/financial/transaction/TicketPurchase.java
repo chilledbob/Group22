@@ -1,5 +1,6 @@
 package gmb.model.financial.transaction;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;

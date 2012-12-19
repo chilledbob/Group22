@@ -10,6 +10,7 @@ import gmb.model.tip.tipticket.type.GenericTT;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public abstract class SingleTip extends Tip 
@@ -17,6 +18,7 @@ public abstract class SingleTip extends Tip
 	protected int[] tip;
 	@ManyToOne
 	protected PermaTT permaTT;
+	@OneToOne
 	protected TipTicket tipTicket;
 	@ManyToOne
 	protected GroupTip groupTip;

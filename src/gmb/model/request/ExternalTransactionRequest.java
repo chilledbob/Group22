@@ -7,11 +7,12 @@ import gmb.model.financial.transaction.ExternalTransaction;
 import javax.persistence.Entity;
 import javax.persistence.Embedded;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class ExternalTransactionRequest extends Request 
 {
-	@Embedded
+	@OneToOne
 	protected ExternalTransaction transaction;
 	
 	@ManyToOne

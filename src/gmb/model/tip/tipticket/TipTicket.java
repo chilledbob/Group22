@@ -6,6 +6,7 @@ import gmb.model.PersiObject;
 
 import java.util.Date;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -32,7 +33,7 @@ public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, D
 	protected CDecimal perTicketPaidPurchasePrice;//the price of the corresponding SingleTT (the same like paidPurchasePrice for SingleTTs of course)
 	protected CDecimal remainingValue;//decrement this by perTicketPaidPurchasePrice for each submitted tip (in the case of PermaTTs the treasury has to pay as soon this one goes under 0)
 	
-	@OneToOne(mappedBy="ticket")
+	@OneToOne
 	protected TicketPurchase ticketPurchaseId;
 	
 	@ManyToOne

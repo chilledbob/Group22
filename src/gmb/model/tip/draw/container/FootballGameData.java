@@ -1,11 +1,14 @@
 package gmb.model.tip.draw.container;
 
 import gmb.model.PersiObject;
+import gmb.model.tip.draw.TotoEvaluation;
 
 import java.util.Date;
 
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -14,6 +17,9 @@ public class FootballGameData extends PersiObject
 {	
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date matchDay;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	protected TotoEvaluation totoEvaluation;
 	
 	protected String homeClubName;
 	protected String visitorClubName;

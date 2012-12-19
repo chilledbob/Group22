@@ -6,10 +6,12 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Entity
 public abstract class SingleTT extends TipTicket
 {	
+	@OneToOne(mappedBy="tipTicket")
 	protected SingleTip tip;
 
 	@Deprecated

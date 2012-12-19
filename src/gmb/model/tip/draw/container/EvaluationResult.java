@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,9 +24,10 @@ import gmb.model.tip.tip.single.SingleTip;
 @Entity
 public class EvaluationResult extends PersiObject
 {
+	//fehlt hier nicht ne Anno?
 	protected ReceiptsDistributionResult receiptsDistributionResult;
 	
-	@ElementCollection
+	@OneToMany
 	protected List<Winnings> winnings;
 
 	@Temporal(value = TemporalType.TIMESTAMP)

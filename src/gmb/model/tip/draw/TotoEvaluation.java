@@ -2,6 +2,7 @@ package gmb.model.tip.draw;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
@@ -23,6 +24,7 @@ import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.joda.time.DateTime;
 
@@ -30,7 +32,8 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	protected ArrayList<FootballGameData> gameData;
+	@OneToMany(mappedBy="totoEvaluation")
+	protected List<FootballGameData> gameData;
 	
 	protected static final int categoryCount = 5;
 	
@@ -252,7 +255,7 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public ArrayList<FootballGameData> getGameData(){ return gameData; }
+	public ArrayList<FootballGameData> getGameData(){ return (ArrayList<FootballGameData>) gameData; }
 	
 //	public int[] getResult()
 //	{ 

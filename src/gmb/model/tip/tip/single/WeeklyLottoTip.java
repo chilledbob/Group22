@@ -1,15 +1,19 @@
 package gmb.model.tip.tip.single;
 
+import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class WeeklyLottoTip extends SingleTip 
 {
 	protected int superNumber;
+	
 	
 	@Deprecated
 	protected WeeklyLottoTip(){}

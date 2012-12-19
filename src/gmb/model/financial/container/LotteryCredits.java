@@ -4,6 +4,7 @@ import gmb.model.CDecimal;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -13,8 +14,11 @@ public class LotteryCredits extends PersiObject
 	@OneToOne
 	protected FinancialManagement financialManagementId;
 	
+	@Embedded
 	protected CDecimal treasuryCedit;
+	@Embedded
 	protected CDecimal lotteryTaxCedit;
+	@Embedded
 	protected CDecimal managementCedit;
 	
 	@Deprecated

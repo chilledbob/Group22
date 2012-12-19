@@ -1,14 +1,24 @@
 package gmb.model;
 
+import java.util.List;
+
 import gmb.model.financial.FinancialManagement;
+import gmb.model.group.Group;
 import gmb.model.group.GroupManagement;
 import gmb.model.member.Member;
 import gmb.model.member.MemberManagement;
+import gmb.model.request.data.MemberDataUpdateRequest;
 import gmb.model.tip.TipManagement;
+import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.draw.TotoEvaluation;
+import gmb.model.tip.draw.WeeklyLottoDraw;
 
+import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpSession;
 
+import org.omg.PortableServer.POA;
 import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
@@ -19,7 +29,7 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	private static final PersistentUserManager pum = new PersistentUserManager();
 //	
-//	public static void add(Member member){ pum.add(member); }
+//	public static Member add(Member member){ pum.add(member); return pum.get(Member.class, member.getIdentifier()); }
 //	
 //	public static void remove(Member member){ pum.remove(member.getIdentifier()); }
 //	
@@ -29,8 +39,26 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	public static Object get(Class<?> classType, int id){ return initContainer(classType, id); }
 //	
-//public static PersiObject add(PersiObject obj)
-//{
+//	public static Group getGroup(String name){
+//		EntityManager em = emf.createEntityManager();
+//		String q = "SELECT g FROM Group g WHERE g.name='"+name+"'";
+//		Query query = em.createQuery(q);
+//		return (Group) query.getSingleResult();
+//	}
+//
+//	public static void login(Member user, HttpSession session) {
+//		pum.login(user, session);
+//		
+//	}
+//	
+//
+//	public static void logout(HttpSession session) {
+//		pum.logout(session);
+//		
+//	}
+//	
+//	public static PersiObject add(PersiObject obj)
+//	{
 //	EntityManager em = emf.createEntityManager();
 //
 //	em.getTransaction().begin();
@@ -38,7 +66,7 @@ import org.salespointframework.core.user.UserIdentifier;
 //	em.getTransaction().commit();
 //
 //	return em.find(obj.getClass(), obj.getId());
-//}
+//	}
 //	
 //	public static void remove(Object obj)
 //	{
@@ -60,29 +88,42 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	public static void initLottery()
 //	{
-//		FinancialManagement fm = (FinancialManagement) initContainer(FinancialManagement.class, 1);
-//		MemberManagement mm = (MemberManagement) initContainer(MemberManagement.class, 1);
-//		GroupManagement gm = (GroupManagement) initContainer(GroupManagement.class, 1);
-//		TipManagement tm = (TipManagement) initContainer(TipManagement.class, 1);
+//		if(GmbPersistenceManager.get(MemberManagement.class, 0) == null){
+//			FinancialManagement fm = (FinancialManagement) initContainer(FinancialManagement.class, 0);
+//			MemberManagement mm = GmbFactory.new_MemberManagement();
+//			GroupManagement gm = GmbFactory.new_GroupManagement();
+//			TipManagement tm = GmbFactory.new_TipManagement();
+//			Lottery.Instanciate(fm,mm,gm,tm);
+//		}
+//		else{
+//		FinancialManagement fm = (FinancialManagement) initContainer(FinancialManagement.class, 0);
+//		MemberManagement mm = (MemberManagement) initContainer(MemberManagement.class, 0);
+//		GroupManagement gm = (GroupManagement) initContainer(GroupManagement.class,0);
+//		TipManagement tm = (TipManagement) initContainer(TipManagement.class, 0);
 //		
 //		Lottery.Instanciate(fm, mm, gm, tm);
+//		}
 //	}
 //	
 //	private static Object initContainer(Class<?> classType, int id)
 //	{
 //		EntityManager em = emf.createEntityManager();
 //		
-//		return em.find(classType, id);
+//		String q = "SELECT m FROM "+classType.getSimpleName()+" m";
+//		Query query= em.createQuery(q);
+//		if(query.getResultList().isEmpty()){ return null; }
+//		else { 
+//			PersiObject po = (PersiObject) query.getResultList().get(0);
+//			return em.find(classType,po.getId());
+//		}		
 //	}
-//		
+//	
 //}
 
 ////dummy required for unit tests of model code
 
 public class GmbPersistenceManager 
 {		
-	public static void get(Class<?> classType, int id){}
-	
 	public static Member add(Member obj){ return obj; }
 	public static void remove(Member obj){}
 	public static void update(Member obj){}
@@ -92,4 +133,17 @@ public class GmbPersistenceManager
 	public static void update(PersiObject obj){}
 	
 	public static void initLottery(){}	
+	
+	public static Group getGroup(String name){ return null; }
+
+	public static void login(Member user, HttpSession session) {}
+	
+	public static Object get(Class<?> classType, int id){ return null; }
+	public static Member get(UserIdentifier uid){ return null; }
+	
+	public static void logout(HttpSession session) {}
+	
+	public static void remove(Object obj){}
+	
+	public static void update(Object obj){}
 }
