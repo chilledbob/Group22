@@ -1,8 +1,16 @@
 package gmb.model.tip.draw;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import gmb.model.ArrayListFac;
+import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
+import gmb.model.Lottery;
 import gmb.model.ReturnBox;
+import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.TipManagement;
+import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -14,11 +22,12 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 @Entity
 public class DailyLottoDraw extends Draw 
 {
-	protected int[] result;
+
 
 	@ManyToOne
 	protected TipManagement tipManagementId;
@@ -31,23 +40,72 @@ public class DailyLottoDraw extends Draw
 		super(planedEvaluationDate);
 	}
 
-	public boolean evaluate() 
+	public boolean evaluate(int[] result) 
 	{
-		super.evaluate();//set actualEvaluationDate and init prizePotential 
+		//generate random result if no result has been set:
+		if(this.result == null && result == null)
+		{
+			result = new int[10];
+			
+			for(int i = 0; i < 10; ++i)
+				result[i] = (int)(Math.random() * 100000) % 10;
+		}
+		
+		assert this.result != null || result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.evaluate(int[] result)!";
+		
+		drawEvaluationResult = GmbFactory.new_EvaluationResult(10);
 
-		//		prizePotential = prizePotential.add(Lottery.getInstance().getFinancialManagement().getDailyLottoPrize());
-		//		prizePotential = Lottery.getInstance().getFinancialManagement().distributeDrawReceipts(prizePotential);
-		//
-		//		//////////////////////////CALCULATE THE WINNINGS HERE THEN REMOVE THE FOLLOWING CODE
-		//		for(SingleTip tip : singleTips)
-		//			tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-		//
-		//		for(GroupTip groupTip : groupTips)
-		//			for(SingleTip tip :  groupTip.getTips())
-		//				tip.getTipTicket().getOwner().addNotification("Sadly there is no evaluation code for the drawings so you never really had a chance to win something.");
-		//
-		//		Lottery.getInstance().getFinancialManagement().setDailyLottoPrize(prizePotential);//everything for the lottery!
-		//		//////////////////////////
+		super.evaluate(result);//init prizePotential 
+
+		//WinnersDue not used for this evaluation:
+		drawEvaluationResult.getReceiptsDistributionResult().addWinnersDueToTreasuryDue();
+
+		ArrayList<CDecimal> prizeCatagories = Lottery.getInstance().getFinancialManagement().getPrizeCategories().getDailyLottoCategories();
+
+		//array which will store the SingleTips for each prize category in lists:
+		ArrayList<LinkedList<SingleTip>> category = ArrayListFac.new_SingleTipLinkedListArray(10);
+
+		//put SingleTips in the prize category array:
+		for(SingleTip tip : allSingleTips)
+		{
+			int hitCount = -1;
+
+			for(int i = 0; i < 10; ++i)
+			{
+				if(tip.getTip()[i] == this.result[i])
+					++hitCount;
+				else
+					break;
+			}
+
+			if(hitCount > -1)//win!
+			{
+				category.get(9 - hitCount).add(tip);
+				Winnings newWinnings = GmbFactory.new_Winnings(tip, prizeCatagories.get(9 - hitCount), (9 - hitCount) + 1);
+				drawEvaluationResult.addWinnings(newWinnings);
+
+				if(tip.getGroupTip() != null)
+				{
+					//add group associated winnings to list in group:
+					tip.getGroupTip().addWinnings(newWinnings);
+				}
+				else
+				{
+					//directly send all other winnings to their respective customers:
+					newWinnings.init();		
+				}
+			}
+		}
+
+		drawEvaluationResult.setTipsInCategory(category);
+
+		//evaluate average winnings for all contributers of a group tip and send them the respective winnings:
+		for(GroupTip tip : groupTips)
+		{
+			tip.finalizeWinnings(drawEvaluationResult);
+		}
+
+		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(drawEvaluationResult.getReceiptsDistributionResult());
 
 		DB_UPDATE(); 
 
@@ -75,16 +133,15 @@ public class DailyLottoDraw extends Draw
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()
 	{
-		return isTimeLeftUntilEvaluationForChanges();
+		return Lottery.getInstance().getTimer().getDateTime().isBefore((new DateTime(planedEvaluationDate)).minusHours(24));
 	}
-	
+
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }
 	public boolean addTip(GroupTip tip){ return super.addTip(tip, DailyLottoGroupTip.class); }
 
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, DailyLottoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, DailyLottoGroupTip.class); }
 
-	public int[] getResult(){ return result; }
 
 	/**
 	 * Return Code:
@@ -100,12 +157,12 @@ public class DailyLottoDraw extends Draw
 
 	return super.createAndSubmitSingleTip(ticket, tipTip);	
 	}
-	
+
 	protected SingleTip createSingleTipSimple(TipTicket ticket)
 	{
 		return new DailyLottoTip((DailyLottoTT)ticket, this);
 	}
-	
+
 	protected SingleTip createSingleTipPersistent(TipTicket ticket)
 	{
 		return GmbFactory.new_DailyLottoTip((DailyLottoTT)ticket, this);

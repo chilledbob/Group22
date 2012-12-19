@@ -76,7 +76,7 @@ public class Group extends PersiObject
 		this.groupAdmin = groupAdmin;
 		
 		groupMembers =  new LinkedList<Customer>();
-		groupMembers.add(groupAdmin);
+//		groupMembers.add(groupAdmin);
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
@@ -91,7 +91,8 @@ public class Group extends PersiObject
 	
 	/**
 	 * [intended for direct usage by controller]
-	 * creates a "GroupMembershipApplication" and adds it to the "customer" and this group
+	 * Creates a "GroupMembershipApplication" and adds it to the "customer" and this group.
+	 * Returns the created application.
 	 * @param customer
 	 * @param note
 	 */
@@ -109,7 +110,8 @@ public class Group extends PersiObject
 
 	/**
 	 * [intended for direct usage by controller]
-	 * creates a "GroupInvitation" and adds it to the "customer" and this group
+	 * Creates a "GroupInvitation" and adds it to the "customer" and this group.
+	 * Returns the created invitation.
 	 * @param customer
 	 * @param note
 	 */
@@ -127,7 +129,8 @@ public class Group extends PersiObject
 
 	/**
 	 * [intended for direct usage by controller]
-	 * creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group
+	 * Creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group.
+	 * Returns the created offering.
 	 * @param groupMember
 	 * @param note
 	 */
@@ -209,26 +212,26 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * withdraw all unhandled group related "Requests" in "groupMember"
+	 * Withdraws all unhandled group related "Requests" in "groupMember".
 	 * @param groupMember
 	 */
 	protected void withdrawUnhandledGroupRequestsOfGroupMember(Customer groupMember)
 	{
 		for(GroupMembershipApplication application : groupMembershipApplications)
 		{
-			if(application.getMember() == groupMember && application.getState() == RequestState.UNHANDLED)
+			if(application.getMember() == groupMember && application.getState() == RequestState.Unhandled)
 				application.withdraw();
 		}
 
 		for(GroupMembershipApplication invitation : groupInvitations)
 		{
-			if(invitation.getMember() == groupMember && invitation.getState() == RequestState.UNHANDLED)
+			if(invitation.getMember() == groupMember && invitation.getState() == RequestState.Unhandled)
 				invitation.withdraw();
 		}
 
 		for(GroupAdminRightsTransfereOffering offerings : groupAdminRightsTransfereOfferings)
 		{
-			if(offerings.getMember() == groupMember && offerings.getState() == RequestState.UNHANDLED)
+			if(offerings.getMember() == groupMember && offerings.getState() == RequestState.Unhandled)
 				offerings.withdraw();
 		}
 	}
@@ -238,7 +241,7 @@ public class Group extends PersiObject
 	 * Closes the group by resigning all "groupMembers" + "groupAdmin", 
 	 * withdrawing all group related requests in the system which are still unhandled
 	 * and setting the "closed" flag to true.
-	 * This doesn't remove the group from the system entirely.
+	 * This doesn't remove the group from the system.
 	 */
 	public boolean close()
 	{
@@ -265,15 +268,15 @@ public class Group extends PersiObject
 		
 		//withdraw all group related requests not only those which are associated with groupMembers:
 		for(GroupMembershipApplication application : groupMembershipApplications)
-			if(application.getState() == RequestState.UNHANDLED)
+			if(application.getState() == RequestState.Unhandled)
 				application.withdraw();
 
 		for(GroupMembershipApplication invitation : groupInvitations)
-			if(invitation.getState() == RequestState.UNHANDLED)
+			if(invitation.getState() == RequestState.Unhandled)
 				invitation.withdraw();
 		
 		for(GroupAdminRightsTransfereOffering offerings : groupAdminRightsTransfereOfferings)
-			if(offerings.getState() == RequestState.UNHANDLED)
+			if(offerings.getState() == RequestState.Unhandled)
 				offerings.withdraw();
 		
 		DB_UPDATE(); 

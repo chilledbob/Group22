@@ -28,13 +28,13 @@ import javax.persistence.ElementCollection;
 public class FinancialManagement extends PersiObject
 {	
 	@OneToOne//(cascade = CascadeType.ALL)
-	LotteryCredits lotteryCredits;
+	protected LotteryCredits lotteryCredits;
 
 	@OneToOne//(cascade = CascadeType.ALL)
-	Jackpots jackpots;
+	protected Jackpots jackpots;
 
 	@OneToOne//(cascade = CascadeType.ALL)
-	PrizeCategories prizeCategories;
+	protected PrizeCategories prizeCategories;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	protected TipTicketPrices tipTicketPrices;

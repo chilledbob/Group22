@@ -31,7 +31,7 @@ public abstract class PermaTT extends TipTicket
 	{
 		super();
 		expired = false;
-		setDuration(duration);
+		this.setDuration(duration);
 		tips = new LinkedList<SingleTip>();
 	}
 
@@ -60,11 +60,11 @@ public abstract class PermaTT extends TipTicket
 
 		switch(durationType)
 		{
-		case 1 : duration = new Duration(millisecondsOfDay*182);
-		case 2 : duration = new Duration(millisecondsOfDay*365);
-		default : duration = new Duration(millisecondsOfDay*30);
+		case 1 : duration = new Duration(millisecondsOfDay*30*6); break;
+		case 2 : duration = new Duration(millisecondsOfDay*365); break;
+		default : duration = new Duration(millisecondsOfDay*30); break;
 		}
-
+		
 		return new DateTime(purchaseDate).plus(duration);
 	}
 
@@ -88,6 +88,10 @@ public abstract class PermaTT extends TipTicket
 		if(this.isExpired()) return -1;
 		if(tips.contains(tip)) return 2;
 
+		for(SingleTip stip : tips)
+			if(stip.getDraw() == tip.getDraw())
+				return 5;
+		
 		tips.add(tip); 
 		DB_UPDATE(); 
 		
@@ -96,10 +100,10 @@ public abstract class PermaTT extends TipTicket
 
 	public void setDuration(PTTDuration duration)
 	{
-		if(duration == PTTDuration.MONTH)
+		if(duration == PTTDuration.Month)
 			durationType = 0;
 		else
-			if(duration == PTTDuration.HALFYEAR)
+			if(duration == PTTDuration.Halfyear)
 				durationType = 1;
 			else
 				durationType = 2;
@@ -117,12 +121,12 @@ public abstract class PermaTT extends TipTicket
 	{
 		switch(durationType)
 		{
-		case 1 : return PTTDuration.HALFYEAR;
-		case 2 : return PTTDuration.YEAR;
-		default : return PTTDuration.MONTH;
+		case 1 : return PTTDuration.Halfyear;
+		case 2 : return PTTDuration.Year;
+		default : return PTTDuration.Month;
 		}
 	}
 
-	public int getDurationType(){ return durationType; }
+	public int getDurationTypeAsInt(){ return durationType; }
 	public boolean getExpired(){ return expired; }
 }

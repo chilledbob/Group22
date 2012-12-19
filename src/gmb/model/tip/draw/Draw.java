@@ -3,7 +3,7 @@ package gmb.model.tip.draw;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.ReturnBox;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -24,6 +24,8 @@ import org.joda.time.Duration;
 @Entity
 public abstract class Draw extends PersiObject
 {
+	protected int[] result;
+	
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	
@@ -32,13 +34,16 @@ public abstract class Draw extends PersiObject
 	protected CDecimal prizePotential;//temp
 	protected List<SingleTip> allSingleTips;//temp
 
-	protected WeeklyLottoDrawEvaluationResult drawEvaluationResult;
+	protected EvaluationResult drawEvaluationResult;
 
 	@OneToMany
 	protected List<SingleTip> singleTips;
 	@OneToMany(mappedBy="draw")
 	protected List<GroupTip> groupTips;
 
+	protected static final CDecimal dec100 = new CDecimal(100);
+	protected static final CDecimal dec2 = new CDecimal(2);
+	
 	@Deprecated
 	protected Draw(){}
 
@@ -51,6 +56,8 @@ public abstract class Draw extends PersiObject
 		groupTips = new LinkedList<GroupTip>();
 		
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
+		
+		result = null;
 	}
 
 	/**
@@ -58,12 +65,13 @@ public abstract class Draw extends PersiObject
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return
 	 */
-	public boolean evaluate()
+	public boolean evaluate(int[] result)
 	{
-		drawEvaluationResult = new WeeklyLottoDrawEvaluationResult(null);
-
 		evaluated = true;
-
+		
+		if(this.result == null)
+		this.result = result; 
+		
 		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
 			prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
@@ -77,10 +85,9 @@ public abstract class Draw extends PersiObject
 			for(SingleTip tip :  groupTip.getTips())
 				prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 		}
-
+		
 		prizePotential = drawEvaluationResult.initReceiptsDistributionResult(prizePotential);
 		
-		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
 			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
@@ -94,23 +101,17 @@ public abstract class Draw extends PersiObject
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
 		}
 		
+		
 		DB_UPDATE(); 
 		
 		return true;
 	}
 
+	
 	/**
 	 * [intended for direct usage by controller]
-	 * Return Code:
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
-	 */
-	/**
-	 * [intended for direct usage by controller]
-	 * Return Code:
+	 * Creates and submits a SingleTip. Returns the created tip (var2).
+	 * Return Code (var1):
 	 * 0 - successful
 	 *-2 - not enough time left until the planned evaluation of the draw
 	 *-1 - the duration of the "PermaTT" has expired
@@ -118,9 +119,10 @@ public abstract class Draw extends PersiObject
 	 * [2 - the list of the "PermaTT" already contains the "tip"]
 	 * 3 - a tipped number is smaller than 1 oder greater than 49
 	 * 4 - the same number has been tipped multiple times
+	 * 5 - the ticket is already associated with this draw
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
-	{
+	{	
 		SingleTip tip = this.createSingleTipSimple(ticket);
 
 		//first try whether it would work:
@@ -262,13 +264,13 @@ public abstract class Draw extends PersiObject
 	public List<SingleTip> getSingleTips(){ return singleTips; }
 	public List<GroupTip> getGroupTips(){ return groupTips; }
 
-	public WeeklyLottoDrawEvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
+	public EvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
 
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 
-	public abstract int[] getResult();
+	public int[] getResult(){ return result; }
 	
 	/**
 	 * [intended for direct usage by controller]
