@@ -53,6 +53,11 @@ public abstract class SingleTip extends Tip
 	 * Tries to withdraw the tip with all implications which also depend
 	 * on whether the "SingleTip" is associated with a "GroupTip".
 	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-1 - not enough time left until the planned evaluation of the draw
+	 * <li> 2 - removing tip from tip ticket failed
+	 * <ul>
 	 */
 	public int withdraw()
 	{
@@ -66,7 +71,7 @@ public abstract class SingleTip extends Tip
 		if(groupTip == null)
 		{
 			draw.removeTip(this);
-			if(!tipTicket.removeTip(this)) return 2;
+//			if(!tipTicket.removeTip(this)) return 2;
 			
 			return 0;
 		}
@@ -77,10 +82,14 @@ public abstract class SingleTip extends Tip
 	}
 	
 	/**
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 * @param tip
+	 * [Intended for direct usage by controller]<br>
+	 * Changes the tipped result if it is valid.
+	 * @param tip The new tipped result.
 	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <ul>
 	 */
 	public int setTip(int[] tip)
 	{ 		
@@ -93,6 +102,16 @@ public abstract class SingleTip extends Tip
 		return 0;
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Checks whether "tip" would be a valid result to be tipped.
+	 * @param tip
+	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <ul>
+	 */
 	public int validateTip(int[] tip)
 	{
 		if(draw.isTimeLeftUntilEvaluationForChanges())

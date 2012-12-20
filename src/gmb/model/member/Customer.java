@@ -75,8 +75,8 @@ public class Customer extends Member
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if the customer owns enough money.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if the customer's associated "credit" >= "price".
 	 * @param price
 	 * @return
 	 */

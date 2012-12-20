@@ -50,11 +50,6 @@ public abstract class GroupTip extends Tip
 	@OneToMany(mappedBy="groupTip")
 	protected List<SingleTip> tips;
 
-//"draw" is already used by Tip
-//	@ManyToOne(fetch=FetchType.LAZY)
-//	@JoinColumn(name="draw_id")
-//	protected Draw draw;
-
 	@Deprecated
 	protected GroupTip(){}
 
@@ -73,10 +68,9 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * Calculates the overallWinnings and averageWinnings based on the "allWinnings" list 
-	 * and sends each contributer averageWinnings.
-	 * The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
-	 * @return
+	 * Calculates the overallWinnings and averageWinnings based on the "allWinnings" list <br>
+	 * and sends each contributer averageWinnings. <br>
+	 * @return The error caused by the divide operation is implicitly returned in the re-calculated overall amount for normalization purposes.
 	 */
 	public CDecimal finalizeWinnings(EvaluationResult drawEvaluationResult)
 	{	
@@ -84,7 +78,7 @@ public abstract class GroupTip extends Tip
 		{
 			CDecimal overallAmount = new CDecimal(0);
 			
-			int highestPrizeCategory = 8;
+			int highestPrizeCategory = 10;
 			for(Winnings winnings : allWinnings)
 			{
 				overallAmount = overallAmount.add(winnings.getAmount());
@@ -115,10 +109,26 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * submit "groupTip" to "draw" if all criteria were met
-	 * return false if submission failed, otherwise true
-	 * @return
+	 * [Intended for direct usage by controller][check method]<br>
+	 * Tries to submit "groupTip" to "draw".
+	 * @return false if submission would fail, otherwise true
+	 */
+	public boolean check_submit()
+	{	
+		if(submitted) return true;
+		if(draw.getEvaluated()) return false;
+
+		if(draw.isTimeLeftUntilEvaluationForSubmission())
+			if(currentOverallMinimumStake >= overallMinimumStake)	
+				return true;
+
+		return false;
+	}
+	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Submits "groupTip" to "draw" if all criteria were met.
+	 * @return false if de-submission failed, otherwise true
 	 */
 	public boolean submit()
 	{	
@@ -140,9 +150,26 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * 'unsubmit' from "draw" if possible
-	 * @return
+	 * [Intended for direct usage by controller][check method]<br>
+	 * Tries to 'unsubmit' from "draw".
+	 * @return false if de-submission would fail, otherwise true.
+	 */
+	public boolean check_unsubmit()
+	{
+		if(!submitted) return true;
+		if(draw.getEvaluated()) return false;
+
+		if(draw.isTimeLeftUntilEvaluationForSubmission())
+			return true;
+		else
+			return false;
+	}
+
+	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * 'unsubmit' from "draw" if possible.
+	 * @return false if submission failed, otherwise true
 	 */
 	public boolean unsubmit()
 	{
@@ -164,8 +191,8 @@ public abstract class GroupTip extends Tip
 
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Submit tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * [Intended for direct usage by controller]<br>
+	 * Submits tickets and tips if the amount matches the "minimumStake" criteria, <br>
 	 * increment "currentOverallMinimumStake" by the amount of newly created tips. 
 	 * @param tips
 	 * @return
@@ -238,14 +265,18 @@ public abstract class GroupTip extends Tip
 	protected abstract SingleTip createSingleTipPersistent(TipTicket ticket);
 	
 	/**
-	 * removes a single tip if possible, can lead to annulation of the submission
+	 * [Intended for direct usage by controller]<br>
+	 * Removes a single tip if possible.<br>
+	 * This can lead to annulation of the submission of this group tip.<br>
 	 * return code:
-	 * 0 - successful
-	 *-1 - not enough time left until evaluation
-	 * 1 - the associated group member would fall under his minimumStake limit
-	 * 2 - can not 'unsubmit' the group tip and therefore not remove tip
-	 * @param tip
+	 * @param tip The tip to be removed.
 	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-1 - not enough time left until the planned evaluation of the draw
+	 * <li> 1 - the associated group member would fall under his minimumStake limit
+	 * <li> 2 - can not 'unsubmit' the group tip and therefore not remove tip
+	 * <ul>
 	 */
 	public int removeSingleTip(SingleTip tip)
 	{
@@ -273,7 +304,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Removes all tips associated with "groupMember" if possible, can lead to annulment of the submission.
 	 * @param groupMember
 	 * @return
@@ -302,7 +333,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Returns a list of all "SingleTips" the "groupMember" contributed to the "GroupTip".
 	 * @param groupMember
 	 * @return
@@ -321,7 +352,7 @@ public abstract class GroupTip extends Tip
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Returns the count of all "SingleTips" the "groupMember" contributed to the "GroupTip".
 	 * @param groupMember
 	 * @return
@@ -339,7 +370,7 @@ public abstract class GroupTip extends Tip
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Tries to delete this "GroupTip" with all implications.
 	 */
 	public int withdraw()

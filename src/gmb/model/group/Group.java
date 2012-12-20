@@ -245,7 +245,7 @@ public class Group extends PersiObject
 	 * [Intended for direct usage by controller]<br>
 	 * Closes the group by resigning all "groupMembers" + "groupAdmin", <br>
 	 * withdrawing all group related requests in the system which are still unhandled <br>
-	 * and setting the "closed" flag to true.
+	 * and setting the "closed" flag to true.<br>
 	 * This doesn't remove the group from the system.
 	 */
 	public boolean close()
@@ -289,6 +289,11 @@ public class Group extends PersiObject
 		return true;
 	}
  
+	/**
+	 * Adds the "customer" to the "groupMembers" list and the group <br>
+	 * to the "groups" list of the "customer".
+	 * @param customer
+	 */
 	public void addGroupMember(Customer customer)
 	{ 
 		groupMembers.add(customer); 
@@ -313,6 +318,9 @@ public class Group extends PersiObject
 	public boolean removeGroupTip(WeeklyLottoGroupTip tip){ boolean result = weeklyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	public boolean removeGroupTip(TotoGroupTip tip){ boolean result = totoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }

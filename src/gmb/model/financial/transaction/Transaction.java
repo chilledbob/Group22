@@ -41,6 +41,9 @@ public abstract class Transaction extends PersiObject
 	public CDecimal getAmount(){ return amount; }
 	public DateTime getDate(){ return new DateTime(date); }
 	
+	/**
+	 * Updates the credits of the affected customer using this transaction.
+	 */
 	public void init()
 	{
 		affectedCustomer.getBankAccount().updateCredit(this);

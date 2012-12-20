@@ -49,6 +49,10 @@ public class LotteryCredits extends PersiObject
 	public CDecimal getLotteryTaxCedit(){ return lotteryTaxCedit; }
 	public CDecimal getManagementCedit(){ return managementCedit; }
 	
+	/**
+	 * Adds the receipts to the respective credits.
+	 * @param receipts
+	 */
 	public void update(ReceiptsDistributionResult receipts)
 	{
 		treasuryCedit = treasuryCedit.add(receipts.getTreasuryDue());

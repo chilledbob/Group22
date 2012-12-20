@@ -31,10 +31,10 @@ public class TicketPurchase extends InternalTransaction
 	protected TicketPurchase(){}
 
 	/**
-	 * initializes an internal transaction
-	 * a reference to the transaction will be added to the FinancialManagement and the affected user
-	 * the credit of the customer will be updated
-	 * the credit and prize amount of the lottery will be updated
+	 * Initializes an internal transaction.<br>
+	 * A reference to the transaction will be added to the FinancialManagement and the affected user.<br>
+	 * The credit of the customer will be updated.<br>
+	 * The credit and prize amount of the lottery will be updated.<br>
 	 * @param transaction
 	 */
 	public TicketPurchase(TipTicket ticket)
@@ -43,6 +43,10 @@ public class TicketPurchase extends InternalTransaction
 		this.ticket = ticket;
 	}
 	
+	/**
+	 * Calls the init() method of the super class.<br>
+	 * Adds a reference to this transaction to the FinancialManagement.
+	 */
 	public void init()
 	{
 		super.init();//update user credit		
