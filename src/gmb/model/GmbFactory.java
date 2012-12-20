@@ -35,7 +35,8 @@ import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
-import gmb.model.tip.draw.container.WeeklyLottoDrawEvaluationResult;
+import gmb.model.tip.draw.container.EvaluationResult;
+import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
@@ -90,6 +91,13 @@ public class GmbFactory
 	
 	//////tip:
 	////draw:
+	//container:
+	public static FootballGameData new_FootballGameData(DateTime matchDay, String homeClubName, String visitorClubName)
+	{
+		FootballGameData obj = new FootballGameData(matchDay, homeClubName, visitorClubName);
+		return (FootballGameData) obj.DB_ADD();
+	}
+	//..
 	public static DailyLottoDraw new_DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
@@ -148,6 +156,12 @@ public class GmbFactory
 	
 	////tipticket:
 	//single:
+	/**
+	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
+	 * Returns 0 (var1) and the created ticket (var2) otherwise.
+	 * @param customer
+	 * @return
+	 */
 	public static ReturnBox<Integer, DailyLottoSTT> createAndPurchase_DailyLottoSTT(Customer customer)
 	{
 		DailyLottoSTT ticket = new DailyLottoSTT(null);
@@ -160,7 +174,12 @@ public class GmbFactory
 		
 		return new ReturnBox<Integer, DailyLottoSTT>(new Integer(0), ticket);
 	}
-
+	/**
+	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
+	 * Returns 0 (var1) and the created ticket (var2) otherwise.
+	 * @param customer
+	 * @return
+	 */
 	public static ReturnBox<Integer, WeeklyLottoSTT> createAndPurchase_WeeklyLottoSTT(Customer customer)
 	{
 		WeeklyLottoSTT ticket = new WeeklyLottoSTT(null);
@@ -173,7 +192,12 @@ public class GmbFactory
 		
 		return new ReturnBox<Integer, WeeklyLottoSTT>(new Integer(0), ticket);
 	}
-	
+	/**
+	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
+	 * Returns 0 (var1) and the created ticket (var2) otherwise.
+	 * @param customer
+	 * @return
+	 */
 	public static ReturnBox<Integer, TotoSTT> createAndPurchase_TotoSTT(Customer customer)
 	{
 		TotoSTT ticket = new TotoSTT(null);
@@ -188,6 +212,12 @@ public class GmbFactory
 	}
 	
 	//perma:
+	/**
+	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
+	 * Returns 0 (var1) and the created ticket (var2) otherwise.
+	 * @param customer
+	 * @return
+	 */
 	public static ReturnBox<Integer, DailyLottoPTT> createAndPurchase_DailyLottoPTT(Customer customer, PTTDuration duration)
 	{
 		DailyLottoPTT ticket = new DailyLottoPTT(duration);
@@ -200,7 +230,12 @@ public class GmbFactory
 		
 		return new ReturnBox<Integer, DailyLottoPTT>(new Integer(0), ticket);
 	}
-
+	/**
+	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
+	 * Returns 0 (var1) and the created ticket (var2) otherwise.
+	 * @param customer
+	 * @return
+	 */
 	public static ReturnBox<Integer, WeeklyLottoPTT> createAndPurchase_WeeklyLottoPTT(Customer customer, PTTDuration duration)
 	{
 		WeeklyLottoPTT ticket = new WeeklyLottoPTT(duration);
@@ -291,7 +326,7 @@ public class GmbFactory
 	{
 		ReceiptsDistributionResult obj = new ReceiptsDistributionResult(drawReceipts);
 		obj = (ReceiptsDistributionResult) obj.DB_ADD();
-		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(obj);
+//		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(obj);
 		
 		return obj;
 	}
@@ -384,10 +419,16 @@ public class GmbFactory
 	//////tip:
 	////draw:
 	//container:	
-	public static WeeklyLottoDrawEvaluationResult new_DrawEvaluationResult()
+	public static EvaluationResult new_EvaluationResult(int categoryCount)
 	{
-		WeeklyLottoDrawEvaluationResult obj = new WeeklyLottoDrawEvaluationResult(null);
-		return (WeeklyLottoDrawEvaluationResult) obj.DB_ADD();
+		EvaluationResult obj = new EvaluationResult(categoryCount);
+		return (EvaluationResult) obj.DB_ADD();
+	}
+	
+	public static ExtendedEvaluationResult new_WeeklyLottoDrawEvaluationResult(int categoryCount)
+	{
+		ExtendedEvaluationResult obj = new ExtendedEvaluationResult(categoryCount);
+		return (ExtendedEvaluationResult) obj.DB_ADD();
 	}
 	
 	////tip:

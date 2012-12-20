@@ -13,7 +13,7 @@ import gmb.model.member.Member;
 @Entity
 public abstract class Request extends Notification
 { 
-	//protected Member member;
+
 	protected int state;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date lastStateChangeDate;
@@ -35,13 +35,13 @@ public abstract class Request extends Notification
 
 	public RequestState getState()
 	{
-		if(this.state == 1){ return RequestState.WITHDRAWN; }
+		if(this.state == 1){ return RequestState.Withdrawn; }
 		else
-			if(this.state == 2){ return RequestState.ACCEPTED; }
+			if(this.state == 2){ return RequestState.Accepted; }
 			else
-				if(this.state == 3){ return RequestState.REFUSED; }
+				if(this.state == 3){ return RequestState.Refused; }
 				else
-					return RequestState.UNHANDLED;
+					return RequestState.Unhandled;
 	}
 
 	/**

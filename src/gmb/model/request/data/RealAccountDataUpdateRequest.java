@@ -1,6 +1,5 @@
 package gmb.model.request.data;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
 import gmb.model.financial.container.RealAccountData;

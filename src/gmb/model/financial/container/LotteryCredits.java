@@ -2,8 +2,10 @@ package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
 import gmb.model.PersiObject;
+import javax.persistence.Column;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -15,10 +17,13 @@ public class LotteryCredits extends PersiObject
 	protected FinancialManagement financialManagementId;
 	
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="treasurcCedit"))
 	protected CDecimal treasuryCedit;
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxCedit"))
 	protected CDecimal lotteryTaxCedit;
 	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="managementCedit"))
 	protected CDecimal managementCedit;
 	
 	@Deprecated
