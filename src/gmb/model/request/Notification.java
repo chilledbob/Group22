@@ -14,6 +14,10 @@ import javax.persistence.FetchType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * A class for basic system intern notifications.
+ * Works as super class for all request types.
+ */
 @Entity
 public class Notification extends PersiObject
 {	

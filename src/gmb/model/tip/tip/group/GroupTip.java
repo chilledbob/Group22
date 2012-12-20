@@ -5,27 +5,29 @@ import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.container.EvaluationResult;
-import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
-import gmb.model.ReturnBox;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+/**
+ * Abstract super class for all group tip types.<br>
+ * A group tip stores a list of single tips.<br>
+ * The winnings for the single tips will be distributed to<br>
+ * all contributers of the group tip.
+ */
 @Entity
 public abstract class GroupTip extends Tip 
 {

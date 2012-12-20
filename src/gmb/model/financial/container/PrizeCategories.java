@@ -14,6 +14,13 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Container class containing the winnings for each<br>
+ * game type in the respective prize categories.<br>
+ * For WeeklyLotto and Toto in percentage values and <br>
+ * as currency for DailyLotto.
+ *
+ */
 @Entity
 public class PrizeCategories extends PersiObject
 {	

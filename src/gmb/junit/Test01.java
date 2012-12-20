@@ -188,6 +188,8 @@ public class Test01
 		cus2.sendDataUpdateRequest(cus2Data, "I want real member data! You've created me with default data! D:");
 		cus3.getBankAccount().sendDataUpdateRequest(GmbFactory.new_RealAccountData("839843789", "7885758"), "Hello, please accept my update. Thanks.");
 
+		assertEquals(1, Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests().size());
+		
 		//tired admin work, accepting everything:
 		for(MemberDataUpdateRequest request : Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests())
 			System.out.println(request.accept());
@@ -875,6 +877,7 @@ public class Test01
 		
 		printCurrentTimeToConsol("PermaTT duration stuff has been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 		//=========================================================================================================================//
+
 	}
 
 	//	@Test(expected=AssertionError.class)

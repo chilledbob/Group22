@@ -10,12 +10,13 @@ import org.joda.time.DateTime;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
+/**
+ * Abstract super class for all transaction types.
+ */
 @Entity
 public abstract class Transaction extends PersiObject
 {

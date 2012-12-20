@@ -1,6 +1,5 @@
 package gmb.model.financial;
 import gmb.model.GmbFactory;
-import gmb.model.GmbPersistenceManager;
 import gmb.model.PersiObject;
 import gmb.model.financial.container.Jackpots;
 import gmb.model.financial.container.LotteryCredits;
@@ -22,8 +21,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.ElementCollection;
 
+/**
+ * Container class containing financial data of the lottery.
+ */
 @Entity
 public class FinancialManagement extends PersiObject
 {	

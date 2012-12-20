@@ -10,10 +10,13 @@ import javax.persistence.TemporalType;
 
 import gmb.model.member.Member;
 
+/**
+ * Abstract super class for all request types.
+ *
+ */
 @Entity
 public abstract class Request extends Notification
 { 
-
 	protected int state;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date lastStateChangeDate;

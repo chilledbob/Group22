@@ -1,6 +1,5 @@
 package gmb.model.tip;
 import gmb.model.DrawEventBox;
-import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
@@ -15,6 +14,9 @@ import javax.persistence.OneToMany;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+/**
+ * Container class storing tips and drawings related data.
+ */
 @Entity
 public class TipManagement extends PersiObject
 {

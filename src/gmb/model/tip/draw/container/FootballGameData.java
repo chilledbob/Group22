@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Container class storing information about a single football game.<br>
+ * The game result will be filled while evaluating the associated TotoEvaluation.
+ *
+ */
 @Entity
 public class FootballGameData extends PersiObject
 {	

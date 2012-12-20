@@ -3,7 +3,6 @@ package gmb.model.tip.tip;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -16,9 +15,11 @@ import gmb.model.financial.transaction.Winnings;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 
-
 import org.joda.time.DateTime;
 
+/**
+ * Abstract super class for all tip types.
+ */
 @Entity
 public abstract class Tip extends PersiObject
 {		

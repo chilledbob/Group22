@@ -6,6 +6,9 @@ import gmb.model.financial.container.RealAccountData;
 import gmb.model.member.Customer;
 import gmb.model.request.Request;
 
+/**
+ * A request type for updating real bank account data.
+ */
 @Entity
 public class RealAccountDataUpdateRequest extends Request 
 {	

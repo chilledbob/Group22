@@ -4,6 +4,11 @@ import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
 
+/**
+ * Container class containing information about <br>
+ * the real bank account which is associated with <br>
+ * the lottery bank account. 
+ */
 @Entity
 public class RealAccountData extends PersiObject
 {	

@@ -10,6 +10,10 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Container class containing the prices for the respective tip ticket types.
+ *
+ */
 @Entity
 public class TipTicketPrices extends PersiObject
 {	

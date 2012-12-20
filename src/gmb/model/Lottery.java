@@ -6,7 +6,10 @@ import gmb.model.member.MemberManagement;
 
 import gmb.model.tip.TipManagement;
 
-
+/**
+ * The lottery singleton.<br>
+ * Serves as access interface to the whole system.
+ */
 public class Lottery 
 {
 	protected static Lottery INSTANCE = null;

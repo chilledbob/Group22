@@ -12,6 +12,10 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+/**
+ * Abstract super class for all tip classes which<br>
+ * representing single tips (the common tip type).
+ */
 @Entity
 public abstract class SingleTip extends Tip 
 {

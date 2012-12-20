@@ -9,6 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
+/**
+ * Container class containing the amount of<br>
+ * distributed money for the respective categories<br>
+ * after the evaluation of a lottery drawing or toto evaluation.
+ *
+ */
 @Entity
 public class ReceiptsDistributionResult extends PersiObject
 {	

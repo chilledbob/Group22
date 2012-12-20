@@ -1,14 +1,10 @@
 package gmb.model.tip.tip.group;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import gmb.model.GmbFactory;
-import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.SingleTip;
@@ -16,6 +12,9 @@ import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
+/** 
+ * A GroupTip for the weekly 6/49 lottery.
+ */
 @Entity
 public class WeeklyLottoGroupTip extends GroupTip 
 {

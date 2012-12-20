@@ -10,7 +10,6 @@ import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.TipManagement;
-import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -22,8 +21,10 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
+/**
+ * The class representing the implementation of the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoDraw extends Draw 
 {
@@ -144,12 +145,26 @@ public class DailyLottoDraw extends Draw
 
 
 	/**
-	 * Return Code:
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and submits a SingleTip <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
+	 * var2 as {@link SingleTip}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created SingleTip
+	 * <li> var1 != 0 -> null 
+	 * </ul>
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{

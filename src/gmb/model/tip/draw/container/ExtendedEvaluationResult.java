@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 
-
+/**
+ * Container class extending {@link EvaluationResult} with more data.<br>
+ * Created while evaluating a WeeklyLottoDraw or a TotoEvaluation.
+ *
+ */
 @Entity
 public class ExtendedEvaluationResult extends EvaluationResult
 {

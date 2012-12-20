@@ -4,6 +4,10 @@ import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
 
+/**
+ * Address container class.
+ *
+ */
 @Entity
 public class Adress extends PersiObject
 {	

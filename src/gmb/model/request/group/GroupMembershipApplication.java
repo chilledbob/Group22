@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import gmb.model.group.Group;
 import gmb.model.member.Customer;
 
+/**
+ * A request type for group membership applications and invitations.
+ */
 @Entity
 public class GroupMembershipApplication extends GroupRequest 
 {

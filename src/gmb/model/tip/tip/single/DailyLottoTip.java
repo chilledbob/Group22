@@ -4,10 +4,12 @@ import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+/** 
+ * A SingleTip for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoTip extends SingleTip 
 {

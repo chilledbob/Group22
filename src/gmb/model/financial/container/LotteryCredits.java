@@ -10,6 +10,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Container class containing the credits of <br>
+ * the treasury, the management and the lottery taxes.
+ *
+ */
 @Entity
 public class LotteryCredits extends PersiObject
 {

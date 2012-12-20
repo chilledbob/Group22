@@ -9,6 +9,9 @@ import gmb.model.Lottery;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.single.SingleTip;
 
+/**
+ * A transaction type containing the winnings associated with a submitted tip.
+ */
 @Entity
 public class Winnings extends InternalTransaction
 {

@@ -28,6 +28,12 @@ import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
+/**
+ * The group class. <br>
+ * Holds group specific information like group admin,<br>
+ * members, group tips and associated winnings.
+ *
+ */
 @Entity
 @Table(name="GroupTable")
 public class Group extends PersiObject
@@ -76,7 +82,6 @@ public class Group extends PersiObject
 		this.groupAdmin = groupAdmin;
 		
 		groupMembers =  new LinkedList<Customer>();
-//		groupMembers.add(groupAdmin);
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
@@ -90,8 +95,8 @@ public class Group extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates a "GroupMembershipApplication" and adds it to the "customer" and this group.
+	 * [Intended for direct usage by controller]<br>
+	 * Creates a "GroupMembershipApplication" and adds it to the "customer" and this group.<br>
 	 * Returns the created application.
 	 * @param customer
 	 * @param note
@@ -109,8 +114,8 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates a "GroupInvitation" and adds it to the "customer" and this group.
+	 * [Intended for direct usage by controller]<br>
+	 * Creates a "GroupInvitation" and adds it to the "customer" and this group. <br>
 	 * Returns the created invitation.
 	 * @param customer
 	 * @param note
@@ -128,8 +133,8 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group.
+	 * [Intended for direct usage by controller] <br>
+	 * Creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group. <br>
 	 * Returns the created offering.
 	 * @param groupMember
 	 * @param note
@@ -147,9 +152,9 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * Swaps the "groupAdmin" with "groupMember".
-	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin"
-	 * Returns false if the "groupMember" is not in "groupMembers".
+	 * Swaps the "groupAdmin" with "groupMember". <br>
+	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin" <br>
+	 * Returns false if the "groupMember" is not in "groupMembers". <br>
 	 * @param groupMember
 	 * @return
 	 */
@@ -191,9 +196,9 @@ public class Group extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember"
-	 * and sending a "Notification" to the member and removing him from the "groupMembers" list.
+	 * [Intended for direct usage by controller]<br>
+	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember" <br>
+	 * and sending a "Notification" to the member and removing him from the "groupMembers" list. <br>
 	 * If it's the "groupAdmin" who resigns "close" the group. 
 	 * @param groupMember
 	 */
@@ -237,9 +242,9 @@ public class Group extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Closes the group by resigning all "groupMembers" + "groupAdmin", 
-	 * withdrawing all group related requests in the system which are still unhandled
+	 * [Intended for direct usage by controller]<br>
+	 * Closes the group by resigning all "groupMembers" + "groupAdmin", <br>
+	 * withdrawing all group related requests in the system which are still unhandled <br>
 	 * and setting the "closed" flag to true.
 	 * This doesn't remove the group from the system.
 	 */
@@ -293,7 +298,7 @@ public class Group extends PersiObject
 	}
 		
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Sets the info text for the group.
 	 * @param infoText
 	 */
@@ -315,11 +320,7 @@ public class Group extends PersiObject
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
-	/**
-	 * show the groupname
-	 * important for view output
-	 * @return
-	 */
+
 	public String getName(){ return name;}
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }

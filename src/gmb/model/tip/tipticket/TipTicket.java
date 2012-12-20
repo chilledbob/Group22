@@ -6,7 +6,6 @@ import gmb.model.PersiObject;
 
 import java.util.Date;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -17,15 +16,18 @@ import gmb.model.Lottery;
 import gmb.model.financial.transaction.TicketPurchase;
 import gmb.model.member.Customer;
 import gmb.model.tip.tip.single.SingleTip;
-import gmb.model.tip.tipticket.type.DailyLottoTT;
 import gmb.model.tip.tipticket.type.DrawType;
-import gmb.model.tip.tipticket.type.WeeklyLottoTT;
-
+import gmb.model.tip.tipticket.type.GenericTT;
 
 import org.joda.time.DateTime;
 
+/**
+ * Abstract super class for all tip ticket types.<br>
+ * Tip tickets are required for submission of a tip to <br>
+ * a respective lottery drawing or football-toto evaluation.
+ */
 @Entity
-public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, DailyLottoTT
+public abstract class TipTicket extends PersiObject implements  GenericTT
 {	
 	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
@@ -44,8 +46,8 @@ public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, D
 	public TipTicket(){}
 
 	/**
-	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"
-	 * will be added to the "customers" list and "true" will be returned, otherwise "false".
+	 * If the "customer" has enough money a "TicketPurchase" instance will be created, the "TipTicket"<br>
+	 * will be added to the "customers" list and "true" will be returned, otherwise "false".<br>
 	 * Also the actually paid price will be saved in "paidPurchasePrice".
 	 * @param customer
 	 * @return
@@ -98,10 +100,10 @@ public abstract class TipTicket extends PersiObject implements  WeeklyLottoTT, D
 	public CDecimal getPaidPurchasePrice(){ return paidPurchasePrice; }	
 	
 	/**
-	 * Return Code:
-	 * 0 - successful
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * Return Code:<br>
+	 * 0 - successful<br>
+	 *-1 - the duration of the "PermaTT" has expired<br>
+	 * 1 - the "SingleTT" is already associated with another "SingleTip"<br>
 	 * 2 - the list of the "PermaTT" already contains the "tip"
 	 * @param tip
 	 * @return

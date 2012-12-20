@@ -6,6 +6,10 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.salespointframework.core.time.DefaultTime;
 
+/**
+ * Timer class which offers functionality for accessing the current<br>
+ * date time with offsets for testing purposes.
+ */
 public class Timer extends DefaultTime 
 {
 	protected Duration offset1 = new Duration(0);

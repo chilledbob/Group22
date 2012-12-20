@@ -20,6 +20,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
+/**
+ * The customer class representing the gambler.
+ *
+ */
 @Entity
 public class Customer extends Member 
 {

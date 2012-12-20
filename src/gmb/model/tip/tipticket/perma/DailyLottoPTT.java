@@ -9,6 +9,9 @@ import gmb.model.tip.tipticket.type.DailyLottoTT;
 
 import javax.persistence.Entity;
 
+/**
+ * The perma tip ticket type for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 {

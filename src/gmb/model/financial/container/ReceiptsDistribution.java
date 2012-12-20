@@ -6,6 +6,9 @@ import gmb.model.financial.FinancialManagement;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Container class containing the percentage receipts distribution<br>
+ */
 @Entity
 public class ReceiptsDistribution extends PersiObject
 {

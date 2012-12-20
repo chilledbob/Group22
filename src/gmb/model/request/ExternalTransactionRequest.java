@@ -5,10 +5,12 @@ import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.transaction.ExternalTransaction;
 
 import javax.persistence.Entity;
-import javax.persistence.Embedded;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+/**
+ * A request type for money transaction to or from the lottery bank account.
+ */
 @Entity
 public class ExternalTransactionRequest extends Request 
 {

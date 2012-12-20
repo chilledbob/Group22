@@ -9,7 +9,9 @@ import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
 
-
+/**
+ * The single tip ticket type for the weekly 6/49 lottery.
+ */
 @Entity
 public class WeeklyLottoSTT extends SingleTT  implements WeeklyLottoTT
 {

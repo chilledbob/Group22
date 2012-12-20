@@ -7,8 +7,7 @@ import java.math.RoundingMode;
 import javax.persistence.Embeddable;
 
 /**
- * BigDecimal based type for currency calculations with scale of 2 and rounding mode HALF_UP
- * @author some pony
+ * BigDecimal based type for currency calculations with scale of 2 and rounding mode HALF_UP.
  */
 
 @Embeddable

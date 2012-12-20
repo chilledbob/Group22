@@ -1,15 +1,10 @@
 package gmb.model.tip.tip.group;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import gmb.model.GmbFactory;
-import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -17,6 +12,9 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
+/** 
+ * A GroupTip for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoGroupTip extends GroupTip 
 {	

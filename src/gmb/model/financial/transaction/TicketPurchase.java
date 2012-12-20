@@ -1,6 +1,5 @@
 package gmb.model.financial.transaction;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;
@@ -11,7 +10,10 @@ import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.tip.tipticket.TipTicket;
 
-
+/**
+ * A transaction type for ticket purchase purposes.
+ *
+ */
 @Entity
 public class TicketPurchase extends InternalTransaction
 {	

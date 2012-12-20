@@ -13,6 +13,10 @@ import javax.persistence.Entity;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+/**
+ * Abstract super class for all perma tip tickets.<br>
+ * Perma tip tickets can be used once per drawing until they expire.
+ */
 @Entity
 public abstract class PermaTT extends TipTicket 
 {
@@ -36,8 +40,9 @@ public abstract class PermaTT extends TipTicket
 	}
 
 	/**
+	 * [Intended for direct usage by controller]<br>
 	 * Checks whether the ticket's duration has expired by now.
-	 * @return
+	 * @return false if expired, otherwise false.
 	 */
 	public boolean isExpired()
 	{
@@ -54,6 +59,10 @@ public abstract class PermaTT extends TipTicket
 			return true;
 	}
 
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * @return duration date
+	 */
 	public DateTime getDurationDate()
 	{
 		Duration duration;

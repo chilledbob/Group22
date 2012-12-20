@@ -56,6 +56,9 @@ import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
+/**
+ * Factory for creation of persistent objects.
+ */
 public class GmbFactory 
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +66,9 @@ public class GmbFactory
 
 	////financial:
 	//container:
-	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static RealAccountData new_RealAccountData(String bankCode, String accountNumber)
 	{
 		RealAccountData obj = new RealAccountData(bankCode, accountNumber);
@@ -71,6 +76,9 @@ public class GmbFactory
 	}
 	
 	//..
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static LotteryBankAccount new_LotteryBankAccount(RealAccountData realAccountData)
 	{
 		LotteryBankAccount obj = new LotteryBankAccount(realAccountData);
@@ -78,6 +86,9 @@ public class GmbFactory
 	}
 	
 	////group:
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static Group new_Group(String name, Customer groupAdmin, String infoText)
 	{
 		Group obj = new Group(name, groupAdmin, infoText);
@@ -92,12 +103,18 @@ public class GmbFactory
 	//////tip:
 	////draw:
 	//container:
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static FootballGameData new_FootballGameData(DateTime matchDay, String homeClubName, String visitorClubName)
 	{
 		FootballGameData obj = new FootballGameData(matchDay, homeClubName, visitorClubName);
 		return (FootballGameData) obj.DB_ADD();
 	}
 	//..
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static DailyLottoDraw new_DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
@@ -107,6 +124,9 @@ public class GmbFactory
 		return obj;
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static TotoEvaluation new_TotoEvaluation(DateTime planedEvaluationDate, ArrayList<FootballGameData> results)
 	{
 		TotoEvaluation obj = new TotoEvaluation(planedEvaluationDate, results);
@@ -116,6 +136,9 @@ public class GmbFactory
 		return obj;
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static WeeklyLottoDraw new_WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		WeeklyLottoDraw obj = new WeeklyLottoDraw(planedEvaluationDate);
@@ -127,6 +150,9 @@ public class GmbFactory
 	
 	////tip:
 	//group:
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static DailyLottoGroupTip new_DailyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		DailyLottoGroupTip obj = new DailyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
@@ -136,6 +162,9 @@ public class GmbFactory
 		return obj;
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static TotoGroupTip new_TotoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		TotoGroupTip obj = new TotoGroupTip(draw, group, minimumStake, overallMinimumStake);
@@ -145,6 +174,9 @@ public class GmbFactory
 		return obj;
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static WeeklyLottoGroupTip new_WeeklyLottoGroupTip(Draw draw, Group group, int minimumStake, int overallMinimumStake)
 	{
 		WeeklyLottoGroupTip obj = new WeeklyLottoGroupTip(draw, group, minimumStake, overallMinimumStake);
@@ -157,10 +189,20 @@ public class GmbFactory
 	////tipticket:
 	//single:
 	/**
-	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
-	 * Returns 0 (var1) and the created ticket (var2) otherwise.
-	 * @param customer
-	 * @return
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and purchases a tip ticket. <br>
+	 * @param customer The purchaser.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money
+	 * </ul>
+	 * var2 as {@link DailyLottoSTT}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created DailyLottoSTT
+	 * <li> var1 == 1 -> null 
+	 * </ul>
 	 */
 	public static ReturnBox<Integer, DailyLottoSTT> createAndPurchase_DailyLottoSTT(Customer customer)
 	{
@@ -175,10 +217,20 @@ public class GmbFactory
 		return new ReturnBox<Integer, DailyLottoSTT>(new Integer(0), ticket);
 	}
 	/**
-	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
-	 * Returns 0 (var1) and the created ticket (var2) otherwise.
-	 * @param customer
-	 * @return
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and purchases a tip ticket. <br>
+	 * @param customer The purchaser.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money
+	 * </ul>
+	 * var2 as {@link WeeklyLottoSTT}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created WeeklyLottoSTT
+	 * <li> var1 == 1 -> null 
+	 * </ul>
 	 */
 	public static ReturnBox<Integer, WeeklyLottoSTT> createAndPurchase_WeeklyLottoSTT(Customer customer)
 	{
@@ -193,10 +245,20 @@ public class GmbFactory
 		return new ReturnBox<Integer, WeeklyLottoSTT>(new Integer(0), ticket);
 	}
 	/**
-	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
-	 * Returns 0 (var1) and the created ticket (var2) otherwise.
-	 * @param customer
-	 * @return
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and purchases a tip ticket. <br>
+	 * @param customer The purchaser.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money
+	 * </ul>
+	 * var2 as {@link TotoSTT}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created TotoSTT
+	 * <li> var1 == 1 -> null 
+	 * </ul>
 	 */
 	public static ReturnBox<Integer, TotoSTT> createAndPurchase_TotoSTT(Customer customer)
 	{
@@ -213,10 +275,21 @@ public class GmbFactory
 	
 	//perma:
 	/**
-	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
-	 * Returns 0 (var1) and the created ticket (var2) otherwise.
-	 * @param customer
-	 * @return
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and purchases a tip ticket. <br>
+	 * @param customer The purchaser.
+	 * @param duration A duration of type {@link PPTDuration}.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money
+	 * </ul>
+	 * var2 as {@link DailyLottoPTT}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created DailyLottoPTT
+	 * <li> var1 == 1 -> null 
+	 * </ul>
 	 */
 	public static ReturnBox<Integer, DailyLottoPTT> createAndPurchase_DailyLottoPTT(Customer customer, PTTDuration duration)
 	{
@@ -231,10 +304,21 @@ public class GmbFactory
 		return new ReturnBox<Integer, DailyLottoPTT>(new Integer(0), ticket);
 	}
 	/**
-	 * Creates and purchases a tip ticket. Returns 1 (var1) if the customer doesn't have enough money.
-	 * Returns 0 (var1) and the created ticket (var2) otherwise.
-	 * @param customer
-	 * @return
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and purchases a tip ticket. <br>
+	 * @param customer The purchaser.
+	 * @param duration A duration of type {@link PPTDuration}.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money
+	 * </ul>
+	 * var2 as {@link WeeklyLottoPTT}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created WeeklyLottoPTT
+	 * <li> var1 == 1 -> null 
+	 * </ul>
 	 */
 	public static ReturnBox<Integer, WeeklyLottoPTT> createAndPurchase_WeeklyLottoPTT(Customer customer, PTTDuration duration)
 	{
@@ -251,12 +335,18 @@ public class GmbFactory
 	
 	////member:
 	//container:
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static Adress new_Adress(String streetName, String houseNumber, String postCode, String townName)
 	{
 		Adress obj = new Adress(streetName, houseNumber, postCode, townName);
 		return (Adress) obj.DB_ADD();
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static MemberData new_MemberData(String firstName, String lastName, DateTime birthDate, String phoneNumber, String eMail, Adress adress)
 	{
 		MemberData obj = new MemberData(firstName, lastName, birthDate, phoneNumber, eMail, adress);
@@ -264,12 +354,18 @@ public class GmbFactory
 	}
 	
 	//..
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static Member new_Member(String nickName, String password, MemberData memberData, MemberType type)
 	{
 		Member obj = new Member(nickName, password, memberData, type);
 		return (Member) obj.DB_ADD();
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public static Customer new_Customer(String nickName, String password, MemberData memberData, LotteryBankAccount lotteryBankAccount)
 	{
 		Customer obj = new Customer(nickName, password, memberData, lotteryBankAccount);

@@ -21,6 +21,11 @@ import gmb.model.financial.container.ReceiptsDistributionResult;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.tip.single.SingleTip;
 
+/**
+ * Container class storing basic information about the evaluation results<br>
+ * of an evaluated drawing.
+ *
+ */
 @Entity
 public class EvaluationResult extends PersiObject
 {

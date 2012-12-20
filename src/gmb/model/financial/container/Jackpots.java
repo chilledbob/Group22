@@ -12,6 +12,10 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Container class containing the jackpots of the WeeklyLotto and Toto.
+ *
+ */
 @Entity
 public class Jackpots extends PersiObject
 {

@@ -21,12 +21,14 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.ElementCollection;
 import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
 
-
+/**
+ * The lottery bank account associated with a specific customer.<br>
+ * Contains various customer specific financial data.
+ *
+ */
 @Entity
 public class LotteryBankAccount extends PersiObject
 {	
@@ -75,10 +77,10 @@ public class LotteryBankAccount extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates a "DataUpdateRequest" based on "updatedData" 
-	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
-	 * Returns the created request.
+	 * [Intended for direct usage by controller] <br>
+	 * Creates a "DataUpdateRequest" based on "updatedData" <br>
+	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement". <br>
+	 * Returns the created request. 
 	 * @param note
 	 * @param updatedData
 	 */
@@ -96,11 +98,11 @@ public class LotteryBankAccount extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates an "ExternalTransactionRequest" based on "transaction" 
-	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".
-	 * Returns 1 (var1) if the "transaction" is invalid which is the case when the customer tries
-	 * to transact more money to his real account than he is capable to based on his "LotteryBankAccount"'s "credit",
+	 * [Intended for direct usage by controller]<br>
+	 * Creates an "ExternalTransactionRequest" based on "transaction" <br>
+	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement".<br>
+	 * Returns 1 (var1) if the "transaction" is invalid which is the case when the customer tries <br>
+	 * to transact more money to his real account than he is capable to based on his "LotteryBankAccount"'s "credit", <br>
 	 * otherwise 0 (var1). Also returns the created request (var2).
 	 * @param note
 	 * @param updatedData

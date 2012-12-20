@@ -4,9 +4,11 @@ import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.single.TotoSTT;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
+/** 
+ * A SingleTip for the daily football-toto evaluation.
+ */
 @Entity
 public class TotoTip extends SingleTip 
 {

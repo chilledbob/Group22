@@ -23,6 +23,9 @@ import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
 
+/**
+ * Manager class for persistence handling.
+ */
 //public class GmbPersistenceManager 
 //{	
 //	private static final EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
