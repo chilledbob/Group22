@@ -9,12 +9,16 @@ import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.member.Customer;
+import gmb.model.member.Member;
+import gmb.model.member.MemberType;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.DailyLottoTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
+import gmb.model.tip.tipticket.perma.DailyLottoPTT;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
 import javax.persistence.Entity;
@@ -39,10 +43,20 @@ public class DailyLottoDraw extends Draw
 	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		
+		//automatically create SingleTips from PermaTTs:
+		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
+			if(customer.getType() == MemberType.Customer)
+				for(DailyLottoPTT ticket : ((Customer)customer).getDailyLottoPTTs())
+					if(!ticket.isExpired() && ticket.getTip() != null)
+						this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
 
 	public boolean evaluate(int[] result) 
 	{
+		if(evaluated) return false;
+		evaluated = true;
+		
 		//generate random result if no result has been set:
 		if(this.result == null && result == null)
 		{
@@ -110,7 +124,7 @@ public class DailyLottoDraw extends Draw
 
 		DB_UPDATE(); 
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -134,7 +148,7 @@ public class DailyLottoDraw extends Draw
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()
 	{
-		return Lottery.getInstance().getTimer().getDateTime().isBefore((new DateTime(planedEvaluationDate)).minusHours(24));
+		return Lottery.getInstance().getTimer().getDateTime().isBefore((new DateTime(planedEvaluationDate)).minusHours(4));
 	}
 
 	public boolean addTip(SingleTip tip){ return super.addTip(tip, DailyLottoTip.class); }

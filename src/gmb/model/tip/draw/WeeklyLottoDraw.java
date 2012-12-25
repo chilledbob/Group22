@@ -10,6 +10,9 @@ import java.util.LinkedList;
 
 import gmb.model.Lottery;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.member.Customer;
+import gmb.model.member.Member;
+import gmb.model.member.MemberType;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
@@ -17,6 +20,7 @@ import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
+import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import org.joda.time.DateTime;
@@ -41,6 +45,13 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		
+		//automatically create SingleTips from PermaTTs:
+		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
+			if(customer.getType() == MemberType.Customer)
+				for(WeeklyLottoPTT ticket : ((Customer)customer).getWeeklyLottoPTTs())
+					if(!ticket.isExpired() && ticket.getTip() != null)
+						this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
 
 	/**
@@ -50,6 +61,9 @@ public class WeeklyLottoDraw extends Draw
 	 */
 	public boolean evaluate(int[] result) 
 	{
+		if(evaluated) return false;
+		evaluated = true;
+		
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.evaluate(int[] result)! (6 + extraNumber + superNumber)";
 
 		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);

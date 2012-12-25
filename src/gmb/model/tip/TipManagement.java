@@ -43,6 +43,12 @@ public class TipManagement extends PersiObject
 		totoEvaluations = new LinkedList<TotoEvaluation>();
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Accumulates all drawing on the given date and returns them in a {@link DrawEventBox}.
+	 * @param date
+	 * @return {@link DrawEventBox} object containing all drawings on the given date
+	 */
 	public DrawEventBox getDrawEventsOnDate(DateTime date)
 	{
 		DrawEventBox box = new DrawEventBox();
@@ -77,9 +83,9 @@ public class TipManagement extends PersiObject
 	
 	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; DB_UPDATE(); }
 	
-	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
-	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
-	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
+	public LinkedList<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return (LinkedList<WeeklyLottoDraw>) weeklyLottoDrawings; }
+	public LinkedList<DailyLottoDraw> getDailyLottoDrawings(){ return (LinkedList<DailyLottoDraw>) dailyLottoDrawings; }
+	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return (LinkedList<TotoEvaluation>) totoEvaluations; }
 	
 	public Duration getTipSubmissionTimeLimit(){ return new Duration(tipSubmissionTimeLimitInMilliSeconds); }
 }

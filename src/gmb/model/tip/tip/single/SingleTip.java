@@ -1,5 +1,6 @@
 package gmb.model.tip.tip.single;
 
+import gmb.model.Lottery;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.Tip;
@@ -38,40 +39,44 @@ public abstract class SingleTip extends Tip
 		this.tipTicket = (TipTicket)tipTicket;
 		
 		this.groupTip = groupTip;
+		
+		this.submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 
 	public SingleTip(GenericTT tipTicket, Draw draw) 
 	{
 		super(draw);
 		
-		groupTip = null;
 		this.tipTicket = (TipTicket)tipTicket;
+		
+		groupTip = null;
+		
+		this.submissionDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Tries to withdraw the tip with all implications which also depend
-	 * on whether the "SingleTip" is associated with a "GroupTip".
+	 * [Intended for direct usage by controller]<br>
+	 * Tries to withdraw the tip with all implications which also depends
+	 * on whether this SingleTip is associated with a GroupTip.
+	 * This can lead to annulment of the submission of an associated GroupTip.<br>
 	 * @return
 	 * <ul>
 	 * <li> 0 - successful
 	 * <li>-1 - not enough time left until the planned evaluation of the draw
-	 * <li> 2 - removing tip from tip ticket failed
+	 * <li> 1 - the associated group member would fall under his minimumStake limit (only tested if minimumStake > 1).
+	 * Use GroupTip.removeAllTipsOfGroupMember(Customer groupMember) to withdraw the tips in this case.
+	 * <li> 2 - can not 'unsubmit' the group tip from draw and therefore not remove tip
 	 * <ul>
 	 */
 	public int withdraw()
-	{
-		int result = super.withdraw();//draw already evaluated?		
-		if(result != 0) return result;
-		
-		if(!draw.isTimeLeftUntilEvaluationForSubmission()) return -1;
-		
-		tipTicket.removeTip(this);
-		
+	{	
 		if(groupTip == null)
 		{
+			if(!draw.isTimeLeftUntilEvaluationForSubmission()) 
+				return -1;
+			
 			draw.removeTip(this);
-//			if(!tipTicket.removeTip(this)) return 2;
+			tipTicket.removeTip(this);
 			
 			return 0;
 		}
@@ -89,6 +94,7 @@ public abstract class SingleTip extends Tip
 	 * <ul>
 	 * <li> 0 - successful
 	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>   - check {@link WeeklyLottoTip.validateTip(int[] tip)} and {@link DailyLottoTip.validateTip(int[] tip)} for further failure codes
 	 * <ul>
 	 */
 	public int setTip(int[] tip)

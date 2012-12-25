@@ -30,9 +30,7 @@ import org.joda.time.DateTime;
 
 /**
  * The group class. <br>
- * Holds group specific information like group admin,<br>
- * members, group tips and associated winnings.
- *
+ * Holds group specific information like group admin, members, group tips and associated winnings.
  */
 @Entity
 @Table(name="GroupTable")
@@ -82,6 +80,7 @@ public class Group extends PersiObject
 		this.groupAdmin = groupAdmin;
 		
 		groupMembers =  new LinkedList<Customer>();
+		groupMembers.add(groupAdmin);
 		
 		dailyLottoGroupTips = new LinkedList<DailyLottoGroupTip>();
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
@@ -162,9 +161,7 @@ public class Group extends PersiObject
 	{
 		if(groupMembers.contains(groupMember))
 		{
-			groupMembers.add(groupAdmin);
 			groupAdmin = groupMember;
-			groupMembers.remove(groupMember);
 			
 			DB_UPDATE(); 
 			
@@ -176,15 +173,13 @@ public class Group extends PersiObject
 	
 	protected boolean resign(Customer groupMember, String notification)
 	{
-		if(groupMembers.contains(groupMember) || groupMember == groupAdmin)
+		if(groupMembers.contains(groupMember))
 		{
 			withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
 
 			groupMember.addNotification(notification);
-			
-			if(groupMembers.contains(groupMember))
-				groupMembers.remove(groupMember);
-			else
+
+			if(groupMember == groupAdmin)
 				groupAdmin = null;
 			
 			groupMember.removeGroup(this);
@@ -197,23 +192,29 @@ public class Group extends PersiObject
 	
 	/**
 	 * [Intended for direct usage by controller]<br>
-	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember" <br>
-	 * and sending a "Notification" to the member and removing him from the "groupMembers" list. <br>
+	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
+	 * sending a "Notification" to the member and removing him from the "groupMembers" list. <br>
 	 * If it's the "groupAdmin" who resigns "close" the group. 
 	 * @param groupMember
+	 * @return true if successful, otherwise false.
 	 */
 	public boolean resign(Customer groupMember)
 	{	
 		if(groupMember == groupAdmin)
 		{
-			if(!close()) return false;
+			if(close()) return true;
 		}
 		else
-			resign(groupMember, "You have been resigned from Group " + name + ".");
+		if(resign(groupMember, "You have been resigned from Group " + name + "."))
+		{
+			groupMembers.remove(groupMember);
 
-		DB_UPDATE(); 
-		
-		return true;
+			DB_UPDATE(); 
+			
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -243,10 +244,10 @@ public class Group extends PersiObject
 	
 	/**
 	 * [Intended for direct usage by controller]<br>
-	 * Closes the group by resigning all "groupMembers" + "groupAdmin", <br>
-	 * withdrawing all group related requests in the system which are still unhandled <br>
+	 * Closes the group by resigning all "groupMembers" + "groupAdmin",
+	 * withdrawing all group related requests in the system which are still unhandled
 	 * and setting the "closed" flag to true.<br>
-	 * This doesn't remove the group from the system.
+	 * (This doesn't remove the group from the system.)
 	 */
 	public boolean close()
 	{
@@ -265,11 +266,16 @@ public class Group extends PersiObject
 			for(Customer groupMember : groupMembers)
 				groupTip.removeAllTipsOfGroupMember(groupMember);
 		
-		
+		//first the groupMembers:
 		for(Customer groupMember : groupMembers)
+			if(groupMember != groupAdmin)
 			resign(groupMember, "The group " + name + " has been closed. You will be automatically resigned.");
-				
+		
+		//now the groupAdmin:
 		resign(groupAdmin, "The group " + name + ", where you had admin status, has been closed. You will be automatically resigned.");
+		
+		//now clear grouMember list:
+		groupMembers.clear();
 		
 		//withdraw all group related requests not only those which are associated with groupMembers:
 		for(GroupMembershipApplication application : groupMembershipApplications)
@@ -290,7 +296,7 @@ public class Group extends PersiObject
 	}
  
 	/**
-	 * Adds the "customer" to the "groupMembers" list and the group <br>
+	 * Adds the "customer" to the "groupMembers" list and the group
 	 * to the "groups" list of the "customer".
 	 * @param customer
 	 */

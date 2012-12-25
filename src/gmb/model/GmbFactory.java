@@ -535,7 +535,7 @@ public class GmbFactory
 		return (DailyLottoTip) obj.DB_ADD();
 	}
 	
-	public static DailyLottoTip new_DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip)
+	public static DailyLottoTip new_DailyLottoTip(DailyLottoTT tipTicket, DailyLottoGroupTip groupTip)
 	{
 		DailyLottoTip obj = new DailyLottoTip(tipTicket, groupTip);
 		return (DailyLottoTip) obj.DB_ADD();
@@ -559,7 +559,7 @@ public class GmbFactory
 		return (WeeklyLottoTip) obj.DB_ADD();
 	}
 	
-	public static WeeklyLottoTip new_WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip)
+	public static WeeklyLottoTip new_WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoGroupTip groupTip)
 	{
 		WeeklyLottoTip obj = new WeeklyLottoTip(tipTicket, groupTip);
 		return (WeeklyLottoTip) obj.DB_ADD();

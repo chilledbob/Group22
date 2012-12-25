@@ -71,9 +71,7 @@ public abstract class Draw extends PersiObject
 	 * @return true
 	 */
 	public boolean evaluate(int[] result)
-	{
-		evaluated = true;
-		
+	{	
 		if(this.result == null)
 		this.result = result; 
 		
@@ -93,14 +91,15 @@ public abstract class Draw extends PersiObject
 		
 		prizePotential = drawEvaluationResult.initReceiptsDistributionResult(prizePotential);
 		
+		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
 			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
 			CDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 			tip.getTipTicket().setRemainingValue(updatedValue);
 
-			if(updatedValue.signum() == -1)
-				if(currentValue.signum() > -1)
+			if(updatedValue.signum() == -1)//always updatedValue.signum() == 0 for SingleTTs.
+				if(currentValue.signum() > -1)//just became negative?
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(updatedValue);
 				else
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
@@ -280,7 +279,8 @@ public abstract class Draw extends PersiObject
 
 	public EvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
-
+	public boolean isEvaluated(){ return evaluated; }
+	
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 

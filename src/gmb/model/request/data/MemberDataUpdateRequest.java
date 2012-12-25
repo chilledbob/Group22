@@ -34,10 +34,12 @@ public class MemberDataUpdateRequest extends Request
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Return codes:
-	 * 0 - successful
-	 * 1 - failed because state was not "UNHANDLED"
+	 * [Intended for direct usage by controller]<br>
+	 * @return return code:
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - failed because state was not "Unhandled"
+	 * </ul>
 	 */
 	public int accept()
 	{

@@ -41,6 +41,7 @@ import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.draw.container.ExtendedEvaluationResult;
+import gmb.model.tip.tip.group.TotoGroupTip;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
@@ -97,7 +98,7 @@ public class Test01
 
 	//	@BeforeClass
 	//	public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
-
+	
 	@Test
 	public void MasterTest()
 	{
@@ -113,6 +114,8 @@ public class Test01
 		printCurrentTimeToConsol("Lottery has opend!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
+		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoCreation();//don't automatically create DailyLottoDrawings for now
+		
 		Adress admin1Adress = GmbFactory.new_Adress("Eich Strasse", "18", "90378", "SomeTown");
 		MemberData admin1Data = GmbFactory.new_MemberData("Heinrich", "Siegel", new DateTime(1950,1,1,0,0), "892537", "heino@mail.gmb", admin1Adress);
 		admin1 = GmbFactory.new_Member("MegaAdmin", "secretpasswordnonumbers", admin1Data, MemberType.Admin);
@@ -127,6 +130,17 @@ public class Test01
 		cus1 = GmbFactory.new_Customer("MiniAmanda", "iwannaplayagame", cus1Data, cus1bankacc);
 		Lottery.getInstance().getMemberManagement().addMember(cus1);
 
+		assertEquals("Amanda", cus1.getMemberData().getFirstName());
+		assertEquals("Jiggsaw", cus1.getMemberData().getLastName());
+		assertEquals(new DateTime(1970,10,16,0,0), cus1.getMemberData().getBirthDate());
+		assertEquals("0735643", cus1.getMemberData().getPhoneNumber());
+		assertEquals("me@mail.gmb", cus1.getMemberData().getEMail());
+		
+		assertEquals("PimpfStreet", cus1Adress.getStreetName());
+		assertEquals("044", cus1Adress.getHouseNumber());
+		assertEquals("08653", cus1Adress.getPostCode());
+		assertEquals("PimpfCity", cus1Adress.getTownName());
+		
 		printCurrentTimeToConsol("First Customer!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
@@ -188,16 +202,26 @@ public class Test01
 		cus2.sendDataUpdateRequest(cus2Data, "I want real member data! You've created me with default data! D:");
 		cus3.getBankAccount().sendDataUpdateRequest(GmbFactory.new_RealAccountData("839843789", "7885758"), "Hello, please accept my update. Thanks.");
 
-		assertEquals(1, Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests().size());
+		MemberDataUpdateRequest req01 = cus5.sendDataUpdateRequest(GmbFactory.new_MemberData("SATAN", "NATAS", new DateTime(999,1,1,0,0), "999999", "satan@natas.gmb", null), "I'm actually SATAN! Satan doesn't need an address!");
 		
-		//tired admin work, accepting everything:
+		assertEquals(2, Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests().size());
+		
+		//tired admin work, accepting nearly everything:
 		for(MemberDataUpdateRequest request : Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests())
-			System.out.println(request.accept());
+			if(request != req01)
+				assertEquals(0, request.accept());
 
 		for(RealAccountDataUpdateRequest request : Lottery.getInstance().getFinancialManagement().getRealAccounDataUpdateRequests())
-			System.out.println(request.accept());
+			assertEquals(0, request.accept());
 		System.out.println("");
 
+		//but not this!
+		assertEquals(true, req01.refuse());
+		//very tired
+		assertEquals(1, req01.accept());
+		
+		assertEquals("SATAN", req01.getUpdatedData().getFirstName());
+		assertEquals("Karsten", cus5.getMemberData().getFirstName());
 		assertEquals("Bahn Strasse", cus2.getMemberData().getAdress().getStreetName());
 		assertEquals("7885758", cus3.getBankAccount().getRealAccountData().getAccountNumber());
 
@@ -286,8 +310,8 @@ public class Test01
 		assertEquals(1, cus4.getGroups().size());
 		assertEquals(1, cus5.getGroups().size());
 
-		assertEquals(2, group1.getGroupMembers().size());
-		assertEquals(2, group2.getGroupMembers().size());
+		assertEquals(3, group1.getGroupMembers().size());
+		assertEquals(3, group2.getGroupMembers().size());
 
 		assertEquals(2, group1.getGroupInvitations().size());
 		assertEquals(1, group2.getGroupInvitations().size());
@@ -315,7 +339,7 @@ public class Test01
 		group3.sendGroupAdminRightsTransfereOffering(cus1, "U moar muffin! U admin! :D");
 		cus1.getGroupAdminRightsTransfereOfferings().get(0).accept();
 
-		assertEquals(true, group3.getGroupAdmin() == cus1);
+		assertEquals(cus1, group3.getGroupAdmin());
 
 		group3.resign(cus5);
 
@@ -332,7 +356,7 @@ public class Test01
 		assertEquals(true, group3.isClosed());
 		assertEquals(false, group3.getGroupMembers().contains(cus1));
 		assertEquals(false, group3.getGroupMembers().contains(cus4));
-		assertEquals(true, group3.getGroupAdmin() == null);
+		assertEquals(null, group3.getGroupAdmin());
 		assertEquals(RequestState.Withdrawn, ((LinkedList<GroupMembershipApplication>)cus3.getGroupInvitations()).getLast().getState());
 		//=========================================================================================================================//TIPTICKET TESTs NO 1
 
@@ -448,14 +472,15 @@ public class Test01
 		((WeeklyLottoTip)(ticket1.getTip())).setSuperNumber(8);//+superNumber!
 
 		//cus3:
-		int rcode2 = draw1.createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7}).var1.intValue();//5 hits + extraNumber
+//		System.out.println(ticket5.getDurationDate().toString());
+		assertEquals(false, ticket5.isExpired());
+		assertEquals(0, draw1.createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7}).var1.intValue());//5 hits + extraNumber
 		((WeeklyLottoTip)(ticket5.getLastTip())).setSuperNumber(0);//irrelevant
 
 		assertEquals(0, rcode1);
-		assertEquals(0, rcode2);
 		assertEquals(2, draw1.getSingleTips().size());
 
-		assertEquals(true, (ticket1.getTip() != null));
+		assertNotNull(ticket1.getTip());
 		assertEquals(1, ticket5.getTips().size());
 
 		for(int i = 0; i < 7; ++i)
@@ -463,8 +488,24 @@ public class Test01
 
 		draw1.createAndSubmitSingleTip(cus3WLSTTs[7], new int[]{1,2,3,7,14,15});//3 hits + extraNumber
 		draw1.createAndSubmitSingleTip(cus3WLSTTs[8], new int[]{1,2,3,13,14,15});//3 hits
-		draw1.createAndSubmitSingleTip(cus3WLSTTs[9], new int[]{1,2,3,13,14,15});//3 hits
+		SingleTip someTip1 = draw1.createAndSubmitSingleTip(cus3WLSTTs[9], new int[]{1,2,3,13,14,15}).var2;//3 hits
+		
+		assertEquals(3, someTip1.setTip(new int[]{1,2,3,13,94,15}));//94 
+		assertEquals(3, someTip1.setTip(new int[]{1,2,3,13,-94,15}));//-94 
+		assertEquals(4, someTip1.setTip(new int[]{1,1,3,13,3,15}));//2x1
 
+		DateTime beforeSomeTip2Submission = Lottery.getInstance().getTimer().getDateTime();
+		Lottery.getInstance().getTimer().addMinutes(1);
+		SingleTip someTip2 = draw1.createAndSubmitSingleTip(cus3WLSTTs[10], new int[]{1,2,3,4,5,6}).var2;//6 hits
+		Lottery.getInstance().getTimer().addMinutes(1);
+		DateTime afterSomeTip2Submission = Lottery.getInstance().getTimer().getDateTime();
+		
+		assertEquals(true, beforeSomeTip2Submission.isBefore(someTip2.getSubmissionDate()));
+		assertEquals(true, afterSomeTip2Submission.isAfter(someTip2.getSubmissionDate()));
+		
+		assertEquals(0, someTip2.withdraw());//fail :D
+		assertEquals(null, cus3WLSTTs[10].getTip());
+		
 		printCurrentTimeToConsol("Two people submitted tips to a WeeklyLottoDraw (draw1).");//<------------------------------------------------------------------<TIMELINE UPDATE>
 
 		//=========================================================================================================================//GROUPTIP
@@ -481,7 +522,7 @@ public class Test01
 		cus1_tickets1.add(cus1WLSTTs[0]);
 		cus1_tickets1.add(cus1WLSTTs[1]);
 
-		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus1_tickets1, cus1_tipTips1));
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus1_tickets1, cus1_tipTips1).var1.intValue());
 		assertEquals(2, gwtip1.getTips().size());
 		assertEquals(2, gwtip1.getGroupMemberStake(cus1));
 
@@ -495,12 +536,12 @@ public class Test01
 		LinkedList<TipTicket> cus2_tickets1 = new LinkedList<TipTicket>();
 		cus2_tickets1.add(cus2WLSTTs[0]);
 
-		assertEquals(6, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
+		assertEquals(6, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1).var1.intValue());
 
 		cus2_tipTips1.add(new int[]{1,2,12,4,7,8});//3 hits + extraNumber
 		cus2_tickets1.add(cus2WLSTTs[1]);
 
-		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1).var1.intValue());
 
 		assertEquals(false, gwtip1.submit());
 
@@ -508,13 +549,21 @@ public class Test01
 		LinkedList<int[]> cus3_tipTips1 = new LinkedList<int[]>();
 		cus3_tipTips1.add(new int[]{1,2,12,13,14,15});
 		cus3_tipTips1.add(new int[]{1,2,12,13,14,15});
+		cus3_tipTips1.add(new int[]{44,45,46,47,33,35});//0
 
 		LinkedList<TipTicket> cus3_tickets1 = new LinkedList<TipTicket>();
 		cus3_tickets1.add(cus3WLSTTs[0]);
 		cus3_tickets1.add(cus3WLSTTs[1]);
+		cus3_tickets1.add(cus3WLSTTs[2]);
 
-		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));
+		ReturnBox<Integer, LinkedList<SingleTip>> box42 = gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1);
+		assertEquals(0, box42.var1.intValue());
+		
+		LinkedList<SingleTip> tips = box42.var2;			
 
+		assertEquals(0, gwtip1.removeSingleTip(tips.getLast()));
+		assertEquals(3, gwtip1.removeSingleTip(tips.getLast()));
+		
 		assertEquals(true, gwtip1.submit());
 		assertEquals(true, gwtip1.unsubmit());
 		assertEquals(true, gwtip1.submit());
@@ -522,7 +571,10 @@ public class Test01
 		assertEquals(0, gwtip1.removeAllTipsOfGroupMember(cus3));
 		assertEquals(false, gwtip1.submit());
 
-		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));//re-submit tips
+		cus3_tickets1.removeLast();
+		cus3_tipTips1.removeLast();
+		
+		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1).var1.intValue());//re-submit tips
 
 		assertEquals(true, gwtip1.submit());//re-submit group tip
 		//=========================================================================================================================//SHORTLY BEFORE EVALUATION
@@ -533,28 +585,25 @@ public class Test01
 
 		Lottery.getInstance().getTimer().addMinutes(-140);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
-		//		DateTime peDate = Lottery.getInstance().getTimer().getDateTime();
-		//		DateTime endDate = new DateTime(peDate.getYear(), peDate.getMonthOfYear(), peDate.getDayOfMonth(), 0, 0, 0);//reset hours, minutes, seconds
-		//		System.out.println(endDate.toString());
-		//		Duration duration = new Duration(Lottery.getInstance().getTimer().getDateTime(), endDate);
-		//
-		//		System.out.println(duration.toString());
-		//		System.out.println(draw1.getPlanedEvaluationDate().toString());
-		//		assertEquals(false, duration.isLongerThan(new Duration(0)));
-		//		assertEquals(false, draw1.isTimeLeftUntilEvaluationForSubmission());
 		assertEquals(false, gwtip1.unsubmit());
 
+		assertEquals(-1, gwtip1.removeAllTipsOfGroupMember(cus1));
+		assertEquals(2, gwtip1.withdraw());
 		//cus4:
 		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}).var1.intValue());
 
-		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't been 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		assertEquals(-1, someTip1.withdraw());//too late
+		
+		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't bee 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>	
 		Lottery.getInstance().getTimer().addMinutes(145);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
+		assertEquals(-2, someTip1.setTip(new int[]{1,2,3,13,4,15}));//too late
+		
 		//=========================================================================================================================//WEEKLYDRAW EVALUATION
-
 
 		draw1.evaluate(new int[]{1,2,3,4,5,6,7,8});
 
+		assertNotNull(someTip1.getOverallWinnings());
 		assertEquals(1, gwtip1.getAllWinnings().size());
 
 		assertEquals(3, cus1.getBankAccount().getWinnings().size());
@@ -642,26 +691,6 @@ public class Test01
 
 		System.out.println(wDrawEvaluationResult.getNormalizationAmount().toString());
 
-
-		//		int findNoti = 0;
-		//		for(Notification notification : cus1.getNotifications())
-		//			if(notification.getNote().matches("Sadly there is no evaluation code for the drawings so you never really had a chance to win something."))
-		//				++findNoti;
-		//		
-		//		assertEquals(1, findNoti);
-		//		
-		//		findNoti = 0;
-		//		for(Notification notification : cus3.getNotifications())
-		//			if(notification.getNote().matches("Sadly there is no evaluation code for the drawings so you never really had a chance to win something."))
-		//				++findNoti;
-		//		
-		//		assertEquals(1, findNoti);
-		//
-		//		CDecimal pricePotential = ticket1.getPaidPurchasePrice().add(ticket5.getPaidPurchasePrice());
-		//		assertEquals(
-		//				pricePotential.multiply(new CDecimal(Lottery.getInstance().getFinancialManagement().getReceiptsDistribution().getWinnersDue())).divide(new CDecimal(100)) 
-		//				,Lottery.getInstance().getFinancialManagement().getWeeklyLottoPrize());
-
 		printCurrentTimeToConsol("WeeklyLottoDraw (draw1) has been evaluated.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 
 		//=========================================================================================================================//DRAW AND SINGLETIP TESTs No 2
@@ -680,7 +709,7 @@ public class Test01
 		assertEquals(0, rcode22);
 		assertEquals(2, draw2.getSingleTips().size());
 
-		assertEquals(true, (cus1DLSTTs[0].getTip() != null));
+		assertNotNull(cus1DLSTTs[0].getTip());
 
 		for(int i = 0; i < 7; ++i)
 			draw2.createAndSubmitSingleTip(cus3DLSTTs[i], new int[]{0,0,0,0,0,0,0,0,0,1});//0 hits
@@ -696,13 +725,13 @@ public class Test01
 		draw2.setResult(new int[]{1,2,3,4,5,6,7,8,9,0});
 
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addHours(20);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		assertEquals(false, draw2.getEvaluated());	
 
-		int rcode33 = draw2.createAndSubmitSingleTip(cus3DLSTTs[10], new int[]{0,2,3,4,5,6,7,8,9,0}).var1;//TOO LATE!!!
-		assertEquals(-2, rcode33);
+		assertEquals(-2, draw2.createAndSubmitSingleTip(cus3DLSTTs[10], new int[]{0,2,3,4,5,6,7,8,9,0}).var1.intValue());//TOO LATE!!!
 		
 		printCurrentTimeToConsol("Auto-Evaluation of DailyLottoDraw (draw2).");//<------------------------------------------------------------------<TIMELINE UPDATE>
-		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		Lottery.getInstance().getTimer().addHours(4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
 		assertEquals(true, draw2.getEvaluated());
 
@@ -757,7 +786,7 @@ public class Test01
 		assertEquals(0, rcode222);
 		assertEquals(2, draw3.getSingleTips().size());
 
-		assertEquals(true, (cus1TSTTs[0].getTip() != null));
+		assertNotNull(cus1TSTTs[0].getTip());
 
 		//cus3:
 		draw3.createAndSubmitSingleTip(cus3TSTTs[0], new int[]{1,0,1,0,0,0,2,2,2});//4 hits
@@ -876,7 +905,173 @@ public class Test01
 		assertEquals(-1, pptTestDraw3.createAndSubmitSingleTip(pptTicketY2, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());//duration expired
 		
 		printCurrentTimeToConsol("PermaTT duration stuff has been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
-		//=========================================================================================================================//
+		//=========================================================================================================================//WEEKLY PERMA TIPS TEST:
+		Lottery.getInstance().getTimer().addWeeks(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		System.out.println(Lottery.getInstance().getTipManagement().getDailyLottoDrawings().size());
+		
+		assertEquals(0, cus1.getBankAccount().sendExternalTransactionRequest(new CDecimal(400), "").var2.accept());
+		assertEquals(0, cus2.getBankAccount().sendExternalTransactionRequest(new CDecimal(400), "").var2.accept());
+		assertEquals(0, cus3.getBankAccount().sendExternalTransactionRequest(new CDecimal(400), "").var2.accept());
+		
+		WeeklyLottoPTT cus1WPPT01 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus1, PTTDuration.Month).var2;
+		assertEquals(0, cus1WPPT01.setTip(new int[]{5,34,12,7,32,1}));//3
+		
+		WeeklyLottoPTT cus2WPPT01 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus2, PTTDuration.Halfyear).var2;
+		assertEquals(0, cus2WPPT01.setTip(new int[]{4,2,1,13,32,12}));//3+extra, 3+extra
+		
+		WeeklyLottoPTT cus3WPPT01 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus3, PTTDuration.Month).var2;
+		WeeklyLottoPTT cus3WPPT02 = GmbFactory.createAndPurchase_WeeklyLottoPTT(cus3, PTTDuration.Year).var2;
+		assertEquals(0, cus3WPPT01.setTip(new int[]{8,2,4,1,44,45}));//4
+		assertEquals(0, cus3WPPT02.setTip(new int[]{12,32,34,11,17,21}));//0, 3
+		
+		Lottery.getInstance().getTimer().addDays(4);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		WeeklyLottoDraw WLDrawX01 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(2));
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(true, WLDrawX01.evaluate(new int[]{5,4,2,7,8,1,13,33}));
+		
+		assertEquals(3, WLDrawX01.getDrawEvaluationResult().getWinnings().size());
+		assertEquals(1, WLDrawX01.getDrawEvaluationResult().getTipsInCategory(7).size());
+		assertEquals(1, WLDrawX01.getDrawEvaluationResult().getTipsInCategory(6).size());
+		assertEquals(1, WLDrawX01.getDrawEvaluationResult().getTipsInCategory(5).size());
+		
+		Lottery.getInstance().getTimer().addMonths(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		WeeklyLottoDraw WLDrawX02 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(2));
+		
+		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(true, WLDrawX02.evaluate(new int[]{5,34,12,7,32,1,2,3}));
+		
+		assertEquals(2, WLDrawX02.getDrawEvaluationResult().getWinnings().size());
+		assertEquals(0, WLDrawX02.getDrawEvaluationResult().getTipsInCategory(1).size());
+		assertEquals(1, WLDrawX02.getDrawEvaluationResult().getTipsInCategory(6).size());
+		assertEquals(1, WLDrawX02.getDrawEvaluationResult().getTipsInCategory(7).size());
+		
+		printCurrentTimeToConsol("Weekly perma tips have been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		//=========================================================================================================================//DAILY PERMA TIPS TEST:
+		Lottery.getInstance().getTimer().addWeeks(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		DailyLottoPTT cus1DPPT01 = GmbFactory.createAndPurchase_DailyLottoPTT(cus1, PTTDuration.Month).var2;
+		assertEquals(0, cus1DPPT01.setTip(new int[]{0,1,2,3,4,5,6,7,8,9}));//
+		
+		DailyLottoPTT cus2DPPT01 = GmbFactory.createAndPurchase_DailyLottoPTT(cus2, PTTDuration.Halfyear).var2;
+		assertEquals(0, cus2DPPT01.setTip(new int[]{0,1,2,3,4,5,6,7,8,9}));//
+		
+		DailyLottoPTT cus3DPPT01 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Month).var2;
+		DailyLottoPTT cus3DPPT02 = GmbFactory.createAndPurchase_DailyLottoPTT(cus3, PTTDuration.Year).var2;
+		assertEquals(0, cus3DPPT01.setTip(new int[]{0,1,2,0,4,5,6,7,8,9}));//
+		assertEquals(0, cus3DPPT02.setTip(new int[]{0,1,2,0,0,5,6,7,8,9}));//
+		
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		Lottery.getInstance().getTimer().setDailyLottoDrawAutoCreation();
+		DailyLottoDraw DLDrawX01 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(2));
+		DLDrawX01.setResult(new int[]{0,1,2,0,0,0,0,0,0,0});
+		
+		Lottery.getInstance().getTimer().addDays(3);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(4, DLDrawX01.getDrawEvaluationResult().getWinnings().size());
+		assertEquals(2, DLDrawX01.getDrawEvaluationResult().getTipsInCategory(7).size());
+		assertEquals(1, DLDrawX01.getDrawEvaluationResult().getTipsInCategory(6).size());
+		assertEquals(1, DLDrawX01.getDrawEvaluationResult().getTipsInCategory(5).size());
+		
+		assertEquals(false, Lottery.getInstance().getTipManagement().getDailyLottoDrawings().getLast().isEvaluated());
+		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoCreation();
+		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoEvaluation();
+		
+		DailyLottoDraw  DLDrawX021 = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().getLast();//the last automatically created draw
+		assertEquals(true, DLDrawX021.evaluate(new int[]{0,1,2,3,0,0,0,0,0,0}));
+		assertEquals(4, DLDrawX021.getDrawEvaluationResult().getWinnings().size());
+		
+		Lottery.getInstance().getTimer().addMonths(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		DailyLottoDraw  DLDrawX02 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(1));
+		
+		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		assertEquals(false, DLDrawX02.isEvaluated());
+		DLDrawX02.setResult(new int[]{0,1,2,3,0,0,0,0,0,0});
+		assertEquals(true, DLDrawX02.evaluate(null));
+
+		assertEquals(true, DLDrawX02.isEvaluated());
+		
+		assertEquals(2, DLDrawX02.getDrawEvaluationResult().getWinnings().size());
+		assertEquals(1, DLDrawX02.getDrawEvaluationResult().getTipsInCategory(7).size());
+		assertEquals(1, DLDrawX02.getDrawEvaluationResult().getTipsInCategory(6).size());
+		
+		printCurrentTimeToConsol("Daily perma tips have been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
+		
+		//=========================================================================================================================//(TOTO-) GROUPTIP WITHDRAWING
+		
+		Lottery.getInstance().getTimer().addWeeks(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		
+		ArrayList<FootballGameData> gameData2 = new ArrayList<FootballGameData>(9);
+
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Namo", "Schland"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Schaft", "Mann"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "HSV", "FSV"));
+
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Nemo", "Minime"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Bubble", "Bert"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Klos", "Moos"));
+
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Stoss", "Noss"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Hammel", "Bammel"));
+		gameData2.add(GmbFactory.new_FootballGameData(new DateTime(), "Gammel", "Rammel"));
+		
+		TotoEvaluation TotoEvalX01 = GmbFactory.new_TotoEvaluation(Lottery.getInstance().getTimer().getDateTime().plusDays(2), gameData2);
+		
+		assertEquals(0, cus5.getBankAccount().sendExternalTransactionRequest(new CDecimal(400), "That much money I actually have.").var2.accept());
+		assertEquals(0, cus4.getBankAccount().sendExternalTransactionRequest(new CDecimal(400), "").var2.accept());
+		
+		TotoSTT cus4TSTT01 = GmbFactory.createAndPurchase_TotoSTT(cus4).var2;
+		
+		TotoSTT cus5TSTT01 = GmbFactory.createAndPurchase_TotoSTT(cus5).var2;
+		TotoSTT cus5TSTT02 = GmbFactory.createAndPurchase_TotoSTT(cus5).var2;
+		
+		TotoGroupTip TotoGTX01 = GmbFactory.new_TotoGroupTip(TotoEvalX01, group2, 1, 2);
+		
+		LinkedList<TipTicket> cus4TotoTickets = new LinkedList<TipTicket>();
+		cus4TotoTickets.add(cus4TSTT01);
+		
+		LinkedList<int[]> cus4TotoTips = new LinkedList<int[]>();
+		cus4TotoTips.add(new int[]{0,0,0,0,0,0,0,0,0});
+		
+		SingleTip cus4STTtip = TotoGTX01.createAndSubmitSingleTipList(cus4TotoTickets, cus4TotoTips).var2.getFirst();
+		
+		LinkedList<TipTicket> cus5TotoTickets = new LinkedList<TipTicket>();
+		cus5TotoTickets.add(cus5TSTT01);
+		
+		LinkedList<int[]> cus5TotoTips = new LinkedList<int[]>();
+		cus5TotoTips.add(new int[]{0,0,0,0,0,0,0,0,0});
+		
+		TotoGTX01.createAndSubmitSingleTipList(cus5TotoTickets, cus5TotoTips);
+		
+		assertEquals(true, TotoGTX01.submit());
+		
+		assertEquals(true, TotoGTX01.isSubmitted());
+		assertEquals(0, TotoGTX01.removeSingleTip(cus4STTtip));
+		assertEquals(false, TotoGTX01.isSubmitted());
+		
+		LinkedList<TipTicket> cus5TotoTickets2 = new LinkedList<TipTicket>();
+		cus5TotoTickets2.add(cus5TSTT02);
+		
+		LinkedList<int[]> cus5TotoTips2 = new LinkedList<int[]>();
+		cus5TotoTips2.add(new int[]{0,0,0,0,0,0,0,0,0});
+		
+		TotoGTX01.createAndSubmitSingleTipList(cus5TotoTickets2, cus5TotoTips2);
+		
+		assertEquals(true, TotoGTX01.submit());
+		assertEquals(0, TotoGTX01.withdraw());
+		
+		assertNull(cus4TSTT01.getTip());
+		assertNull(cus4TSTT01.getTip());
+		assertNull(cus4TSTT01.getTip());
+		
+		printCurrentTimeToConsol("Withdrawing of group tips has been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 	}
 
 	//	@Test(expected=AssertionError.class)

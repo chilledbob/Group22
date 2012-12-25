@@ -1,6 +1,7 @@
 package gmb.model.tip.tip.single;
 
 import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
@@ -24,11 +25,17 @@ public class DailyLottoTip extends SingleTip
 		super(tipTicket, draw);
 	}
 	
-	public DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip)
+	public DailyLottoTip(DailyLottoTT tipTicket, DailyLottoGroupTip groupTip)
 	{
 		super(tipTicket, groupTip);
 	}
 	
+	/**
+	 * @return
+	 * <ul>
+	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
+	 * </ul>
+	 */
 	public int validateTip(int[] tip)
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";

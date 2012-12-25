@@ -53,6 +53,9 @@ public class TotoEvaluation extends Draw
 	
 	public boolean evaluate(int[] result) 
 	{
+		if(evaluated) return false;
+		evaluated = true;
+		
 		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
 		
 		//create the actual result array containing only the general results of the games, copy exact results to gameData:

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import javax.persistence.Entity;
 
 import gmb.model.GmbFactory;
+import gmb.model.ReturnBox;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -49,10 +50,8 @@ public class DailyLottoGroupTip extends GroupTip
 	 * @param tips
 	 * @return
 	 */
-	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
+	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
-		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
-
 		assert tickets.size() == tipTips.size() : "Count of tickets does not fit count of tipTips in DailyLottoGroupTip.createAndSubmitSingleTipList()!";
 		assert  tickets.getFirst() instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoGroupTip.createAndSubmitSingleTipList()!";
 		

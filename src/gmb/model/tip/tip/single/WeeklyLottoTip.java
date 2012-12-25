@@ -1,7 +1,7 @@
 package gmb.model.tip.tip.single;
 
 import gmb.model.tip.draw.WeeklyLottoDraw;
-import gmb.model.tip.tip.group.GroupTip;
+import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
@@ -24,16 +24,18 @@ public class WeeklyLottoTip extends SingleTip
 		superNumber = -1;
 	}
 	
-	public WeeklyLottoTip(WeeklyLottoTT tipTicket, GroupTip groupTip)
+	public WeeklyLottoTip(WeeklyLottoTT tipTicket, WeeklyLottoGroupTip groupTip)
 	{
 		super(tipTicket, groupTip);
 		superNumber = -1;
 	}
 	
 	/**
-	 * return code:
-	 * 3 - a tipped number is smaller than 1 oder greater than 49
-	 * 4 - the same number has been tipped multiple times
+	 * @return
+	 * <ul>
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * </ul>
 	 */
 	public int validateTip(int[] tip)
 	{

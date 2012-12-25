@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import javax.persistence.Entity;
 
 import gmb.model.GmbFactory;
+import gmb.model.ReturnBox;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.SingleTip;
@@ -44,12 +45,10 @@ public class TotoGroupTip extends GroupTip
 			return 4;
 	}
 	
-	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
+	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
-		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
-
 		assert tickets.size() == tipTips.size() : "Count of tickets does not fit count of tipTips in TotoGroupTip.createAndSubmitSingleTipList()!";
-		assert  tickets.getFirst() instanceof WeeklyLottoTT : "Wrong TipTicket type given to TotoGroupTip.createAndSubmitSingleTipList()!";
+		assert  tickets.getFirst() instanceof TotoSTT : "Wrong TipTicket type given to TotoGroupTip.createAndSubmitSingleTipList()!";
 		
 		return super.createAndSubmitSingleTipList(tickets,  tipTips);
 	}

@@ -17,7 +17,7 @@ public class Adress extends PersiObject
 	protected String townName;
 	
 	@Deprecated
-	public Adress(){}
+	protected Adress(){}
 	
 	public Adress(String streetName, String houseNumber, String postCode, String townName)
 	{

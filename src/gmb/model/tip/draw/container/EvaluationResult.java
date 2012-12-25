@@ -99,4 +99,5 @@ public class EvaluationResult extends PersiObject
 	public ReceiptsDistributionResult getReceiptsDistributionResult(){ return receiptsDistributionResult; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	public DateTime getEvaluationDate(){ return new DateTime(evaluationDate); }
+	public void setEvaluationDate(DateTime evaluationDate){ this.evaluationDate = evaluationDate.toDate(); }
 }
