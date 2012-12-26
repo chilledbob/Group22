@@ -2,24 +2,17 @@ package gmb.junit;
 
 import static org.junit.Assert.*;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import gmb.model.CDecimal;
 import gmb.model.DrawEventBox;
 import gmb.model.GmbFactory;
-import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
-import gmb.model.PersiObject;
 import gmb.model.ReturnBox;
 import gmb.model.financial.FinancialManagement;
 import gmb.model.financial.LotteryBankAccount;
-import gmb.model.financial.container.RealAccountData;
-import gmb.model.financial.container.ReceiptsDistribution;
 import gmb.model.financial.container.TipTicketPrices;
-import gmb.model.financial.transaction.ExternalTransaction;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.group.Group;
 import gmb.model.group.GroupManagement;
@@ -30,7 +23,6 @@ import gmb.model.member.MemberType;
 import gmb.model.member.container.Adress;
 import gmb.model.member.container.MemberData;
 import gmb.model.request.ExternalTransactionRequest;
-import gmb.model.request.Notification;
 import gmb.model.request.RequestState;
 import gmb.model.request.data.MemberDataUpdateRequest;
 import gmb.model.request.data.RealAccountDataUpdateRequest;
@@ -54,13 +46,7 @@ import gmb.model.tip.tipticket.single.TotoSTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.salespointframework.core.database.Database;
-import org.salespointframework.core.user.PersistentUserManager;
 
 public class Test01 
 {
@@ -99,6 +85,10 @@ public class Test01
 	//	@BeforeClass
 	//	public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
 	
+	/**
+	 * A test simulating user behavior in the system over a certain period of time.<br>
+	 * Achieves decent code coverage in the model code (on average about 70% - 80% in each code file).
+	 */
 	@Test
 	public void MasterTest()
 	{
@@ -183,6 +173,8 @@ public class Test01
 			}
 		}
 		System.out.println("");
+		
+		assertEquals(1, cus5.getBankAccount().sendExternalTransactionRequest(new CDecimal(-100000), "Wanna move this money back to my real bank account.").var1.intValue());
 
 		assertEquals(4, Lottery.getInstance().getFinancialManagement().getExternalTransactions().size());
 		assertEquals(1, cus5.getNotifications().size());
@@ -364,12 +356,12 @@ public class Test01
 
 
 		CDecimal oriCredit1 = cus1.getBankAccount().getCredit();
-		WeeklyLottoSTT ticket0 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var2;
+		assertEquals(0, GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var1.intValue());
 		WeeklyLottoSTT ticket1 = GmbFactory.createAndPurchase_WeeklyLottoSTT(cus1).var2;
-		DailyLottoSTT ticket2 = GmbFactory.createAndPurchase_DailyLottoSTT(cus1).var2;
+		assertEquals(0, GmbFactory.createAndPurchase_DailyLottoSTT(cus1).var1.intValue());
 
 		CDecimal oriCredit2 = cus2.getBankAccount().getCredit();
-		TotoSTT ticket3 = GmbFactory.createAndPurchase_TotoSTT(cus2).var2;
+		assertEquals(0, GmbFactory.createAndPurchase_TotoSTT(cus2).var1.intValue());
 		DailyLottoPTT ticket4 = GmbFactory.createAndPurchase_DailyLottoPTT(cus2, PTTDuration.Month).var2;
 
 
@@ -474,6 +466,7 @@ public class Test01
 		//cus3:
 //		System.out.println(ticket5.getDurationDate().toString());
 		assertEquals(false, ticket5.isExpired());
+		assertEquals(0, draw1.check_createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7}));
 		assertEquals(0, draw1.createAndSubmitSingleTip(ticket5, new int[]{1,2,3,4,5,7}).var1.intValue());//5 hits + extraNumber
 		((WeeklyLottoTip)(ticket5.getLastTip())).setSuperNumber(0);//irrelevant
 
@@ -503,6 +496,7 @@ public class Test01
 		assertEquals(true, beforeSomeTip2Submission.isBefore(someTip2.getSubmissionDate()));
 		assertEquals(true, afterSomeTip2Submission.isAfter(someTip2.getSubmissionDate()));
 		
+		assertEquals(0, someTip2.check_withdraw());
 		assertEquals(0, someTip2.withdraw());//fail :D
 		assertEquals(null, cus3WLSTTs[10].getTip());
 		
@@ -522,10 +516,12 @@ public class Test01
 		cus1_tickets1.add(cus1WLSTTs[0]);
 		cus1_tickets1.add(cus1WLSTTs[1]);
 
+		assertEquals(0, gwtip1.check_createAndSubmitSingleTipList(cus1_tickets1, cus1_tipTips1));
 		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus1_tickets1, cus1_tipTips1).var1.intValue());
 		assertEquals(2, gwtip1.getTips().size());
 		assertEquals(2, gwtip1.getGroupMemberStake(cus1));
 
+		assertEquals(1, gwtip1.getTips().getFirst().check_withdraw());
 		assertEquals(1, gwtip1.getTips().getFirst().withdraw());
 		assertEquals(false, gwtip1.submit());
 
@@ -536,11 +532,13 @@ public class Test01
 		LinkedList<TipTicket> cus2_tickets1 = new LinkedList<TipTicket>();
 		cus2_tickets1.add(cus2WLSTTs[0]);
 
+		assertEquals(6, gwtip1.check_createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
 		assertEquals(6, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1).var1.intValue());
 
 		cus2_tipTips1.add(new int[]{1,2,12,4,7,8});//3 hits + extraNumber
 		cus2_tickets1.add(cus2WLSTTs[1]);
 
+		assertEquals(0, gwtip1.check_createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1));
 		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus2_tickets1, cus2_tipTips1).var1.intValue());
 
 		assertEquals(false, gwtip1.submit());
@@ -556,24 +554,29 @@ public class Test01
 		cus3_tickets1.add(cus3WLSTTs[1]);
 		cus3_tickets1.add(cus3WLSTTs[2]);
 
+		assertEquals(0, gwtip1.check_createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));
 		ReturnBox<Integer, LinkedList<SingleTip>> box42 = gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1);
 		assertEquals(0, box42.var1.intValue());
 		
 		LinkedList<SingleTip> tips = box42.var2;			
 
+		assertEquals(0, gwtip1.check_removeSingleTip(tips.getLast()));
 		assertEquals(0, gwtip1.removeSingleTip(tips.getLast()));
+		assertEquals(3, gwtip1.check_removeSingleTip(tips.getLast()));
 		assertEquals(3, gwtip1.removeSingleTip(tips.getLast()));
 		
 		assertEquals(true, gwtip1.submit());
 		assertEquals(true, gwtip1.unsubmit());
 		assertEquals(true, gwtip1.submit());
 
+		assertEquals(0, gwtip1.check_removeAllTipsOfGroupMember(cus3));
 		assertEquals(0, gwtip1.removeAllTipsOfGroupMember(cus3));
 		assertEquals(false, gwtip1.submit());
 
 		cus3_tickets1.removeLast();
 		cus3_tipTips1.removeLast();
 		
+		assertEquals(0, gwtip1.check_createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1));//re-submit tips
 		assertEquals(0, gwtip1.createAndSubmitSingleTipList(cus3_tickets1, cus3_tipTips1).var1.intValue());//re-submit tips
 
 		assertEquals(true, gwtip1.submit());//re-submit group tip
@@ -587,11 +590,15 @@ public class Test01
 
 		assertEquals(false, gwtip1.unsubmit());
 
+		assertEquals(-1, gwtip1.check_removeAllTipsOfGroupMember(cus1));
 		assertEquals(-1, gwtip1.removeAllTipsOfGroupMember(cus1));
+		assertEquals(2, gwtip1.check_withdraw());
 		assertEquals(2, gwtip1.withdraw());
 		//cus4:
+		assertEquals(-2, draw1.check_createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}));
 		assertEquals(-2, draw1.createAndSubmitSingleTip(ticket7, new int[]{1,2,3,4,5,6}).var1.intValue());
 
+		assertEquals(-1, someTip1.check_withdraw());
 		assertEquals(-1, someTip1.withdraw());//too late
 		
 		printCurrentTimeToConsol("Another customer tried to submit but was too late. Also the group tip couldn't bee 'unsubmitted'.");//<------------------------------------------------------------------<TIMELINE UPDATE>	
@@ -728,6 +735,7 @@ public class Test01
 		Lottery.getInstance().getTimer().addHours(20);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		assertEquals(false, draw2.getEvaluated());	
 
+		assertEquals(-2, draw2.check_createAndSubmitSingleTip(cus3DLSTTs[10], new int[]{0,2,3,4,5,6,7,8,9,0}));
 		assertEquals(-2, draw2.createAndSubmitSingleTip(cus3DLSTTs[10], new int[]{0,2,3,4,5,6,7,8,9,0}).var1.intValue());//TOO LATE!!!
 		
 		printCurrentTimeToConsol("Auto-Evaluation of DailyLottoDraw (draw2).");//<------------------------------------------------------------------<TIMELINE UPDATE>
@@ -856,12 +864,14 @@ public class Test01
 		DailyLottoDraw pptTestDraw1 = GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(4));
 		pptTestDraw1.setResult(new int[]{1,1,1,1,1,1,1,1,1,1});
 		assertEquals(0, pptTestDraw1.createAndSubmitSingleTip(pptTicketM1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
+		assertEquals(5, pptTestDraw1.check_createAndSubmitSingleTip(pptTicketM1, new int[]{0,0,0,0,0,0,0,0,0,0}));
 		assertEquals(5, pptTestDraw1.createAndSubmitSingleTip(pptTicketM1, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());
 		
 		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 		printCurrentTimeToConsol("two days later.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 		
 		System.out.println( pptTicketM1.getDurationDate().toString());
+		assertEquals(-1, pptTestDraw1.check_createAndSubmitSingleTip(pptTicketM2, new int[]{0,0,0,0,0,0,0,0,0,0}));//duration expired
 		assertEquals(-1, pptTestDraw1.createAndSubmitSingleTip(pptTicketM2, new int[]{0,0,0,0,0,0,0,0,0,0}).var1.intValue());//duration expired
 		
 		//===========================================//
@@ -1053,6 +1063,7 @@ public class Test01
 		assertEquals(true, TotoGTX01.submit());
 		
 		assertEquals(true, TotoGTX01.isSubmitted());
+		assertEquals(0, TotoGTX01.check_removeSingleTip(cus4STTtip));
 		assertEquals(0, TotoGTX01.removeSingleTip(cus4STTtip));
 		assertEquals(false, TotoGTX01.isSubmitted());
 		
@@ -1065,6 +1076,7 @@ public class Test01
 		TotoGTX01.createAndSubmitSingleTipList(cus5TotoTickets2, cus5TotoTips2);
 		
 		assertEquals(true, TotoGTX01.submit());
+		assertEquals(0, TotoGTX01.check_withdraw());
 		assertEquals(0, TotoGTX01.withdraw());
 		
 		assertNull(cus4TSTT01.getTip());

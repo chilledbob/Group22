@@ -68,7 +68,7 @@ public abstract class Draw extends PersiObject
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
-	 * @return true
+	 * @return false if this Draw is already evaluated, otherwise true
 	 */
 	public boolean evaluate(int[] result)
 	{	
@@ -113,8 +113,43 @@ public abstract class Draw extends PersiObject
 
 	
 	/**
+	 * [Intended for direct usage by controller][check-method]<br>
+	 * SIMULATES: Creates and submits a SingleTip. <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return return code:<br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
+	 */
+	public int check_createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	{	
+		SingleTip tip = this.createSingleTipSimple(ticket);
+
+		//first try whether it would work:
+		int result1 = tip.setTip(tipTip);
+		if(result1 != 0) return result1;	
+
+		if(!this.addTip(tip)) return -2;
+		this.removeTip(tip);//clean up
+
+		int result2 = ticket.addTip(tip);
+		if(result2 != 0) return result2;
+
+		ticket.removeTip(tip);//clean up
+		
+		return 0;			
+	}
+	
+	/**
 	 * [Intended for direct usage by controller]<br>
-	 * Creates and submits a SingleTip <br>
+	 * Creates and submits a SingleTip. <br>
 	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
 	 * @param tipTip The int[] storing the tipped results.
 	 * @return {@link ReturnBox} with:<br>
@@ -136,22 +171,10 @@ public abstract class Draw extends PersiObject
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
-		SingleTip tip = this.createSingleTipSimple(ticket);
-
-		//first try whether it would work:
-		int result1 = tip.setTip(tipTip);
-		if(result1 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result1), null);	
-
-		if(!this.addTip(tip)) return new ReturnBox<Integer, SingleTip>(new Integer(-2), null);
-		this.removeTip(tip);//clean up
-
-		int result2 = ticket.addTip(tip);
-		if(result2 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result2), null);
-
-		ticket.removeTip(tip);//clean up
-
-		//now for real:
-		tip = this.createSingleTipPersistent(ticket);
+		int result = check_createAndSubmitSingleTip(ticket, tipTip);
+		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
+		
+		SingleTip tip = this.createSingleTipPersistent(ticket);
 		tip.setTip(tipTip);
 		this.addTip(tip);
 		ticket.addTip(tip);

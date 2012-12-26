@@ -27,7 +27,6 @@ import javax.persistence.FetchType;
 /**
  * The lottery bank account associated with a specific customer.<br>
  * Contains various customer specific financial data.
- *
  */
 @Entity
 public class LotteryBankAccount extends PersiObject
@@ -80,9 +79,9 @@ public class LotteryBankAccount extends PersiObject
 	 * [Intended for direct usage by controller] <br>
 	 * Creates a "DataUpdateRequest" based on "updatedData" <br>
 	 * and adds references to the lists of this "LotteryBankAccount" and the "FinancialManagement". <br>
-	 * Returns the created request. 
 	 * @param note
 	 * @param updatedData
+	 * @return the created request
 	 */
 	public RealAccountDataUpdateRequest sendDataUpdateRequest(RealAccountData updatedData, String note)
 	{
@@ -106,6 +105,17 @@ public class LotteryBankAccount extends PersiObject
 	 * otherwise 0 (var1). Also returns the created request (var2).
 	 * @param note
 	 * @param updatedData
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - the customer doesn't have enough money (only occurs when transferring money to the real bank account)
+	 * </ul>
+	 * var2 as {@link ExternalTransactionRequest}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created ExternalTransactionRequest
+	 * <li> var1 != 1 -> null 
+	 * </ul>
 	 */
 	public ReturnBox<Integer, ExternalTransactionRequest> sendExternalTransactionRequest(CDecimal amount, String note)
 	{

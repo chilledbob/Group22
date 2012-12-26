@@ -96,9 +96,9 @@ public class Group extends PersiObject
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Creates a "GroupMembershipApplication" and adds it to the "customer" and this group.<br>
-	 * Returns the created application.
 	 * @param customer
 	 * @param note
+	 * @return the created application
 	 */
 	public GroupMembershipApplication applyForMembership(Customer customer, String note)
 	{
@@ -115,9 +115,9 @@ public class Group extends PersiObject
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Creates a "GroupInvitation" and adds it to the "customer" and this group. <br>
-	 * Returns the created invitation.
 	 * @param customer
 	 * @param note
+	 * @return the created invitation
 	 */
 	public GroupMembershipApplication sendGroupInvitation(Customer customer, String note)
 	{
@@ -134,9 +134,9 @@ public class Group extends PersiObject
 	/**
 	 * [Intended for direct usage by controller] <br>
 	 * Creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group. <br>
-	 * Returns the created offering.
 	 * @param groupMember
 	 * @param note
+	 * @return the created offering
 	 */
 	public GroupAdminRightsTransfereOffering sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
@@ -155,7 +155,7 @@ public class Group extends PersiObject
 	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin" <br>
 	 * Returns false if the "groupMember" is not in "groupMembers". <br>
 	 * @param groupMember
-	 * @return
+	 * @return true if successful, otherwise false.
 	 */
 	public boolean switchGroupAdmin(Customer groupMember)
 	{
@@ -248,6 +248,7 @@ public class Group extends PersiObject
 	 * withdrawing all group related requests in the system which are still unhandled
 	 * and setting the "closed" flag to true.<br>
 	 * (This doesn't remove the group from the system.)
+	 * @return true if successful, otherwise false
 	 */
 	public boolean close()
 	{

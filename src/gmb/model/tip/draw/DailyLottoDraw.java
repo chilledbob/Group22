@@ -9,6 +9,7 @@ import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.member.Member;
 import gmb.model.member.MemberType;
@@ -67,6 +68,12 @@ public class DailyLottoDraw extends Draw
 		}
 		
 		assert this.result != null || result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.evaluate(int[] result)!";
+		
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(DailyLottoGroupTip tip : group.getDailyLottoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
 		
 		drawEvaluationResult = GmbFactory.new_EvaluationResult(10);
 

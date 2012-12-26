@@ -31,8 +31,12 @@ public class DailyLottoTip extends SingleTip
 	}
 	
 	/**
-	 * @return
+	 * [Intended for direct usage by controller][check-method]<br>
+	 * Checks whether "tip" would be a valid result to be tipped.
+	 * @return return code:<br>
 	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
 	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
 	 * </ul>
 	 */

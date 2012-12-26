@@ -55,6 +55,35 @@ public abstract class SingleTip extends Tip
 	}
 	
 	/**
+	 * [Intended for direct usage by controller][check-method]<br>
+	 * SIMULATES: Tries to withdraw the tip with all implications which also depends
+	 * on whether this SingleTip is associated with a GroupTip.
+	 * This can lead to annulment of the submission of an associated GroupTip.<br>
+	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-1 - not enough time left until the planned evaluation of the draw
+	 * <li> 1 - the associated group member would fall under his minimumStake limit (only tested if minimumStake > 1).
+	 * Use GroupTip.removeAllTipsOfGroupMember(Customer groupMember) to withdraw the tips in this case.
+	 * <li> 2 - can not 'unsubmit' the group tip from draw and therefore not remove tip
+	 * <ul>
+	 */
+	public int check_withdraw()
+	{	
+		if(groupTip == null)
+		{
+			if(!draw.isTimeLeftUntilEvaluationForSubmission()) 
+				return -1;
+			
+			return 0;
+		}
+		else
+		{
+			return groupTip.check_removeSingleTip(this);
+		}
+	}
+	
+	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Tries to withdraw the tip with all implications which also depends
 	 * on whether this SingleTip is associated with a GroupTip.
@@ -109,7 +138,7 @@ public abstract class SingleTip extends Tip
 	}
 	
 	/**
-	 * [Intended for direct usage by controller]<br>
+	 * [Intended for direct usage by controller][check-method]<br>
 	 * Checks whether "tip" would be a valid result to be tipped.
 	 * @param tip
 	 * @return

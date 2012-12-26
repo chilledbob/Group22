@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import gmb.model.Lottery;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.member.Member;
 import gmb.model.member.MemberType;
@@ -66,6 +67,12 @@ public class WeeklyLottoDraw extends Draw
 		
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.evaluate(int[] result)! (6 + extraNumber + superNumber)";
 
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(WeeklyLottoGroupTip tip : group.getWeeklyLottoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
+		
 		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
 		
 		super.evaluate(result);//init prizePotential 

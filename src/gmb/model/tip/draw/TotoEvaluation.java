@@ -10,6 +10,7 @@ import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.group.Group;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.draw.container.ExtendedEvaluationResult;
@@ -57,6 +58,12 @@ public class TotoEvaluation extends Draw
 		evaluated = true;
 		
 		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
+		
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(TotoGroupTip tip : group.getTotoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
 		
 		//create the actual result array containing only the general results of the games, copy exact results to gameData:
 		int[] newResult = new int[9];

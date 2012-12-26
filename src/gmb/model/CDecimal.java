@@ -17,8 +17,6 @@ public class CDecimal extends PersiObject
     protected static final RoundingMode round = RoundingMode.HALF_UP; 
     protected static final MathContext CMC = MathContext.DECIMAL128 ; 
       
-    protected static final BigDecimal decN1 = new BigDecimal(-1); 
-      
     protected BigDecimal myAmount; 
       
     public BigDecimal getAmount(){ return myAmount; } 
@@ -34,8 +32,8 @@ public class CDecimal extends PersiObject
     public CDecimal multiply(CDecimal dec){ return new CDecimal( myAmount.multiply(dec.getAmount(), CMC).setScale(scale, round) ); } 
     public CDecimal divide(CDecimal dec){ return new CDecimal( myAmount.divide(dec.getAmount(), CMC).setScale(scale, round) ); } 
   
-    public CDecimal negate(){ return new CDecimal( myAmount.plus(CMC).multiply(decN1, CMC).setScale(scale, round) ); } 
-    public CDecimal abs(){ return new CDecimal( myAmount.plus(CMC).setScale(scale, round) ); } 
+    public CDecimal negate(){ return new CDecimal( myAmount.negate(CMC).setScale(scale, round) ); } 
+    public CDecimal abs(){ return new CDecimal( myAmount.abs(CMC).setScale(scale, round) ); } 
     public int signum(){ return myAmount.signum(); } 
       
     public int compareTo(CDecimal dec){ return myAmount.compareTo(dec.getAmount()); } 

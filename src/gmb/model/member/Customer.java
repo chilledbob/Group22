@@ -75,14 +75,14 @@ public class Customer extends Member
 	}
 	
 	/**
-	 * [Intended for direct usage by controller]<br>
+	 * [Intended for direct usage by controller][check-method]<br>
 	 * Returns true if the customer's associated "credit" >= "price".
 	 * @param price
-	 * @return
+	 * @return true if customer has enough money, otherwise false.
 	 */
 	public boolean hasEnoughMoneyToPurchase(CDecimal price)
 	{
-		return lotteryBankAccount.getCredit().compareTo(price) > -1;
+		return lotteryBankAccount.getCredit().compareTo(price.abs()) > -1;
 	}
 	
 //	public void setLotteryBankAccount(LotteryBankAccount lotteryBankAccount){ this.lotteryBankAccount = lotteryBankAccount; }
