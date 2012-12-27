@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ElementCollection;
@@ -27,19 +29,24 @@ import javax.persistence.ElementCollection;
 @Entity
 public class FinancialManagement extends PersiObject
 {	
-	@OneToOne//(cascade = CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="LOTTERYCREDITS_PERSISTENCEID")
 	protected LotteryCredits lotteryCredits;
 
-	@OneToOne//(cascade = CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinColumn(name="JACKPOTS_PERSISTENCEID")
 	protected Jackpots jackpots;
 
-	@OneToOne//(cascade = CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="PRIZECATEGORIES_PERSISTENCEID")
 	protected PrizeCategories prizeCategories;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIPTICKETPRICES_PERSISTENCEID")
 	protected TipTicketPrices tipTicketPrices;
 
-	@OneToOne(mappedBy="financialManagementId")
+	@OneToOne
+	@JoinColumn(name="RECEIPTSDISTRIBUTION_PERSISTENCEID")
 	protected ReceiptsDistribution receiptsDistribution;
 
 	@OneToMany
@@ -62,7 +69,7 @@ public class FinancialManagement extends PersiObject
 	public FinancialManagement(TipTicketPrices tipTicketPrices, ReceiptsDistribution receiptsDistribution)
 	{	
 		lotteryCredits = GmbFactory.new_LotteryCredits();
-		jackpots = GmbFactory.new_Jackpots();
+		jackpots = new Jackpots(null);
 		prizeCategories = GmbFactory.new_PrizeCategories();
 
 		this.tipTicketPrices = tipTicketPrices;
@@ -80,8 +87,8 @@ public class FinancialManagement extends PersiObject
 	public void addExternalTransactionRequest(ExternalTransactionRequest request){ externalTransactionRequests.add(request);  DB_UPDATE(); }
 	public void addRealAccountDataUpdateRequest(RealAccountDataUpdateRequest request){ realAccounDataUpdateRequests.add(request);  DB_UPDATE(); }
 
-	public void addTransaction(TicketPurchase transaction){ ticketPurchases.add(transaction);  DB_UPDATE(); }
-	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction);  DB_UPDATE(); }
+	public void addTransaction(TicketPurchase transaction){ ticketPurchases.add(transaction); }
+	public void addTransaction(ExternalTransaction transaction){ externalTransactions.add(transaction);  /*DB_UPDATE();*/ }
 	public void addTransaction(Winnings transaction){ winnings.add(transaction);  DB_UPDATE(); }
 
 	//delegate method:
@@ -100,7 +107,7 @@ public class FinancialManagement extends PersiObject
 	 * [intended for direct usage by controller]
 	 * @param tipTicketPrices
 	 */
-	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; DB_UPDATE(); }
+	public void setTipTicketPrices(TipTicketPrices tipTicketPrices){ this.tipTicketPrices = tipTicketPrices; /*DB_UPDATE();*/ }
 
 	/**
 	 * [intended for direct usage by controller]

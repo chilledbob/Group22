@@ -13,17 +13,23 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.eclipse.persistence.mappings.AggregateObjectMapping;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 @Entity
 public abstract class Draw extends PersiObject
 {
+
 	protected int[] result;
 	
 	protected boolean evaluated = false;
@@ -34,6 +40,9 @@ public abstract class Draw extends PersiObject
 	protected CDecimal prizePotential;//temp
 	protected List<SingleTip> allSingleTips;//temp
 
+	
+	@OneToOne
+	@PrimaryKeyJoinColumn
 	protected EvaluationResult drawEvaluationResult;
 
 	@OneToMany
@@ -58,6 +67,7 @@ public abstract class Draw extends PersiObject
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		
 		result = null;
+		
 	}
 
 	/**

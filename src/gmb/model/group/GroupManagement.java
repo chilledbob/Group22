@@ -6,22 +6,17 @@ import gmb.model.PersiObject;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
-import javax.persistence.UniqueConstraint;
 
 import gmb.model.group.Group;
 
 @Entity
 public class GroupManagement extends PersiObject
 {	
-	
-	@OneToMany(mappedBy="groupManagementId", cascade=CascadeType.ALL)
-	@JoinColumn(name="GROUPMANAGEMENTID_PERSISTENCEID")
+	@OneToMany(mappedBy="groupManagementId",fetch=FetchType.EAGER)
 	protected List<Group> groups;
 	
 	@Deprecated

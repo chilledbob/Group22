@@ -6,10 +6,14 @@ import org.salespointframework.core.shop.Shop;
 import org.salespointframework.core.user.UserIdentifier;
 
 import gmb.model.Lottery;
+import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.tip.*;
+import gmb.model.tip.draw.WeeklyLottoDraw;
+import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.financial.*;
 import gmb.model.financial.container.RealAccountData;
+import gmb.model.financial.container.TipTicketPrices;
 import gmb.model.group.GroupManagement;
 import gmb.model.member.Customer;
 import gmb.model.member.Member;
@@ -27,7 +31,7 @@ public class Main {
 	 */
 	public Main(){
 		Shop.INSTANCE.initializePersistent();
-//		initMm();
+		initMm();
 		GmbPersistenceManager.initLottery();
 		initData();
 	}
@@ -35,43 +39,51 @@ public class Main {
 
 	//Testdata
 
-//	private void initMm(){
-//		if(GmbPersistenceManager.get(MemberManagement.class, 0) == null){
-//			MemberManagement mm = new MemberManagement(null);
-//			FinancialManagement fm = new FinancialManagement(null,null);
-//			GmbPersistenceManager.add(new TipManagement(null));
-//			GmbPersistenceManager.add(new GroupManagement(null));
-//			//GmbPersistenceManager.add(fm);
-//			GmbPersistenceManager.add(mm);
-//		}
-//	}
+	private void initMm(){
+		if(GmbPersistenceManager.get(MemberManagement.class) == null){
+			MemberManagement mm = new MemberManagement(null);
+			FinancialManagement fm = new FinancialManagement(GmbFactory.new_TipTicketPrices(),GmbFactory.new_ReceiptsDistribution());
+			GmbPersistenceManager.add(new TipManagement(null));
+			GmbPersistenceManager.add(new GroupManagement(null));
+			GmbPersistenceManager.add(fm);
+			GmbPersistenceManager.add(mm);
+		}
+	}
 
 	private void initData() {
-		if(GmbPersistenceManager.get(new UserIdentifier("bob")) == null){
+		if(GmbPersistenceManager.get(new UserIdentifier("admin")) == null){
 		Adress a = GmbFactory.new_Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = GmbFactory.new_MemberData("a","b",d,"c","d",a);
-		Member admin = new Member("bob","bob",md, MemberType.Admin);		
+		Member admin = new Member("admin","admin",md, MemberType.Admin);		
 		Lottery.getInstance().getMemberManagement().addMember(admin);
 
 		//GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
-
-		
+	
 		RealAccountData rad = GmbFactory.new_RealAccountData("0010","0815");
 		LotteryBankAccount lba = GmbFactory.new_LotteryBankAccount(rad);
 		Adress aa = new Adress("e","f","g","h");
 		DateTime da = new DateTime();
-		MemberData mda = new MemberData("i","j",da,"k","l",aa);
+		MemberData mda = new MemberData("Vorname","Nachname",da,"k","l",aa);
 
-		Customer c = new Customer("UserTroll","UserTroll",mda,lba);
+		RealAccountData raa = GmbFactory.new_RealAccountData("0010","0815");
+		LotteryBankAccount lbab = GmbFactory.new_LotteryBankAccount(raa);
+		Adress abb = GmbFactory.new_Adress("e","f","g","h");
+		DateTime daa = new DateTime();
+		MemberData mdaa = GmbFactory.new_MemberData("Vorname","Nachname",daa,"k","l",abb);
+		
+		Customer c = new Customer("nutzer","nutzer",mda,lba);
 		Lottery.getInstance().getMemberManagement().addMember(c);
 		lba.setOwner(c);
+		
+		Customer c1 = new Customer("UserTroll","UserTroll",mdaa,lbab);
+		lbab.setOwner(c1);
 
 		Adress ab = new Adress("ee","f","g","h");
 		DateTime db = new DateTime();
 		MemberData mdb = new MemberData("i","j",db,"k","l",ab);
 		
-		c.sendDataUpdateRequest(mdb, "");
+		//c.sendDataUpdateRequest(mdb, "");
 		
 		//GmbPersistenceManager.update(c);
 		Group g = GmbFactory.new_Group("The Savages",c,"Don't hunt what you can't kill!");
@@ -80,9 +92,31 @@ public class Main {
 		//GmbPersistenceManager.update(Lottery.getInstance().getGroupManagement());
 		//GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
 		//GmbPersistenceManager.update(Lottery.getInstance().getFinancialManagement());
+		
+		Adress aaa = GmbFactory.new_Adress("aa","bb","cc","dd");
+		DateTime dd = new DateTime();
+		MemberData mdd = GmbFactory.new_MemberData("a","b",dd,"c","d",aaa);
+		Member notary = new Member("arschkrampe","123",mdd, MemberType.Notary);		
+		Lottery.getInstance().getMemberManagement().addMember(notary);
+		
+		WeeklyLottoDraw draw1 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
+		c.getBankAccount().sendExternalTransactionRequest(new CDecimal(100), "gimme money!");
+		
+		assert Lottery.getInstance().getFinancialManagement().getExternalTransactionRequests().size()==1 : "AAAAAAAAAAAA!";
+		
+		for(ExternalTransactionRequest request : Lottery.getInstance().getFinancialManagement().getExternalTransactionRequests())
+		{
+			if(request.getTransaction().getAmount().compareTo(new CDecimal(5000)) < 1)
+			{
+				System.out.println(request.accept());
+			}
+			else
+			{
+				request.getMember().addNotification("No so much money! You evil!");
+			}
 		}
+		
 		}
-	
-
 	}
+}
 

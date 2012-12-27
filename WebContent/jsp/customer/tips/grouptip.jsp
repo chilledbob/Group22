@@ -9,47 +9,46 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" type="text/css" href="<c:url value="res/css/css.css"/>">
-<title>Employee Site</title>
+<title>Gewinngemeinschaften</title>
+<link rel="stylesheet" type="text/css" 	href="<c:url value="/res/css/css.css" />" />
 </head>
 <body>
 
 <div id="top">
 	<div id="top_content">
-		<jsp:include page="../head/head.jsp" />
-		<br>
+			<jsp:include page="../../head/head.jsp" />
 		
 		<div class="top_navi">
-			<jsp:include page="../navi/employee_navi.jsp" />
-				<br><br><br>
+				<c:url value="customerTipManagement" var="url">
+					<c:param name="uid" value="${currentUser.identifier}" />
+				</c:url>
+				<section><a href ="${url}">Tippverwaltung</a></section>
+
+				<section>Gewinngemeinschaften</section>							
 		</div>	
 		
+		
 		<div class="sub_navi">
-			<c:if test="${sub_navi_active}">
-				<jsp:include page="${sub_navi}" />
-			</c:if>
+			<jsp:include page="grouptip_subnavi.jsp" />
 		</div>	
 	</div>
 </div>
 
-<div style="clear:all;"></div>			
+
 <div id="middle">
-	<div class="main_content">
-
-				<div class="current_content">
-				-------------------------------------------
-				<br><br>
-					<c:if test="${content_active}">
-						<jsp:include page="${content}" />
-					</c:if>
-				</div>
+	<div class="main_content_full">
+		<div class="current_content">
+			<jsp:include page="${drawType }.jsp" />
+		</div>		
 	</div>
+</div>
+	
 
+
+<div class="footer">
+		<p>Copyright SuperLotterie ©</p>
 </div>
 
 
 </body>
 </html>
-
-
-

@@ -5,6 +5,7 @@ import java.util.List;
 
 import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
+import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
@@ -17,18 +18,15 @@ import javax.persistence.OneToOne;
 @Entity
 public class PrizeCategories extends PersiObject
 {	
-	@OneToOne
-	protected FinancialManagement financialManagementId;
-	
 	@ElementCollection
-	@AttributeOverride(name="myAmount", column= @Column(name="weeklyLottoCategories"))
-	protected List<CDecimal> weeklyLottoCategories;//%
+	@AttributeOverride(name="myAmount", column= @Column(name="weeklyLottoCategories",precision = 10, scale = 2))
+	protected List<CDecimal> weeklyLottoCategories;
 	@ElementCollection
-	@AttributeOverride(name="myAmount", column= @Column(name="dailyLottoCategories"))
-	protected List<CDecimal> dailyLottoCategories;//currency
+	@AttributeOverride(name="myAmount", column= @Column(name="dailyLottoCategories",precision = 10, scale = 2))
+	protected List<CDecimal> dailyLottoCategories;
 	@ElementCollection
-	@AttributeOverride(name="myAmount", column= @Column(name="totoCategories"))
-	protected List<CDecimal> totoCategories;//%
+	@AttributeOverride(name="myAmount", column= @Column(name="totoCategories",precision = 10, scale = 2))
+	protected List<CDecimal> totoCategories;
 	
 	@Deprecated
 	protected PrizeCategories(){}
@@ -64,6 +62,8 @@ public class PrizeCategories extends PersiObject
 		totoCategories.set(2, new CDecimal(20));
 		totoCategories.set(1, new CDecimal(10));
 		totoCategories.set(0, new CDecimal(10));//highest
+		
+//		this.financialManagementId = Lottery.getInstance().getFinancialManagement();
 	}
 	
 	public void setWeeklyLottoCategories(List<CDecimal> weeklyLottoCategories){ this.weeklyLottoCategories = weeklyLottoCategories; DB_UPDATE(); }

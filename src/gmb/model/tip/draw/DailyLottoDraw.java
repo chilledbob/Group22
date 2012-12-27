@@ -38,6 +38,7 @@ public class DailyLottoDraw extends Draw
 	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
 	}
 
 	public boolean evaluate(int[] result) 

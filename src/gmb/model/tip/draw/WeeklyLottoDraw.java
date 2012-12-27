@@ -38,6 +38,7 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
 	}
 
 	/**

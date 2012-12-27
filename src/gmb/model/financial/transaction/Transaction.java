@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -19,7 +20,7 @@ import javax.persistence.TemporalType;
 @Entity
 public abstract class Transaction extends PersiObject
 {
-	@OneToOne 
+	@OneToOne(fetch=FetchType.EAGER)
 	protected Customer affectedCustomer; 
 	@Embedded
 	protected CDecimal amount;

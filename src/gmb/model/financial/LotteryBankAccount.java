@@ -17,6 +17,8 @@ import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -114,7 +116,7 @@ public class LotteryBankAccount extends PersiObject
 			externalTransactionRequests.add(request);
 			Lottery.getInstance().getFinancialManagement().addExternalTransactionRequest(request);
 			
-			DB_UPDATE(); 
+//			DB_UPDATE(); 
 			
 			return new ReturnBox<Integer, ExternalTransactionRequest>(new Integer(0), request);
 		}

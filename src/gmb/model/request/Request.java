@@ -88,7 +88,7 @@ public abstract class Request extends Notification
 
 		lastStateChangeDate = Lottery.getInstance().getTimer().getDateTime().toDate();
 		state = 2; 
-		DB_UPDATE();
+		//DB_UPDATE();
 		return 0;
 	}
 

@@ -44,10 +44,10 @@ public class Lottery
 		return INSTANCE;
 	}
 
-	public FinancialManagement getFinancialManagement(){ return financialManagement; }
-	public MemberManagement getMemberManagement(){ return memberManagement; }
-	public GroupManagement getGroupManagement(){ return groupManagement; }
-	public TipManagement getTipManagement(){ return tipManagement; }
+	public FinancialManagement getFinancialManagement(){ return (FinancialManagement) GmbPersistenceManager.get(FinancialManagement.class, financialManagement.getId()); }
+	public MemberManagement getMemberManagement(){ return (MemberManagement) GmbPersistenceManager.get(MemberManagement.class, memberManagement.getId()); }
+	public GroupManagement getGroupManagement(){ return (GroupManagement) GmbPersistenceManager.get(GroupManagement.class, groupManagement.getId()); }
+	public TipManagement getTipManagement(){ return (TipManagement) GmbPersistenceManager.get(TipManagement.class, tipManagement.getId()); }
 	
 	public Timer getTimer(){ return timer; }
 }

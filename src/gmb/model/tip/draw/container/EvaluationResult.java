@@ -5,10 +5,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.joda.time.DateTime;
 
@@ -24,7 +28,7 @@ import gmb.model.tip.tip.single.SingleTip;
 @Entity
 public class EvaluationResult extends PersiObject
 {
-	//fehlt hier nicht ne Anno?
+	@OneToOne
 	protected ReceiptsDistributionResult receiptsDistributionResult;
 	
 	@OneToMany
@@ -33,6 +37,7 @@ public class EvaluationResult extends PersiObject
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date evaluationDate;
 	
+	@Transient
 	protected ArrayList<LinkedList<SingleTip>> tipsInCategory;
 	
 	@Deprecated
