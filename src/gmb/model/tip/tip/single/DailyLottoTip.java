@@ -1,13 +1,16 @@
 package gmb.model.tip.tip.single;
 
 import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+/** 
+ * A SingleTip for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoTip extends SingleTip 
 {
@@ -22,11 +25,21 @@ public class DailyLottoTip extends SingleTip
 		super(tipTicket, draw);
 	}
 	
-	public DailyLottoTip(DailyLottoTT tipTicket, GroupTip groupTip)
+	public DailyLottoTip(DailyLottoTT tipTicket, DailyLottoGroupTip groupTip)
 	{
 		super(tipTicket, groupTip);
 	}
 	
+	/**
+	 * [Intended for direct usage by controller][check-method]<br>
+	 * Checks whether "tip" would be a valid result to be tipped.
+	 * @return return code:<br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
+	 * </ul>
+	 */
 	public int validateTip(int[] tip)
 	{ 
 		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";

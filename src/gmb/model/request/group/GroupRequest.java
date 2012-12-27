@@ -7,6 +7,9 @@ import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.request.Request;
 
+/**
+ * The abstract super class for group related requests.
+ */
 @Entity
 public abstract class GroupRequest extends Request 
 {

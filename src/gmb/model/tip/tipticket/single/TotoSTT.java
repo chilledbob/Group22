@@ -8,6 +8,9 @@ import gmb.model.tip.tip.single.TotoTip;
 
 import javax.persistence.Entity;
 
+/**
+ * The single tip ticket type for the weekly football-toto evaluation.
+ */
 @Entity
 public class TotoSTT extends SingleTT 
 {

@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.joda.time.DateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 
 import javax.persistence.JoinColumn;
@@ -14,8 +13,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-//import org.eclipse.persistence.internal.jpa.parsing.TemporalLiteralNode.TemporalType;
-
+/**
+ * Container class storing basic information about the associated member.
+ *
+ */
 @Entity
 public class MemberData extends PersiObject
 {

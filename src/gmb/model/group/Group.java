@@ -29,6 +29,10 @@ import javax.persistence.ManyToOne;
 
 import org.joda.time.DateTime;
 
+/**
+ * The group class. 
+ * Holds group specific information like group admin, members, group tips and associated winnings.
+ */
 @Entity
 @Table(name="GroupTable")
 public class Group extends PersiObject
@@ -91,14 +95,15 @@ public class Group extends PersiObject
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
-//		Lottery.getInstance().getGroupManagement().addGroup(this);
+
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * creates a "GroupMembershipApplication" and adds it to the "customer" and this group
+	 * [Intended for direct usage by controller]<br>
+	 * Creates a "GroupMembershipApplication" and adds it to the "customer" and this group.<br>
 	 * @param customer
 	 * @param note
+	 * @return the created application
 	 */
 	public GroupMembershipApplication applyForMembership(Customer customer, String note)
 	{
@@ -113,10 +118,11 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * creates a "GroupInvitation" and adds it to the "customer" and this group
+	 * [Intended for direct usage by controller]<br>
+	 * Creates a "GroupInvitation" and adds it to the "customer" and this group. <br>
 	 * @param customer
 	 * @param note
+	 * @return the created invitation
 	 */
 	public GroupMembershipApplication sendGroupInvitation(Customer customer, String note)
 	{
@@ -131,10 +137,11 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group
+	 * [Intended for direct usage by controller] <br>
+	 * Creates a "GroupAdminRightsTransfereOffering" and adds it to the "groupMember" and this group. <br>
 	 * @param groupMember
 	 * @param note
+	 * @return the created offering
 	 */
 	public GroupAdminRightsTransfereOffering sendGroupAdminRightsTransfereOffering(Customer groupMember, String note)
 	{
@@ -149,19 +156,17 @@ public class Group extends PersiObject
 	}
 
 	/**
-	 * Swaps the "groupAdmin" with "groupMember".
-	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin"
-	 * Returns false if the "groupMember" is not in "groupMembers".
+	 * Swaps the "groupAdmin" with "groupMember". <br>
+	 * Removes the "groupMember" from the "groupMembers" list and adds the old "groupAdmin" <br>
+	 * Returns false if the "groupMember" is not in "groupMembers". <br>
 	 * @param groupMember
-	 * @return
+	 * @return true if successful, otherwise false.
 	 */
 	public boolean switchGroupAdmin(Customer groupMember)
 	{
 		if(groupMembers.contains(groupMember))
 		{
-			groupMembers.add(groupAdmin);
 			groupAdmin = groupMember;
-			groupMembers.remove(groupMember);
 			
 			DB_UPDATE(); 
 			
@@ -173,15 +178,13 @@ public class Group extends PersiObject
 	
 	protected boolean resign(Customer groupMember, String notification)
 	{
-		if(groupMembers.contains(groupMember) || groupMember == groupAdmin)
+		if(groupMembers.contains(groupMember))
 		{
 			withdrawUnhandledGroupRequestsOfGroupMember(groupMember);
 
 			groupMember.addNotification(notification);
-			
-			if(groupMembers.contains(groupMember))
-				groupMembers.remove(groupMember);
-			else
+
+			if(groupMember == groupAdmin)
 				groupAdmin = null;
 			
 			groupMember.removeGroup(this);
@@ -193,28 +196,34 @@ public class Group extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember"
-	 * and sending a "Notification" to the member and removing him from the "groupMembers" list.
+	 * [Intended for direct usage by controller]<br>
+	 * Resigns the "groupMember" by withdrawing all unhandled group related requests in "groupMember",
+	 * sending a "Notification" to the member and removing him from the "groupMembers" list. <br>
 	 * If it's the "groupAdmin" who resigns "close" the group. 
 	 * @param groupMember
+	 * @return true if successful, otherwise false.
 	 */
 	public boolean resign(Customer groupMember)
 	{	
 		if(groupMember == groupAdmin)
 		{
-			if(!close()) return false;
+			if(close()) return true;
 		}
 		else
-			resign(groupMember, "You have been resigned from Group " + name + ".");
+		if(resign(groupMember, "You have been resigned from Group " + name + "."))
+		{
+			groupMembers.remove(groupMember);
 
-		DB_UPDATE(); 
-		
-		return true;
+			DB_UPDATE(); 
+			
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * withdraw all unhandled group related "Requests" in "groupMember"
+	 * Withdraws all unhandled group related "Requests" in "groupMember".
 	 * @param groupMember
 	 */
 	protected void withdrawUnhandledGroupRequestsOfGroupMember(Customer groupMember)
@@ -239,11 +248,12 @@ public class Group extends PersiObject
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Closes the group by resigning all "groupMembers" + "groupAdmin", 
+	 * [Intended for direct usage by controller]<br>
+	 * Closes the group by resigning all "groupMembers" + "groupAdmin",
 	 * withdrawing all group related requests in the system which are still unhandled
-	 * and setting the "closed" flag to true.
-	 * This doesn't remove the group from the system entirely.
+	 * and setting the "closed" flag to true.<br>
+	 * (This doesn't remove the group from the system.)
+	 * @return true if successful, otherwise false
 	 */
 	public boolean close()
 	{
@@ -262,11 +272,16 @@ public class Group extends PersiObject
 			for(Customer groupMember : groupMembers)
 				groupTip.removeAllTipsOfGroupMember(groupMember);
 		
-		
+		//first the groupMembers:
 		for(Customer groupMember : groupMembers)
+			if(groupMember != groupAdmin)
 			resign(groupMember, "The group " + name + " has been closed. You will be automatically resigned.");
-				
+		
+		//now the groupAdmin:
 		resign(groupAdmin, "The group " + name + ", where you had admin status, has been closed. You will be automatically resigned.");
+		
+		//now clear grouMember list:
+		groupMembers.clear();
 		
 		//withdraw all group related requests not only those which are associated with groupMembers:
 		for(GroupMembershipApplication application : groupMembershipApplications)
@@ -286,6 +301,11 @@ public class Group extends PersiObject
 		return true;
 	}
  
+	/**
+	 * Adds the "customer" to the "groupMembers" list and the group
+	 * to the "groups" list of the "customer".
+	 * @param customer
+	 */
 	public void addGroupMember(Customer customer)
 	{ 
 		groupMembers.add(customer); 
@@ -295,7 +315,7 @@ public class Group extends PersiObject
 	}
 		
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Sets the info text for the group.
 	 * @param infoText
 	 */
@@ -310,6 +330,9 @@ public class Group extends PersiObject
 	public boolean removeGroupTip(WeeklyLottoGroupTip tip){ boolean result = weeklyLottoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	public boolean removeGroupTip(TotoGroupTip tip){ boolean result = totoGroupTips.remove(tip); DB_UPDATE(); return result; }
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 */
 	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
@@ -317,11 +340,7 @@ public class Group extends PersiObject
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
-	/**
-	 * show the groupname
-	 * important for view output
-	 * @return
-	 */
+
 	public String getName(){ return name;}
 	public String getInfoText(){ return infoText; }	
 	public Customer getGroupAdmin(){ return groupAdmin; }
@@ -332,10 +351,13 @@ public class Group extends PersiObject
 	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
 	
 //---------------Änderung von Andre----------------------------------------------
-	public String testForAppl(Customer cus){
-		for(GroupMembershipApplication gma : this.groupMembershipApplications){
+	public String testForAppl(Customer cus)
+	{
+		for(GroupMembershipApplication gma : this.groupMembershipApplications)
+		{
 			if (gma.getMember().equals(cus)) return gma.getState().name(); 
 		}
+		
 		return "null";
 	}
 }

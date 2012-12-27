@@ -4,6 +4,10 @@ import gmb.model.PersiObject;
 
 import javax.persistence.Entity;
 
+/**
+ * Address container class.
+ *
+ */
 @Entity
 public class Adress extends PersiObject
 {	
@@ -13,7 +17,7 @@ public class Adress extends PersiObject
 	protected String townName;
 	
 	@Deprecated
-	public Adress(){}
+	protected Adress(){}
 	
 	public Adress(String streetName, String houseNumber, String postCode, String townName)
 	{

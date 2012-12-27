@@ -8,6 +8,10 @@ import gmb.model.tip.tipticket.TipTicket;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+/**
+ * Abstract super class for all single tip tickets.
+ * Single tip tickets can only be used once to submit/create a tip.
+ */
 @Entity
 public abstract class SingleTT extends TipTicket
 {	

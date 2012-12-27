@@ -10,6 +10,7 @@ import gmb.model.GmbFactory;
 import gmb.model.Lottery;
 import gmb.model.ReturnBox;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.group.Group;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.draw.container.ExtendedEvaluationResult;
@@ -27,9 +28,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
-
+/**
+ * The class representing the implementation of the weekly football-toto evaluation.
+ */
 @Entity
 public class TotoEvaluation extends Draw 
 {
@@ -54,9 +56,23 @@ public class TotoEvaluation extends Draw
 		this.tipManagementId = Lottery.getInstance().getTipManagement();
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return false if this Draw is already evaluated, otherwise true
+	 */
 	public boolean evaluate(int[] result) 
 	{
+		if(evaluated) return false;
+		evaluated = true;
+		
 		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
+		
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(TotoGroupTip tip : group.getTotoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
 		
 		//create the actual result array containing only the general results of the games, copy exact results to gameData:
 		int[] newResult = new int[9];
@@ -74,7 +90,7 @@ public class TotoEvaluation extends Draw
 		}
 		result = newResult;//just to make sure the right array is used later
 		
-		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
+		drawEvaluationResult = GmbFactory.new_ExtendedEvaluationResult(categoryCount);
 		
 		super.evaluate(newResult);//set actualEvaluationDate and init prizePotential 
 
@@ -234,17 +250,9 @@ public class TotoEvaluation extends Draw
 		return false;
 	}
 	
-//	public void setGameData(ArrayList<FootballGameData> gameData)
-//	{ 
-//		assert gameData.size() == 9 : "Wrong gameData size (!=9) given to TotoEvaluation.setGameData(ArrayList<FootballGameData> gameData)!";
-//		this.gameData = gameData; 
-//		
-//		DB_UPDATE(); 
-//	}
-	
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()
@@ -260,26 +268,27 @@ public class TotoEvaluation extends Draw
 	
 	public ArrayList<FootballGameData> getGameData(){ return (ArrayList<FootballGameData>) gameData; }
 	
-//	public int[] getResult()
-//	{ 
-//		int[] goals = new int[games.size() * 2];
-//		
-////		for(int i = 0; i < results.size(); ++i)
-////		{
-////			goals[i*2]   = results.get(i).getHomeResult().getScore();
-////			goals[i*2+1] = results.get(i).getVisitorResult().getScore();
-////		}
-//		
-//		return goals; 
-//	}
-	
 	/**
-	 * Return Code:
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and submits a SingleTip <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
+	 * var2 as {@link SingleTip}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created SingleTip
+	 * <li> var1 != 0 -> null 
+	 * </ul>
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{

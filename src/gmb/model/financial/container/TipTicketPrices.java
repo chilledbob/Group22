@@ -2,14 +2,16 @@ package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
 import gmb.model.PersiObject;
-import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 
+/**
+ * Container class storing the prices for the respective tip ticket types.
+ *
+ */
 @Entity
 public class TipTicketPrices extends PersiObject
 {	

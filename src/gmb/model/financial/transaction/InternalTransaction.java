@@ -4,9 +4,11 @@ import gmb.model.member.Customer;
 
 import gmb.model.CDecimal;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
+/**
+ * Abstract super class for all system intern transaction types.
+ */
 @Entity
 public abstract class InternalTransaction extends Transaction 
 {

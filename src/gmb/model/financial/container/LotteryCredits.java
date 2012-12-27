@@ -1,16 +1,17 @@
 package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
-import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import javax.persistence.Column;
-import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 
+/**
+ * Container class storing the credits of
+ * the treasury, the management and the lottery taxes.
+ */
 @Entity
 public class LotteryCredits extends PersiObject
 {
@@ -43,6 +44,10 @@ public class LotteryCredits extends PersiObject
 	public CDecimal getLotteryTaxCedit(){ return lotteryTaxCedit; }
 	public CDecimal getManagementCedit(){ return managementCedit; }
 	
+	/**
+	 * Adds the receipts to the respective credits.
+	 * @param receipts
+	 */
 	public void update(ReceiptsDistributionResult receipts)
 	{
 		treasuryCedit = treasuryCedit.add(receipts.getTreasuryDue());

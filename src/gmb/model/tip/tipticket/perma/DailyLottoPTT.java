@@ -3,12 +3,16 @@ package gmb.model.tip.tipticket.perma;
 import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
+import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.tip.single.DailyLottoTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
 import javax.persistence.Entity;
 
+/**
+ * The perma tip ticket type for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 {
@@ -36,4 +40,17 @@ public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 	}
 	
 	public CDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getDailyLottoSTTPrice(); }
+	
+	/**
+	 * @return
+	 * <ul>
+	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
+	 * </ul>
+	 */
+	public int validateTip(int[] tip)
+	{
+		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoPTT!";
+		
+		return (new DailyLottoTip((DailyLottoTT)null, new DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(5)))).validateTip(tip);//use temporary objects for validation
+	}
 }

@@ -1,15 +1,11 @@
 package gmb.model.tip.tip.group;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import gmb.model.GmbFactory;
-import gmb.model.financial.transaction.Winnings;
+import gmb.model.ReturnBox;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.single.DailyLottoTip;
@@ -17,6 +13,9 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.type.DailyLottoTT;
 
+/** 
+ * A GroupTip for the daily numbers based lottery.
+ */
 @Entity
 public class DailyLottoGroupTip extends GroupTip 
 {	
@@ -30,8 +29,14 @@ public class DailyLottoGroupTip extends GroupTip
 	}
 	
 	/**
-	 * tries to withdraw the "GroupTip" and removes all existing references in the system.
-	 * returns 0 if successful.
+	 * [Intended for direct usage by controller]<br>
+	 * Tries to delete this "GroupTip" with all implications.
+	 * @return return code:<br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 2 - this GroupTip could not be 'unsubmitted'
+	 * <li> 4 - this GroupTip could not be removed from the associated GroupTip list in "group"
+	 * <ul>
 	 */
 	public int withdraw()
 	{
@@ -45,16 +50,27 @@ public class DailyLottoGroupTip extends GroupTip
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Submits tickets and tips if the amount matches the "minimumStake" criteria, 
+	 * [Intended for direct usage by controller]<br>
+	 * Submits tickets and tips if the amount matches the "minimumStake" criteria,
 	 * increment "currentOverallMinimumStake" by the amount of newly created tips. 
 	 * @param tips
-	 * @return
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left for submission until evaluation
+	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
+	 * <li> 5 - invalid sizes of the committed lists
+	 * <li> 6 - not enough tickets submitted to reach the minimum stake per contributer
+	 * </ul>
+	 * var2 as  LinkedList<SingleTip>:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created list of SingleTips
+	 * <li> var1 != 1 -> null 
+	 * </ul>
 	 */
-	public int createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
+	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{
-		if(tickets.size() == 0 || tipTips.size() == 0) return 5;
-
 		assert tickets.size() == tipTips.size() : "Count of tickets does not fit count of tipTips in DailyLottoGroupTip.createAndSubmitSingleTipList()!";
 		assert  tickets.getFirst() instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoGroupTip.createAndSubmitSingleTipList()!";
 		

@@ -9,6 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
+/**
+ * Container class storing the amount of
+ * distributed money for the respective categories
+ * after the evaluation of a lottery drawing or toto evaluation.
+ *
+ */
 @Entity
 public class ReceiptsDistributionResult extends PersiObject
 {	
@@ -41,8 +47,6 @@ public class ReceiptsDistributionResult extends PersiObject
 		
 		//normalize receipts:
 		treasuryDue = treasuryDue.add(drawReceipts.subtract(winnersDue.add(treasuryDue.add(lotteryTaxDue.add(managementDue)))));
-		
-//		Lottery.getInstance().getFinancialManagement().getLotteryCredits().update(this);
 	}
 	
 	public void addToTreasuryDue(CDecimal dec){ treasuryDue = treasuryDue.add(dec); DB_UPDATE(); }

@@ -5,6 +5,9 @@ import gmb.model.tip.tip.single.SingleTip;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * Factory class for creation of various initialized ArrayLists.
+ */
 public class ArrayListFac 
 {
 	public static ArrayList<CDecimal> new_CDecimalArray(int element_count)
