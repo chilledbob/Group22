@@ -56,6 +56,11 @@ public class TotoEvaluation extends Draw
 		this.tipManagementId = Lottery.getInstance().getTipManagement();
 	}
 	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return false if this Draw is already evaluated, otherwise true
+	 */
 	public boolean evaluate(int[] result) 
 	{
 		if(evaluated) return false;
@@ -245,17 +250,9 @@ public class TotoEvaluation extends Draw
 		return false;
 	}
 	
-//	public void setGameData(ArrayList<FootballGameData> gameData)
-//	{ 
-//		assert gameData.size() == 9 : "Wrong gameData size (!=9) given to TotoEvaluation.setGameData(ArrayList<FootballGameData> gameData)!";
-//		this.gameData = gameData; 
-//		
-//		DB_UPDATE(); 
-//	}
-	
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()

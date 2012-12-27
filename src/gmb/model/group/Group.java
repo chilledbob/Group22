@@ -30,7 +30,7 @@ import javax.persistence.ManyToOne;
 import org.joda.time.DateTime;
 
 /**
- * The group class. <br>
+ * The group class. 
  * Holds group specific information like group admin, members, group tips and associated winnings.
  */
 @Entity

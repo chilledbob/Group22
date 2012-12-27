@@ -8,12 +8,11 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
- * Container class extending {@link EvaluationResult} with more data.<br>
+ * Container class extending {@link EvaluationResult} with more data.
  * Created while evaluating a WeeklyLottoDraw or a TotoEvaluation.
  *
  */

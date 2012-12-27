@@ -8,7 +8,7 @@ import gmb.model.CDecimal;
 import javax.persistence.Entity;
 
 /**
- * A transaction type for moving money to or from an<br>
+ * A transaction type for moving money to or from an
  * imaginary real bank account from or to a lottery bank account.
  *
  */

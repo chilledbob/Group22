@@ -5,20 +5,17 @@ import java.util.List;
 
 import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
-import gmb.model.Lottery;
 import gmb.model.PersiObject;
-import gmb.model.financial.FinancialManagement;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 
 /**
- * Container class containing the winnings for each<br>
- * game type in the respective prize categories.<br>
- * For WeeklyLotto and Toto in percentage values and <br>
+ * Container class storing the winnings for each
+ * game type in the respective prize categories.
+ * For WeeklyLotto and Toto in percentage values and 
  * as currency for DailyLotto.
  *
  */

@@ -28,7 +28,7 @@ import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
 /**
- * The member class representing an admin, customer or employee in the system.<br>
+ * The member class representing an admin, customer or employee in the system.
  * Works as super class for the customer class.
  *
  */

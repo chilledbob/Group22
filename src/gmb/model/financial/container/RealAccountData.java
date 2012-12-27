@@ -5,8 +5,8 @@ import gmb.model.PersiObject;
 import javax.persistence.Entity;
 
 /**
- * Container class containing information about <br>
- * the real bank account which is associated with <br>
+ * Container class storing information about 
+ * the real bank account which is associated with 
  * the lottery bank account. 
  */
 @Entity

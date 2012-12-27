@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 /**
- * Abstract super class for all single tip tickets.<br>
+ * Abstract super class for all single tip tickets.
  * Single tip tickets can only be used once to submit/create a tip.
  */
 @Entity

@@ -103,6 +103,7 @@ public class Test01
 		Lottery.getInstance().getTimer().setReferenceDate(new DateTime(2013,1,1,0,0));//HAPPY NEW YEAR! ..it's now..belief it!  
 		printCurrentTimeToConsol("Lottery has been opend!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
 		assertNotNull(tipManagement);
+		assertNotNull(Lottery.getInstance());
 		assertNotNull(Lottery.getInstance().getTipManagement());
 		assertNotNull(Lottery.getInstance().getTipManagement().getDailyLottoDrawings());
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]

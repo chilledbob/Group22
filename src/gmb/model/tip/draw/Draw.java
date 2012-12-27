@@ -13,22 +13,19 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.persistence.mappings.AggregateObjectMapping;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 /**
- * Abstract super class for all drawings.<br>
- * Implements logic for creation/submission of a tip <br>
+ * Abstract super class for all drawings.
+ * Implements logic for creation/submission of a tip 
  * and the final evaluation.
  */
 @Entity
@@ -198,8 +195,8 @@ public abstract class Draw extends PersiObject
 	protected abstract SingleTip createSingleTipPersistent(TipTicket ticket);
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to change or 'unsubmit' tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to change tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForChanges()
@@ -209,8 +206,8 @@ public abstract class Draw extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public abstract boolean isTimeLeftUntilEvaluationForSubmission();

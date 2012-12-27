@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 import org.joda.time.DateTime;
 
 /**
- * Abstract super class for all perma tip tickets.<br>
+ * Abstract super class for all perma tip tickets.
  * Perma tip tickets can be used once per drawing until they expire.
  */
 @Entity

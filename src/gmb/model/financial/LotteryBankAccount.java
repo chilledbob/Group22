@@ -17,8 +17,6 @@ import gmb.model.CDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -27,7 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
 
 /**
- * The lottery bank account associated with a specific customer.<br>
+ * The lottery bank account associated with a specific customer.
  * Contains various customer specific financial data.
  */
 @Entity

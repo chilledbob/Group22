@@ -25,8 +25,8 @@ import gmb.model.tip.tipticket.type.GenericTT;
 import org.joda.time.DateTime;
 
 /**
- * Abstract super class for all tip ticket types.<br>
- * Tip tickets are required for submission of a tip to <br>
+ * Abstract super class for all tip ticket types.
+ * Tip tickets are required for submission of a tip to 
  * a respective lottery drawing or football-toto evaluation.
  */
 @Entity

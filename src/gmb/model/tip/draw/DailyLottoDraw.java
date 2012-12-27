@@ -52,6 +52,11 @@ public class DailyLottoDraw extends Draw
 						this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
 
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return false if this Draw is already evaluated, otherwise true
+	 */
 	public boolean evaluate(int[] result) 
 	{
 		if(evaluated) return false;
@@ -134,7 +139,7 @@ public class DailyLottoDraw extends Draw
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Sets the drawn results for this draw type. 
 	 * Has to be done before evaluation.
 	 * @param result
@@ -148,8 +153,8 @@ public class DailyLottoDraw extends Draw
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()

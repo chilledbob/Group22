@@ -57,9 +57,9 @@ public class WeeklyLottoDraw extends Draw
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
-	 * @return
+	 * @return false if this Draw is already evaluated, otherwise true
 	 */
 	public boolean evaluate(int[] result) 
 	{
@@ -282,21 +282,8 @@ public class WeeklyLottoDraw extends Draw
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Sets the drawn results for this draw type. 
-	 * Has to be done before evaluation.
-	 * @param result
-	 */
-//	public void setResult(int[] result)
-//	{ 
-//		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.setResult(int[] result)! (6 + extraNumber + superNumber)";
-//		this.result = result; 
-//		DB_UPDATE(); 
-//	}
-
-	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()

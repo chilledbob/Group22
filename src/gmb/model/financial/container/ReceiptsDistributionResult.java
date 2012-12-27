@@ -10,8 +10,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
- * Container class containing the amount of<br>
- * distributed money for the respective categories<br>
+ * Container class storing the amount of
+ * distributed money for the respective categories
  * after the evaluation of a lottery drawing or toto evaluation.
  *
  */

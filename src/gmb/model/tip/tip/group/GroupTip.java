@@ -25,9 +25,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
- * Abstract super class for all group tip types.<br>
- * A group tip stores a list of single tips.<br>
- * The winnings for the single tips will be distributed to<br>
+ * Abstract super class for all group tip types.
+ * A group tip stores a list of single tips.
+ * The winnings for the single tips will be distributed to
  * all contributers of the group tip.
  */
 @Entity

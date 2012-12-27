@@ -8,13 +8,12 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Container class storing information about a single football game.<br>
+ * Container class storing information about a single football game.
  * The game result will be filled while evaluating the associated TotoEvaluation.
  *
  */

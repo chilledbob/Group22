@@ -8,7 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 /**
- * Abstract super class for all persistent classes in the system.<br>
+ * Abstract super class for all persistent classes in the system.
  * (Except for the member class, which handles this functionality on her own)
  */
 @Entity

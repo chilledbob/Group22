@@ -3,12 +3,11 @@ package gmb.model.financial.container;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 /**
- * Container class containing the percentage receipts distribution<br>
+ * Container class storing the percentage receipts distribution<br>
  */
 @Entity
 public class ReceiptsDistribution extends PersiObject
