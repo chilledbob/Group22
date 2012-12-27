@@ -33,8 +33,6 @@ import org.joda.time.DateTime;
 @Entity
 public class DailyLottoDraw extends Draw 
 {
-
-
 	@ManyToOne
 	protected TipManagement tipManagementId;
 
@@ -44,6 +42,7 @@ public class DailyLottoDraw extends Draw
 	public DailyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
 		
 		//automatically create SingleTips from PermaTTs:
 		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())

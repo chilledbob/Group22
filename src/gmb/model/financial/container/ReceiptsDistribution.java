@@ -3,6 +3,7 @@ package gmb.model.financial.container;
 import gmb.model.PersiObject;
 import gmb.model.financial.FinancialManagement;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 

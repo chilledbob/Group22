@@ -5,6 +5,7 @@ import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.group.Group;
 import gmb.model.member.Member;
+import gmb.model.request.data.MemberDataUpdateRequest;
 
 import org.salespointframework.core.user.UserIdentifier;
 import org.springframework.stereotype.Controller;
@@ -88,9 +89,44 @@ import org.springframework.web.servlet.ModelAndView;
 			@RequestParam("uid") UserIdentifier uid){
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("employee/mitgliederVerwaltung/changeReq/mitglVerwChangeReq");
+		List<MemberDataUpdateRequest> requestList = Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests();
 		modelAndView.addObject("currentUser",GmbPersistenceManager.get(uid));
+		modelAndView.addObject("requestList",requestList);
+		System.out.println(GmbPersistenceManager.get(new UserIdentifier("UserTroll")).getMemberDataUpdateRequests().size());
+		System.out.println(requestList.size());
+		for(MemberDataUpdateRequest myRequest : requestList){
+			myRequest.getDate().year().toString();
+			myRequest.getMember();
+			myRequest.getNote();
+			myRequest.getId();
+			myRequest.getState().toString();
+		}
 		return modelAndView;
 	}
+	
+	@RequestMapping(value="/acceptDataReq",method=RequestMethod.GET)
+	public ModelAndView acceptDataReq(
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam ("reqID" ) int reqID){
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("employee/mitgliederVerwaltung/changeReq/mitglVerwChangeReq");
+		
+		MemberDataUpdateRequest currentRequest =(MemberDataUpdateRequest) (GmbPersistenceManager.get(MemberDataUpdateRequest.class, reqID));
+		System.out.println(currentRequest.getNote());
+		List<MemberDataUpdateRequest> requestList = Lottery.getInstance().getMemberManagement().getMemberDataUpdateRequests();
+		modelAndView.addObject("currentUser",GmbPersistenceManager.get(uid));
+		modelAndView.addObject("requestList",requestList);
+		for(MemberDataUpdateRequest myRequest : requestList){
+			GmbPersistenceManager.get(MemberDataUpdateRequest.class, reqID);
+			myRequest.getDate();
+			myRequest.getMember();
+			myRequest.getNote();
+			myRequest.getId();
+		}
+		return modelAndView;
+	}
+	
+	
 	
 //--------------------------FinanzVerwaltung---------------------------------------
 	

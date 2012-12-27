@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -17,6 +18,7 @@ public class CDecimal extends PersiObject
     protected static final RoundingMode round = RoundingMode.HALF_UP; 
     protected static final MathContext CMC = MathContext.DECIMAL128 ; 
       
+    @Column(precision = 10, scale = 2)  
     protected BigDecimal myAmount; 
       
     public BigDecimal getAmount(){ return myAmount; } 

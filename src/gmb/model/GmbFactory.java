@@ -521,7 +521,7 @@ public class GmbFactory
 		return (EvaluationResult) obj.DB_ADD();
 	}
 	
-	public static ExtendedEvaluationResult new_WeeklyLottoDrawEvaluationResult(int categoryCount)
+	public static ExtendedEvaluationResult new_ExtendedEvaluationResult(int categoryCount)
 	{
 		ExtendedEvaluationResult obj = new ExtendedEvaluationResult(categoryCount);
 		return (ExtendedEvaluationResult) obj.DB_ADD();

@@ -1,6 +1,7 @@
 package gmb.model.financial.container;
 
 import gmb.model.CDecimal;
+import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import javax.persistence.Column;
 import gmb.model.financial.FinancialManagement;
@@ -18,17 +19,14 @@ import javax.persistence.OneToOne;
 @Entity
 public class LotteryCredits extends PersiObject
 {
-	@OneToOne
-	protected FinancialManagement financialManagementId;
-	
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="treasurcCedit"))
+	@AttributeOverride(name="myAmount", column= @Column(name="treasurcCedit",precision = 10, scale = 2))
 	protected CDecimal treasuryCedit;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxCedit"))
+	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxCedit",precision = 10, scale = 2))
 	protected CDecimal lotteryTaxCedit;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="managementCedit"))
+	@AttributeOverride(name="myAmount", column= @Column(name="managementCedit",precision = 10, scale = 2))
 	protected CDecimal managementCedit;
 	
 	@Deprecated
@@ -39,6 +37,7 @@ public class LotteryCredits extends PersiObject
 		treasuryCedit = new CDecimal(0);
 		lotteryTaxCedit = new CDecimal(0);
 		managementCedit = new CDecimal(0);
+//		this.financialManagementId = Lottery.getInstance().getFinancialManagement();
 	}
 	
 	public void setTreasuryDue(CDecimal treasuryCedit){ this.treasuryCedit = treasuryCedit; DB_UPDATE(); }

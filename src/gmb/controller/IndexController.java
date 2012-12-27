@@ -28,11 +28,9 @@ import gmb.model.member.container.MemberData;
 		@RequestMapping("/")
 	    public ModelAndView index() {
 			ModelAndView mav = new ModelAndView();
-
 			mav.addObject("userListe", Lottery.getInstance().getMemberManagement().getMembers());
 			mav.addObject("groupList", Lottery.getInstance().getGroupManagement().getGroups());
 			mav.addObject("group", GmbPersistenceManager.getGroup("The Savages"));
-			mav.addObject("manager", GmbPersistenceManager.get(MemberManagement.class, 0));
 			mav.setViewName("index");
 			return mav;
 	    }

@@ -9,45 +9,56 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Employee Site</title>
+<title>Registrierung</title>
+<link rel="stylesheet" type="text/css" 	href="<c:url value="/res/css/css.css" />" />
 </head>
 <body>
 
 <div id="top">
 	<div id="top_content">
+		<div id="logologin">
+
+	<div id="logo">
+		<h1 id="L">L</h1>
+		<img src="<c:url value="/res/img/treflepetit.jpg" />" alt="trefle" class ="trefle" id="trefle"/>
+		<h1 id="tterie">tterie</h1>
+	</div>
+				
+	<div class="login">
 		<jsp:include page="../head/head.jsp" />
-		<br>
+	</div>
+			
+</div>
 		
 		<div class="top_navi">
-			<jsp:include page="../navi/customer_navi.jsp" />
-				<br><br><br>
+			<section>Ergebnisse für 6 aus 49</section>
 		</div>	
 		
-		<div class="sub_navi">
-			<c:if test="${sub_navi_active}">
-				<jsp:include page="${sub_navi}" />
-			</c:if>
+		<div class="sub_navi" >
+			<br>
 		</div>	
 	</div>
 </div>
-
-<div style="clear:all;"></div>			
+		
 <div id="middle">
-	<div class="main_content">
 
-				<div class="current_content">
-				-------------------------------------------
-				<br><br>
-					<c:if test="${content_active}">
-						<jsp:include page="${content}" />
-					</c:if>
-				</div>
+	<div class="main_content">
+		<div class="current_content">
+   		
+		läuft!
+
+		</div>
 	</div>
+	
 
 </div>
+
+<div class="footer">
+		<p>Copyright SuperLotterie ©</p>
+</div>
+
+
 
 
 </body>
 </html>
-
-

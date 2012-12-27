@@ -101,7 +101,10 @@ public class Test01
 
 		Lottery.Instanciate(financialManagement, memberManagement, groupManagement, tipManagement);
 		Lottery.getInstance().getTimer().setReferenceDate(new DateTime(2013,1,1,0,0));//HAPPY NEW YEAR! ..it's now..belief it!  
-		printCurrentTimeToConsol("Lottery has opend!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
+		printCurrentTimeToConsol("Lottery has been opend!");//<------------------------------------------------------------------------------------------------<TIMELINE UPDATE>
+		assertNotNull(tipManagement);
+		assertNotNull(Lottery.getInstance().getTipManagement());
+		assertNotNull(Lottery.getInstance().getTipManagement().getDailyLottoDrawings());
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
 		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoCreation();//don't automatically create DailyLottoDrawings for now

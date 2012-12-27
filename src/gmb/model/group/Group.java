@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -44,7 +45,7 @@ public class Group extends PersiObject
 	protected Boolean closed;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="GROUPMANAGEMENTID_PERSISTENCEID")
 	protected GroupManagement groupManagementId;
 
 	@OneToOne
@@ -59,11 +60,13 @@ public class Group extends PersiObject
 	@OneToMany(mappedBy="group")
 	protected List<TotoGroupTip> totoGroupTips;
 
-	@OneToMany(mappedBy="group")
+	@OneToMany(mappedBy="group",fetch=FetchType.EAGER)
+	@JoinColumn(name="GROUP_PERSISTENCEID",referencedColumnName="PERSISTENCEID")
 	protected List<GroupMembershipApplication> groupInvitations;
 	@OneToMany(mappedBy="group")
 	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
-	@OneToMany(mappedBy="group")
+	@OneToMany(mappedBy="group",fetch=FetchType.EAGER)
+	@JoinColumn(name="GROUP_PERSISTENCEID")
 	protected List<GroupMembershipApplication> groupMembershipApplications;
 
 	@Deprecated
@@ -72,6 +75,8 @@ public class Group extends PersiObject
 	public Group(String name, Customer groupAdmin, String infoText)
 	{
 		this.closed = false;
+		
+		this.groupManagementId = Lottery.getInstance().getGroupManagement();
 		
 		this.name = name;
 		this.infoText = infoText;
@@ -90,7 +95,7 @@ public class Group extends PersiObject
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
-		this.groupManagementId = Lottery.getInstance().getGroupManagement();
+
 	}
 	
 	/**
@@ -344,4 +349,15 @@ public class Group extends PersiObject
 	public List<DailyLottoGroupTip> getDailyLottoGroupTips(){ return dailyLottoGroupTips; }	
 	public List<WeeklyLottoGroupTip> getWeeklyLottoGroupTips(){ return weeklyLottoGroupTips; }	
 	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
+	
+//---------------Änderung von Andre----------------------------------------------
+	public String testForAppl(Customer cus)
+	{
+		for(GroupMembershipApplication gma : this.groupMembershipApplications)
+		{
+			if (gma.getMember().equals(cus)) return gma.getState().name(); 
+		}
+		
+		return "null";
+	}
 }

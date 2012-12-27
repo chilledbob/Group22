@@ -4,6 +4,12 @@ import gmb.model.ArrayListFac;
 import gmb.model.CDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
@@ -14,14 +20,28 @@ import javax.persistence.Entity;
 @Entity
 public class ExtendedEvaluationResult extends EvaluationResult
 {
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="jackpotImageBefore"))
 	protected List<CDecimal> jackpotImageBefore;
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="jackpotImageAfter"))
 	protected List<CDecimal> jackpotImageAfter;
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="undistributedPrizes"))
 	protected List<CDecimal> undistributedPrizes;
 
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="perCategoryPrizePotential"))
 	protected List<CDecimal> perCategoryPrizePotential;
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="perCategoryWinningsUnMerged"))
 	protected List<CDecimal> perCategoryWinningsUnMerged;
+	@ElementCollection
+	@AttributeOverride(name="myAmount", column= @Column(name="perCatagoryWinningsMerged"))
 	protected List<CDecimal> perCategoryWinningsMerged;
 
+	@Embedded
+	@AttributeOverride(name="myAmount", column= @Column(name="normalizationAmount"))
 	protected CDecimal normalizationAmount;
 
 	@Deprecated

@@ -64,15 +64,10 @@
 	
 <div style="clear:all;"></div>			
 <div id="middle">
-	<div class="main_content">
+	<div class="main_content_full">
 		<div class="current_content">
 			<h3 style="text-align:center;">Willkommen bei der gmb-Lotterie</h3>
-			<sp:forEach var="u" items="${userListe}">
-				${u.getClass() } | Loginname: ${ u.getIdentifier() } | Loginpw: ${u.getIdentifier() } | und hier existiert evtl ein MemberDataUpdateRequest-Objekt${u.getMemberDataUpdateRequests() }<br>
-			</sp:forEach><br>
-			<sp:forEach var="g" items="${groupList}">
-				${g.getName() } | Admin: ${ g.getGroupAdmin().getIdentifier() } | Gruppenbeschreibung: ${g.getInfoText() }<br>
-			</sp:forEach><br>${group.name }<br>${manager.members }<br>
+			<img src="<c:url value="/res/img/779480.jpg" />"  align="middle"/>
 		</div>
 	</div>
 </div>

@@ -19,16 +19,16 @@ import javax.persistence.Entity;
 public class ReceiptsDistributionResult extends PersiObject
 {	
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="winnersDue"))
+	@AttributeOverride(name="myAmount", column= @Column(name="winnersDue",precision = 10, scale = 2))
 	protected CDecimal winnersDue;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="treasuryDue"))
+	@AttributeOverride(name="myAmount", column= @Column(name="treasuryDue",precision = 10, scale = 2))
 	protected CDecimal treasuryDue;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxDue"))
+	@AttributeOverride(name="myAmount", column= @Column(name="lotteryTaxDue",precision = 10, scale = 2))
 	protected CDecimal lotteryTaxDue;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="managementDue"))
+	@AttributeOverride(name="myAmount", column= @Column(name="managementDue",precision = 10, scale = 2))
 	protected CDecimal managementDue;
 	
 	protected static final CDecimal dec100 = new CDecimal(100);

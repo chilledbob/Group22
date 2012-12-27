@@ -22,6 +22,8 @@ import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.single.TotoSTT;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -33,7 +35,8 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	@OneToMany(mappedBy="totoEvaluation")
+	@OneToMany(mappedBy="totoEvaluation",fetch=FetchType.EAGER)
+	@JoinColumn(name="TOTOEVALUATION_PERSISTENCEID")
 	protected List<FootballGameData> gameData;
 	
 	protected static final int categoryCount = 5;
@@ -50,6 +53,7 @@ public class TotoEvaluation extends Draw
 		
 		assert gameData.size() == 9 : "Wrong gameData size (!=9) given to TotoEvaluation.setGameData(ArrayList<FootballGameData> gameData)!";
 		this.gameData = gameData;
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
 	}
 	
 	public boolean evaluate(int[] result) 
@@ -81,7 +85,7 @@ public class TotoEvaluation extends Draw
 		}
 		result = newResult;//just to make sure the right array is used later
 		
-		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
+		drawEvaluationResult = GmbFactory.new_ExtendedEvaluationResult(categoryCount);
 		
 		super.evaluate(newResult);//set actualEvaluationDate and init prizePotential 
 

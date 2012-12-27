@@ -46,6 +46,7 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
 		
 		//automatically create SingleTips from PermaTTs:
 		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
@@ -73,7 +74,7 @@ public class WeeklyLottoDraw extends Draw
 				if(!tip.isSubmitted() && tip.getDraw() == this)
 					tip.withdraw();
 		
-		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
+		drawEvaluationResult = GmbFactory.new_ExtendedEvaluationResult(categoryCount);
 		
 		super.evaluate(result);//init prizePotential 
 		

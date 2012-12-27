@@ -18,14 +18,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpSession;
 
-import org.omg.PortableServer.POA;
 import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
 
-/**
- * Manager class for persistence handling.
- */
 //public class GmbPersistenceManager 
 //{	
 //	private static final EntityManagerFactory emf = Database.INSTANCE.getEntityManagerFactory();
@@ -40,7 +36,11 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	public static Member get(UserIdentifier uid){ return pum.get(Member.class, uid); }
 //	
-//	public static Object get(Class<?> classType, int id){ return initContainer(classType, id); }
+//	public static Object get(Class<?> classType, int id){EntityManager em = emf.createEntityManager(); return em.find(classType, id); }
+//	
+//	public static Object get(Class<?> classType){
+//		return initContainer(classType,0);
+//	}
 //	
 //	public static Group getGroup(String name){
 //		EntityManager em = emf.createEntityManager();
@@ -80,7 +80,7 @@ import org.salespointframework.core.user.UserIdentifier;
 //		em.getTransaction().commit();
 //	}
 //	
-//	public static void update(Object obj)
+//	public static void update(PersiObject obj)
 //	{
 //		EntityManager em = emf.createEntityManager();
 //				
@@ -91,21 +91,13 @@ import org.salespointframework.core.user.UserIdentifier;
 //	
 //	public static void initLottery()
 //	{
-//		if(GmbPersistenceManager.get(MemberManagement.class, 0) == null){
-//			FinancialManagement fm = (FinancialManagement) initContainer(FinancialManagement.class, 0);
-//			MemberManagement mm = GmbFactory.new_MemberManagement();
-//			GroupManagement gm = GmbFactory.new_GroupManagement();
-//			TipManagement tm = GmbFactory.new_TipManagement();
-//			Lottery.Instanciate(fm,mm,gm,tm);
-//		}
-//		else{
 //		FinancialManagement fm = (FinancialManagement) initContainer(FinancialManagement.class, 0);
 //		MemberManagement mm = (MemberManagement) initContainer(MemberManagement.class, 0);
 //		GroupManagement gm = (GroupManagement) initContainer(GroupManagement.class,0);
 //		TipManagement tm = (TipManagement) initContainer(TipManagement.class, 0);
 //		
 //		Lottery.Instanciate(fm, mm, gm, tm);
-//		}
+//		
 //	}
 //	
 //	private static Object initContainer(Class<?> classType, int id)
@@ -115,11 +107,10 @@ import org.salespointframework.core.user.UserIdentifier;
 //		String q = "SELECT m FROM "+classType.getSimpleName()+" m";
 //		Query query= em.createQuery(q);
 //		if(query.getResultList().isEmpty()){ return null; }
-//		else { 
-//			PersiObject po = (PersiObject) query.getResultList().get(0);
-//			return em.find(classType,po.getId());
-//		}		
+//		else { return query.getResultList().get(id); }
+//		
 //	}
+//	
 //	
 //}
 
@@ -142,6 +133,7 @@ public class GmbPersistenceManager
 	public static void login(Member user, HttpSession session) {}
 	
 	public static Object get(Class<?> classType, int id){ return null; }
+	public static Object get(Class<?> classType){ return null; }
 	public static Member get(UserIdentifier uid){ return null; }
 	
 	public static void logout(HttpSession session) {}
