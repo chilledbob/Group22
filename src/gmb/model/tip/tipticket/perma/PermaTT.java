@@ -11,11 +11,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Entity;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
+/**
+ * Abstract super class for all perma tip tickets.
+ * Perma tip tickets can be used once per drawing until they expire.
+ */
 @Entity
 public abstract class PermaTT extends TipTicket 
 {
+	protected int[] tip;
+	
 	@OneToMany(mappedBy="permaTT")
 	protected List<SingleTip> tips;
 
@@ -30,14 +35,16 @@ public abstract class PermaTT extends TipTicket
 	public PermaTT(PTTDuration duration)
 	{
 		super();
+		tip = null;
 		expired = false;
 		this.setDuration(duration);
 		tips = new LinkedList<SingleTip>();
 	}
 
 	/**
+	 * [Intended for direct usage by controller]<br>
 	 * Checks whether the ticket's duration has expired by now.
-	 * @return
+	 * @return false if expired, otherwise true.
 	 */
 	public boolean isExpired()
 	{
@@ -54,18 +61,22 @@ public abstract class PermaTT extends TipTicket
 			return true;
 	}
 
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * @return duration date of the ticket.
+	 */
 	public DateTime getDurationDate()
 	{
-		Duration duration;
+		DateTime durationDate = new DateTime(purchaseDate);
 
 		switch(durationType)
 		{
-		case 1 : duration = new Duration(millisecondsOfDay*30*6); break;
-		case 2 : duration = new Duration(millisecondsOfDay*365); break;
-		default : duration = new Duration(millisecondsOfDay*30); break;
+		case 1 : durationDate = durationDate.plusMonths(6); break;
+		case 2 : durationDate = durationDate.plusYears(1); break;
+		default : durationDate = durationDate.plusMonths(1); break;
 		}
 		
-		return new DateTime(purchaseDate).plus(duration);
+		return durationDate;
 	}
 
 	public boolean removeTip(SingleTip tip)
@@ -77,7 +88,7 @@ public abstract class PermaTT extends TipTicket
 	}
 
 	/**
-	 * adds the tip to the "tips" list if the ticket's duration hasn't been expired
+	 * Adds the tip to the "tips" list if the ticket's duration hasn't been expired.
 	 * @param tip
 	 * @return
 	 */
@@ -111,10 +122,38 @@ public abstract class PermaTT extends TipTicket
 		DB_UPDATE(); 
 	}
 
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Changes the tipped result if it is valid. 
+	 * This result will be tipped for each automatically created SingleTip.
+	 * @param tip The new tipped result or null (default) to deactivate auto tip creation.
+	 * @return
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li>   - check {@link WeeklyLottoPTT.validateTip(int[] tip)} and {@link DailyLottoPTT.validateTip(int[] tip)} for further failure codes
+	 * <ul>
+	 */
+	public int setTip(int[] tip)
+	{
+		if(tip != null)
+		{
+			int result = this.validateTip(tip);
+			if(result != 0) return result;
+		}
+
+		this.tip = tip;
+		DB_UPDATE();
+
+		return 0;
+	}
+	
+	public abstract int validateTip(int[] tip);
+	public int[] getTip(){ return tip; }
+	
 	public void setDurationType(int durationType){ this.durationType = durationType; DB_UPDATE(); }
 	public void setExpired(boolean expired){ this.expired = expired; DB_UPDATE(); }
 
-	public List<SingleTip> getTips(){ return tips; }	
+	public LinkedList<SingleTip> getTips(){ return (LinkedList<SingleTip>) tips; }	
 	public SingleTip getLastTip(){ return ((LinkedList<SingleTip>)tips).getLast(); }
 			
 	public PTTDuration getDuration()

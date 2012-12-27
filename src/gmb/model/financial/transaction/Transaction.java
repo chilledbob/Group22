@@ -11,12 +11,13 @@ import org.joda.time.DateTime;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
+/**
+ * Abstract super class for all transaction types.
+ */
 @Entity
 public abstract class Transaction extends PersiObject
 {
@@ -41,6 +42,9 @@ public abstract class Transaction extends PersiObject
 	public CDecimal getAmount(){ return amount; }
 	public DateTime getDate(){ return new DateTime(date); }
 	
+	/**
+	 * Updates the credits of the affected customer using this transaction.
+	 */
 	public void init()
 	{
 		affectedCustomer.getBankAccount().updateCredit(this);

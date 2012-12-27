@@ -10,6 +10,10 @@ import java.util.LinkedList;
 
 import gmb.model.Lottery;
 import gmb.model.financial.transaction.Winnings;
+import gmb.model.group.Group;
+import gmb.model.member.Customer;
+import gmb.model.member.Member;
+import gmb.model.member.MemberType;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.ExtendedEvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
@@ -17,6 +21,7 @@ import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
+import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import org.joda.time.DateTime;
@@ -24,6 +29,9 @@ import org.joda.time.Duration;
 
 import javax.persistence.*;
 
+/**
+ * The class representing the implementation of the weekly evaluated 6/49 lottery.
+ */
 @Entity
 public class WeeklyLottoDraw extends Draw
 {
@@ -39,18 +47,34 @@ public class WeeklyLottoDraw extends Draw
 	{
 		super(planedEvaluationDate);
 		this.tipManagementId = Lottery.getInstance().getTipManagement();
+		
+		//automatically create SingleTips from PermaTTs:
+		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
+			if(customer.getType() == MemberType.Customer)
+				for(WeeklyLottoPTT ticket : ((Customer)customer).getWeeklyLottoPTTs())
+					if(!ticket.isExpired() && ticket.getTip() != null)
+						this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
-	 * @return
+	 * @return false if this Draw is already evaluated, otherwise true
 	 */
 	public boolean evaluate(int[] result) 
 	{
+		if(evaluated) return false;
+		evaluated = true;
+		
 		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.evaluate(int[] result)! (6 + extraNumber + superNumber)";
 
-		drawEvaluationResult = GmbFactory.new_WeeklyLottoDrawEvaluationResult(categoryCount);
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(WeeklyLottoGroupTip tip : group.getWeeklyLottoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
+		
+		drawEvaluationResult = GmbFactory.new_ExtendedEvaluationResult(categoryCount);
 		
 		super.evaluate(result);//init prizePotential 
 		
@@ -258,21 +282,8 @@ public class WeeklyLottoDraw extends Draw
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Sets the drawn results for this draw type. 
-	 * Has to be done before evaluation.
-	 * @param result
-	 */
-//	public void setResult(int[] result)
-//	{ 
-//		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.setResult(int[] result)! (6 + extraNumber + superNumber)";
-//		this.result = result; 
-//		DB_UPDATE(); 
-//	}
-
-	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForSubmission()
@@ -292,15 +303,26 @@ public class WeeklyLottoDraw extends Draw
 
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Return Code:
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
-	 * 3 - a tipped number is smaller than 1 oder greater than 49
-	 * 4 - the same number has been tipped multiple times
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and submits a SingleTip <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
+	 * var2 as {@link SingleTip}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created SingleTip
+	 * <li> var1 != 0 -> null 
+	 * </ul>
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{

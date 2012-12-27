@@ -13,19 +13,21 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.persistence.mappings.AggregateObjectMapping;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+/**
+ * Abstract super class for all drawings.
+ * Implements logic for creation/submission of a tip 
+ * and the final evaluation.
+ */
 @Entity
 public abstract class Draw extends PersiObject
 {
@@ -71,14 +73,12 @@ public abstract class Draw extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
-	 * @return
+	 * @return false if this Draw is already evaluated, otherwise true
 	 */
 	public boolean evaluate(int[] result)
-	{
-		evaluated = true;
-		
+	{	
 		if(this.result == null)
 		this.result = result; 
 		
@@ -98,14 +98,15 @@ public abstract class Draw extends PersiObject
 		
 		prizePotential = drawEvaluationResult.initReceiptsDistributionResult(prizePotential);
 		
+		//treasury must pay for PermaTT discount:
 		for(SingleTip tip : allSingleTips)
 		{
 			CDecimal currentValue = tip.getTipTicket().getRemainingValue();
 			CDecimal updatedValue = currentValue.subtract(tip.getTipTicket().getPerTicketPaidPurchasePrice());
 			tip.getTipTicket().setRemainingValue(updatedValue);
 
-			if(updatedValue.signum() == -1)
-				if(currentValue.signum() > -1)
+			if(updatedValue.signum() == -1)//always updatedValue.signum() == 0 for SingleTTs.
+				if(currentValue.signum() > -1)//just became negative?
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(updatedValue);
 				else
 					drawEvaluationResult.getReceiptsDistributionResult().addToTreasuryDue(tip.getTipTicket().getPerTicketPaidPurchasePrice().negate());
@@ -119,36 +120,68 @@ public abstract class Draw extends PersiObject
 
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates and submits a SingleTip. Returns the created tip (var2).
-	 * Return Code (var1):
-	 * 0 - successful
-	 *-2 - not enough time left until the planned evaluation of the draw
-	 *-1 - the duration of the "PermaTT" has expired
-	 * 1 - the "SingleTT" is already associated with another "SingleTip"
-	 * [2 - the list of the "PermaTT" already contains the "tip"]
-	 * 3 - a tipped number is smaller than 1 oder greater than 49
-	 * 4 - the same number has been tipped multiple times
-	 * 5 - the ticket is already associated with this draw
+	 * [Intended for direct usage by controller][check-method]<br>
+	 * SIMULATES: Creates and submits a SingleTip. <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return return code:<br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public int check_createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
 		SingleTip tip = this.createSingleTipSimple(ticket);
 
 		//first try whether it would work:
 		int result1 = tip.setTip(tipTip);
-		if(result1 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result1), null);	
+		if(result1 != 0) return result1;	
 
-		if(!this.addTip(tip)) return new ReturnBox<Integer, SingleTip>(new Integer(-2), null);
+		if(!this.addTip(tip)) return -2;
 		this.removeTip(tip);//clean up
 
 		int result2 = ticket.addTip(tip);
-		if(result2 != 0) return new ReturnBox<Integer, SingleTip>(new Integer(result2), null);
+		if(result2 != 0) return result2;
 
 		ticket.removeTip(tip);//clean up
-
-		//now for real:
-		tip = this.createSingleTipPersistent(ticket);
+		
+		return 0;			
+	}
+	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Creates and submits a SingleTip. <br>
+	 * @param ticket The {@link TipTicket} required for the {@link SingleTip} creation.
+	 * @param tipTip The int[] storing the tipped results.
+	 * @return {@link ReturnBox} with:<br>
+	 * var1 as {@link Integer}: <br>
+	 * <li> 0 - successful
+	 * <li>-2 - not enough time left until the planned evaluation of the draw
+	 * <li>-1 - the duration of the "PermaTT" has expired
+	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
+	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * <li> 5 - the ticket is already associated with this draw
+	 * </ul>
+	 * var2 as {@link SingleTip}:<br>
+	 * <ul>
+	 * <li> var1 == 0 -> the created SingleTip
+	 * <li> var1 != 0 -> null 
+	 * </ul>
+	 */
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	{	
+		int result = check_createAndSubmitSingleTip(ticket, tipTip);
+		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
+		
+		SingleTip tip = this.createSingleTipPersistent(ticket);
 		tip.setTip(tipTip);
 		this.addTip(tip);
 		ticket.addTip(tip);
@@ -162,8 +195,8 @@ public abstract class Draw extends PersiObject
 	protected abstract SingleTip createSingleTipPersistent(TipTicket ticket);
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to change or 'unsubmit' tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to change tips, otherwise false.
 	 * @return
 	 */
 	public boolean isTimeLeftUntilEvaluationForChanges()
@@ -173,8 +206,8 @@ public abstract class Draw extends PersiObject
 	}
 
 	/**
-	 * [intended for direct usage by controller]
-	 * Returns true if there is still time to submit tips, otherwise false.
+	 * [Intended for direct usage by controller]<br>
+	 * Returns true if there is still time to (un-)submit tips, otherwise false.
 	 * @return
 	 */
 	public abstract boolean isTimeLeftUntilEvaluationForSubmission();
@@ -276,7 +309,8 @@ public abstract class Draw extends PersiObject
 
 	public EvaluationResult getDrawEvaluationResult(){ return drawEvaluationResult; }
 	public boolean getEvaluated(){ return evaluated; }
-
+	public boolean isEvaluated(){ return evaluated; }
+	
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 

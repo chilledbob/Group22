@@ -7,7 +7,9 @@ import gmb.model.tip.draw.WeeklyLottoDraw;
 import java.util.LinkedList;
 import java.util.List;
 
-//no persistence required
+/**
+ * Container class storing the drawings and toto evaluations associated with a specific date.
+ */
 public class DrawEventBox 
 {
 	protected List<WeeklyLottoDraw> weeklyLottoDrawings = new LinkedList<WeeklyLottoDraw>();

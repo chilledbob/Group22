@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import gmb.model.group.Group;
 import gmb.model.member.Customer;
 
+/**
+ * A request type for group admin right transfers.
+ */
 @Entity
 public class GroupAdminRightsTransfereOffering extends GroupRequest 
 {

@@ -8,11 +8,12 @@ import gmb.model.member.Customer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Embedded;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+/**
+ * A request type for money transaction to or from the lottery bank account.
+ */
 @Entity
 public class ExternalTransactionRequest extends Request 
 {
@@ -32,10 +33,9 @@ public class ExternalTransactionRequest extends Request
 	{
 		super(transaction.getAffectedCustomer(), note);
 		this.transaction = transaction;
-		this.financialManagementId = Lottery.getInstance().getFinancialManagement();
-		Customer c = transaction.getAffectedCustomer();
 		
-		this.lotteryBankAccount = c.getBankAccount();
+		this.financialManagementId = Lottery.getInstance().getFinancialManagement();	
+		this.lotteryBankAccount = ((Customer)transaction.getAffectedCustomer()).getBankAccount();
 	}
 	
 	/**

@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -28,6 +27,11 @@ import org.salespointframework.core.user.Capability;
 import org.salespointframework.core.user.PersistentUser;
 import org.salespointframework.core.user.UserIdentifier;
 
+/**
+ * The member class representing an admin, customer or employee in the system.
+ * Works as super class for the customer class.
+ *
+ */
 @Entity
 public class Member extends PersistentUser 
 {
@@ -116,7 +120,7 @@ public class Member extends PersistentUser
 //	public void addNotification(Notification notification){ this.notifications.add(notification); DB_UPDATE(); }
 	
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]
 	 * @param notification
 	 */
 	public void addNotification(String notification){ this.notifications.add(GmbFactory.new_Notification(notification)); DB_UPDATE(); }
@@ -128,20 +132,20 @@ public class Member extends PersistentUser
 	public List<Notification> getNotifications(){ return notifications; }
 
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Sets "activated" to true and adds the capability "activated".
 	 */
 	public void activateAccount(){ activated = true;  this.addCapability(new Capability("activated")); DB_UPDATE(); }
 	
 	/**
-	 * [intended for direct usage by controller]
+	 * [Intended for direct usage by controller]<br>
 	 * Sets "activated" to false and removes the capability "activated".
 	 */
 	public void deactivateAccount(){ activated = false; this.removeCapability(new Capability("activated")); DB_UPDATE(); }
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Creates a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"
+	 * [Intended for direct usage by controller]<br>
+	 * Creates a new "MemberDataUpdateRequest" and adds a reference of the request to the "MemberManagement"<br>
 	 * and the "Member" himself. Returns the created request.
 	 * @param note
 	 * @param updatedData

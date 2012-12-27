@@ -1,6 +1,5 @@
 package gmb.model.group;
 
-import gmb.model.GmbPersistenceManager;
 import gmb.model.PersiObject;
 
 import java.util.LinkedList;
@@ -8,11 +7,13 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import gmb.model.group.Group;
 
+/**
+ * Container class storing groups related data.
+ */
 @Entity
 public class GroupManagement extends PersiObject
 {	

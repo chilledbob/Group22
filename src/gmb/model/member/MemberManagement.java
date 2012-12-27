@@ -1,19 +1,19 @@
 package gmb.model.member;
-import gmb.model.GmbPersistenceManager;
 import gmb.model.PersiObject;
 import gmb.model.request.data.MemberDataUpdateRequest;
 
 import java.util.List;
 import java.util.LinkedList;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-
+/**
+ * Container class storing members related data.
+ *
+ */
 @Entity
 public class MemberManagement extends PersiObject
 {

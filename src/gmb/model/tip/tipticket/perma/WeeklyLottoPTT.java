@@ -3,13 +3,16 @@ package gmb.model.tip.tipticket.perma;
 import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
+import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
 
-
+/**
+ * The perma tip ticket type for the weekly 6/49 lottery.
+ */
 @Entity
 public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 {
@@ -37,4 +40,18 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 	}
 	
 	public CDecimal getPricePerTicket(){ return Lottery.getInstance().getFinancialManagement().getTipTicketPrices().getWeeklyLottoSTTPrice(); }
+	
+	/**
+	 * @return
+	 * <ul>
+	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 4 - the same number has been tipped multiple times
+	 * </ul>
+	 */
+	public int validateTip(int[] tip)
+	{
+		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoPTT!";
+		
+		return (new WeeklyLottoTip((WeeklyLottoTT)null, new WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(5)))).validateTip(tip);//use temporary objects for validation
+	}
 }

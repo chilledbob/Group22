@@ -1,6 +1,5 @@
 package gmb.model.request.data;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,6 +11,9 @@ import gmb.model.member.MemberManagement;
 import gmb.model.member.container.MemberData;
 import gmb.model.request.Request;
 
+/**
+ * A request type for updating member data.
+ */
 @Entity
 public class MemberDataUpdateRequest extends Request 
 {
@@ -34,10 +36,12 @@ public class MemberDataUpdateRequest extends Request
 	}
 	
 	/**
-	 * [intended for direct usage by controller]
-	 * Return codes:
-	 * 0 - successful
-	 * 1 - failed because state was not "UNHANDLED"
+	 * [Intended for direct usage by controller]<br>
+	 * @return return code:
+	 * <ul>
+	 * <li> 0 - successful
+	 * <li> 1 - failed because state was not "Unhandled"
+	 * </ul>
 	 */
 	public int accept()
 	{

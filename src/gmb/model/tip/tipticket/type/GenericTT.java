@@ -1,5 +1,6 @@
 package gmb.model.tip.tipticket.type;
 
-public interface GenericTT {
-
-}
+/**
+ * An interface which every tip ticket implements. 
+ */
+public interface GenericTT {}

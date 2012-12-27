@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -25,6 +23,11 @@ import gmb.model.financial.container.ReceiptsDistributionResult;
 import gmb.model.financial.transaction.Winnings;
 import gmb.model.tip.tip.single.SingleTip;
 
+/**
+ * Container class storing basic information about the evaluation results
+ * of an evaluated drawing.
+ *
+ */
 @Entity
 public class EvaluationResult extends PersiObject
 {
@@ -99,4 +102,5 @@ public class EvaluationResult extends PersiObject
 	public ReceiptsDistributionResult getReceiptsDistributionResult(){ return receiptsDistributionResult; }
 	public List<Winnings> getWinnings(){ return winnings; }
 	public DateTime getEvaluationDate(){ return new DateTime(evaluationDate); }
+	public void setEvaluationDate(DateTime evaluationDate){ this.evaluationDate = evaluationDate.toDate(); }
 }
