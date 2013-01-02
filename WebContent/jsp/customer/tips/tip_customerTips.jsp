@@ -58,55 +58,98 @@
 	<h1>Ihre Zusammenfassung</h1>
 	Hier finden Sie eine Auflistung aller ihrer Tips.
 	
-	<h2>Einzeltips</h2>
+	<h2>Einzeltipscheine</h2>
 	 <table>
 	 <tr>
 	 	<td>
-	 			<h4>6 aus 49</h4>
+	 			<h4>Tipticketnr.</h4>
 	 	</td>
 	 	<td>
-	 			<h4>Toto</h4>
+	 			<h4>Spielart</h4>
 	 	</td>
 	 	<td>
-	 			<h4>Nummernlotto</h4>
+	 			<h4>Ziehungsdatum</h4>
 	 	</td>
 	</tr>
-	<tr>
-	<td>
-	<table>
 	<c:forEach var="wSTT" items="${weeklySTTList}">
 		<tr>
 			<td>
 				${wSTT.getId()}
 			</td>
+			<td>
+				${wSTT.getClass().getSimpleName() }
+			</td>
+			<td>
+				${wSTT.getTip().getDraw().getPlanedEvaluationDate() }
+			</td>
 		</tr>
-	</c:forEach>	
-	</table>
-	</td>
-	<td>
-	<table>
+	</c:forEach>
 	<c:forEach var="tSTT" items="${totoSTTList}">
 		<tr>
 			<td>
 				${tSTT.getId()}
 			</td>
+			<td>
+				${tSTT.getClass().getSimpleName() }
+			</td>
+			<td>
+				${tSTT.getTip().getDraw().getPlanedEvaluationDate() }
+			</td>
 		</tr>
 	</c:forEach>
-	</table>
-	</td>	
-	<td>
-	<table>
 	<c:forEach var="dSTT" items="${dailySTTList}">
 		<tr>
 			<td>
 				${dSTT.getId()}
 			</td>
+			<td>
+				${dSTT.getClass().getSimpleName() }
+			</td>
+			<td>
+				${dSTT.getTip().getDraw().getPlanedEvaluationDate() }
+			</td>
 		</tr>
 	</c:forEach>
-	</table>	
-	</td>
-	</tr>
 	</table>
+	
+		<h2>Dauertipscheine</h2>
+	 <table>
+	 <tr>
+	 	<td>
+	 			<h4>Tipticketnr.</h4>
+	 	</td>
+	 	<td>
+	 			<h4>Spielart</h4>
+	 	</td>
+	 	<td>
+	 			<h4>Tip</h4>
+	 	</td>
+	</tr>
+	<c:forEach var="wPTT" items="${weeklyPTTList}">
+		<tr>
+			<td>
+				${wPTT.getId()}
+			</td>
+			<td>
+				${wPTT.getClass().getSimpleName() }
+			</td>
+			<td>
+				${wPTT.getTip() }
+			</td>
+		</tr>
+	</c:forEach>
+	<c:forEach var="dPTT" items="${dailyPTTList}">
+		<tr>
+			<td>
+				${dPTT.getId()}
+			</td>
+			<td>
+				${dPTT.getClass().getSimpleName() }
+			</td>
+		</tr>
+	</c:forEach>
+	</table>
+	
 		</div>
 	</div>
 	

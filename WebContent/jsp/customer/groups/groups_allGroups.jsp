@@ -84,11 +84,11 @@
 									</td>
 								</c:when>
 								<c:otherwise>
-									<c:if test="${gl.testForAppl(currentUser)=='UNHANDLED'}">
+									<c:if test="${gl.testForAppl(currentUser)=='Unhandled'}">
 										<td>Beworben</td>
 										<td></td>
 									</c:if>
-									<c:if test="${gl.testForAppl(currentUser)=='REFUSED'}">
+									<c:if test="${gl.testForAppl(currentUser)=='Refused'}">
 										<td></td>
 										<td>
 											<c:url value="applyGroupMembership" var="url">

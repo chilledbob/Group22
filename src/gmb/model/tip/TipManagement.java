@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.joda.time.DateTime;
@@ -83,9 +84,9 @@ public class TipManagement extends PersiObject
 	
 	public void setTipSubmissionTimeLimit(long tipSubmissionTimeLimitInMilliSeconds){  this.tipSubmissionTimeLimitInMilliSeconds = tipSubmissionTimeLimitInMilliSeconds; DB_UPDATE(); }
 	
-	public LinkedList<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return (LinkedList<WeeklyLottoDraw>) weeklyLottoDrawings; }
-	public LinkedList<DailyLottoDraw> getDailyLottoDrawings(){ return (LinkedList<DailyLottoDraw>) dailyLottoDrawings; }
-	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return (LinkedList<TotoEvaluation>) totoEvaluations; }
+	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
+	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
+	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
 	
 	public Duration getTipSubmissionTimeLimit(){ return new Duration(tipSubmissionTimeLimitInMilliSeconds); }
 }

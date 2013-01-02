@@ -34,7 +34,7 @@ public class FinancialManagement extends PersiObject
 	@JoinColumn(name="LOTTERYCREDITS_PERSISTENCEID")
 	protected LotteryCredits lotteryCredits;
 
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinColumn(name="JACKPOTS_PERSISTENCEID")
 	protected Jackpots jackpots;
 

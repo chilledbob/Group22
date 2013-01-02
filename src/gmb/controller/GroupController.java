@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-	
+//	-----------------Änderungen in den Zeilen:----------------------
+//	124 und 125
+//	----------------------------------------------------------------
 
 @Controller	
 	public class GroupController {
@@ -119,8 +121,11 @@ import org.springframework.web.servlet.ModelAndView;
 		mav.setViewName("customer/groups/currentGroupViewTips_Admin");
 		mav.addObject("currentGroup", currentGroup);
 		mav.addObject("weeklySTTList", (currentGroup.getWeeklyLottoGroupTips().size() > 0) ? currentGroup.getWeeklyLottoGroupTips() : null);
-//		mav.addObject("totoTipList", );
-//		mav.addObject("lottoTiList", );
+		
+//		--------------------- ÄNDERUNG!!!!----------------------------
+		mav.addObject("weeklySTTList", (currentGroup.getDailyLottoGroupTips().size() > 0) ? currentGroup.getDailyLottoGroupTips() : null);
+		mav.addObject("weeklySTTList", (currentGroup.getTotoGroupTips().size() > 0) ? currentGroup.getTotoGroupTips() : null);
+//		----------------------End-------------------------------------
 		mav.addObject("currentUser", currentUser);
 		return mav;	
 	}

@@ -1,10 +1,24 @@
 package gmb.model.tip.tip.single;
 
+import java.util.ArrayList;
+
+import gmb.model.member.Customer;
+import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
+import gmb.model.tip.tipticket.TipTicket;
+import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.eclipse.persistence.annotations.JoinFetch;
+import org.eclipse.persistence.annotations.JoinFetchType;
+
 
 /** 
  * A SingleTip for the weekly 6/49 lottery.
@@ -14,7 +28,8 @@ public class WeeklyLottoTip extends SingleTip
 {
 	protected int superNumber;
 
-
+	
+	
 	@Deprecated
 	protected WeeklyLottoTip(){}
 
@@ -41,17 +56,17 @@ public class WeeklyLottoTip extends SingleTip
 	 * <li> 4 - the same number has been tipped multiple times
 	 * </ul>
 	 */
-	public int validateTip(int[] tip)
+	public int validateTip(ArrayList<Integer> tip)
 	{
-		assert tip.length == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
+		assert tip.size() == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
 
 		for(int i = 0; i < 6; ++i)
 		{
-			if(tip[i] < 1 || tip[i] > 49)
+			if(tip.get(i) < 1 || tip.get(i) > 49)
 				return 3;
 
 			for(int j = 0; j < 6; ++j)
-				if(i != j && tip[i] == tip[j])
+				if(i != j && tip.get(i) == tip.get(j))
 					return 4;
 		}
 
@@ -65,4 +80,7 @@ public class WeeklyLottoTip extends SingleTip
 	 */
 	public void setSuperNumber(int superNumber){ this.superNumber = superNumber; DB_UPDATE(); }	
 	public int getSuperNumber(){ return superNumber; }
+	
+	public TipTicket getTipTicket(){ return tipTicket; }
+	public Customer getOwner(){return tipTicket.getOwner(); }
 }

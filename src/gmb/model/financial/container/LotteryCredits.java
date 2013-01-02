@@ -33,7 +33,6 @@ public class LotteryCredits extends PersiObject
 		treasuryCedit = new CDecimal(0);
 		lotteryTaxCedit = new CDecimal(0);
 		managementCedit = new CDecimal(0);
-//		this.financialManagementId = Lottery.getInstance().getFinancialManagement();
 	}
 	
 	public void setTreasuryDue(CDecimal treasuryCedit){ this.treasuryCedit = treasuryCedit; DB_UPDATE(); }

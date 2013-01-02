@@ -1,13 +1,21 @@
 package gmb.model.tip.tip.group;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.eclipse.persistence.annotations.JoinFetch;
+import org.eclipse.persistence.annotations.JoinFetchType;
 
 import gmb.model.GmbFactory;
 import gmb.model.ReturnBox;
 import gmb.model.group.Group;
 import gmb.model.tip.draw.Draw;
+import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -20,6 +28,7 @@ import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 public class WeeklyLottoGroupTip extends GroupTip 
 {
 
+	
 	@Deprecated
 	protected WeeklyLottoGroupTip(){}
 
@@ -70,7 +79,7 @@ public class WeeklyLottoGroupTip extends GroupTip
 	 * <li> var1 != 1 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
+	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<ArrayList<Integer>> tipTips)
 	{
 		assert tickets.size() == tipTips.size() : "Count of tickets does not fit count of tipTips in WeeklyLottoGroupTip.createAndSubmitSingleTipList()!";
 		assert  tickets.getFirst() instanceof WeeklyLottoTT : "Wrong TipTicket type given to WeeklyLottoGroupTip.createAndSubmitSingleTipList()!";

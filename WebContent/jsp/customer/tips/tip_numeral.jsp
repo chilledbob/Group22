@@ -75,8 +75,9 @@
 	
 	</c:when>
 	
-	<c:otherwise>  
-		<h1>Bitte 10 Ziffern eintragen, von 1 bis 9</h1>
+	<c:otherwise>
+		<h3>Erstellen Sie einen Tip für die kommende Ziehung ${draw.getPlanedEvaluationDate() }</h3>  
+		<h4>Bitte 10 Ziffern eintragen, von 1 bis 9</h4>
 
 
         <div class="inputForm">

@@ -1,15 +1,11 @@
 package gmb.controller;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.financial.LotteryBankAccount;
 import gmb.model.financial.container.RealAccountData;
-import gmb.model.group.Group;
 import gmb.model.member.Customer;
 import gmb.model.member.Member;
 import gmb.model.member.container.Adress;
@@ -151,6 +147,8 @@ public class LogicController {
 					mav.setViewName("notary/notary");
 					int latest = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().size()-1;
 					mav.addObject("draw", Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().get(latest));
+					mav.addObject("drawlist", Lottery.getInstance().getTipManagement().getDailyLottoDrawings());
+					mav.addObject("drawlist1", Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings());
 					}		
 				mav.addObject("currentUser",user);
 				return mav;
@@ -200,7 +198,25 @@ public class LogicController {
 			@RequestParam("plz") String plz,
 			@RequestParam("city") String city,
 			@RequestParam("accountNumber") String accountNumber,
-			@RequestParam("bankCode") String bankCode) {
+			@RequestParam("bankCode") String bankCode,
+			@RequestParam("age") String age) {
+		if(age.equals(new String("false"))){
+			mav.setViewName("register");
+			mav.addObject("vorname", vname);
+			mav.addObject("nachname", nname);
+			mav.addObject("password", password);
+			mav.addObject("uid", uid);
+			mav.addObject("email", email);
+			mav.addObject("street", street);
+			mav.addObject("hNumber", hNumber);
+			mav.addObject("plz", plz);
+			mav.addObject("city", city);
+			mav.addObject("accountNumber", accountNumber);
+			mav.addObject("bankCode", bankCode);
+			mav.addObject("fail", "- Fehler");
+			mav.addObject("comment", new String("Sie müssen mindestens 18 Jahre alt sein um an Gewinnspielen teilnehmen zu können!"));
+			return mav;
+		}
 		//Username schon vorhanden
 		if(GmbPersistenceManager.get(uid)!= null){
 			mav.setViewName("register"); 

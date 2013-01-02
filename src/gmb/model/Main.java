@@ -8,6 +8,7 @@ import org.salespointframework.core.user.UserIdentifier;
 import gmb.model.Lottery;
 import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.tip.*;
+import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
@@ -41,12 +42,10 @@ public class Main {
 
 	private void initMm(){
 		if(GmbPersistenceManager.get(MemberManagement.class) == null){
-			MemberManagement mm = new MemberManagement(null);
-			FinancialManagement fm = new FinancialManagement(GmbFactory.new_TipTicketPrices(),GmbFactory.new_ReceiptsDistribution());
-			GmbPersistenceManager.add(new TipManagement(null));
-			GmbPersistenceManager.add(new GroupManagement(null));
-			GmbPersistenceManager.add(fm);
-			GmbPersistenceManager.add(mm);
+			GmbFactory.new_FinancialManagement(GmbFactory.new_TipTicketPrices(), GmbFactory.new_ReceiptsDistribution());
+			GmbFactory.new_MemberManagement();
+			GmbFactory.new_TipManagement();
+			GmbFactory.new_GroupManagement();
 		}
 	}
 
@@ -99,7 +98,9 @@ public class Main {
 		Member notary = new Member("arschkrampe","123",mdd, MemberType.Notary);		
 		Lottery.getInstance().getMemberManagement().addMember(notary);
 		
-		WeeklyLottoDraw draw1 = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
+		DateTime currentTime = Lottery.getInstance().getTimer().getDateTime();
+		WeeklyLottoDraw draw1 = GmbFactory.new_WeeklyLottoDraw(currentTime.plusDays(7));
+		DailyLottoDraw draw2 = GmbFactory.new_DailyLottoDraw(currentTime.plusDays(1));
 		c.getBankAccount().sendExternalTransactionRequest(new CDecimal(100), "gimme money!");
 		
 		assert Lottery.getInstance().getFinancialManagement().getExternalTransactionRequests().size()==1 : "AAAAAAAAAAAA!";

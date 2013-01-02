@@ -1,5 +1,7 @@
 package gmb.model.tip.tipticket.perma;
 
+import java.util.ArrayList;
+
 import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
@@ -48,9 +50,9 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 	 * <li> 4 - the same number has been tipped multiple times
 	 * </ul>
 	 */
-	public int validateTip(int[] tip)
+	public int validateTip(ArrayList<Integer> tip)
 	{
-		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoPTT!";
+		assert tip.size() == 6 : "Wrong tip length (!=6) given to WeeklyLottoPTT!";
 		
 		return (new WeeklyLottoTip((WeeklyLottoTT)null, new WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(5)))).validateTip(tip);//use temporary objects for validation
 	}

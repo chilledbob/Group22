@@ -4,12 +4,17 @@ import gmb.model.Lottery;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.OneToMany;
 import javax.persistence.Entity;
 
+import org.eclipse.persistence.annotations.Convert;
+import org.eclipse.persistence.annotations.Converter;
 import org.joda.time.DateTime;
 
 /**
@@ -19,7 +24,8 @@ import org.joda.time.DateTime;
 @Entity
 public abstract class PermaTT extends TipTicket 
 {
-	protected int[] tip;
+	@ElementCollection
+	protected List<Integer> tip = new ArrayList<Integer>();
 	
 	@OneToMany(mappedBy="permaTT")
 	protected List<SingleTip> tips;
@@ -39,6 +45,7 @@ public abstract class PermaTT extends TipTicket
 		expired = false;
 		this.setDuration(duration);
 		tips = new LinkedList<SingleTip>();
+		this.tip = new ArrayList<Integer>();
 	}
 
 	/**
@@ -133,7 +140,7 @@ public abstract class PermaTT extends TipTicket
 	 * <li>   - check {@link WeeklyLottoPTT.validateTip(int[] tip)} and {@link DailyLottoPTT.validateTip(int[] tip)} for further failure codes
 	 * <ul>
 	 */
-	public int setTip(int[] tip)
+	public int setTip(ArrayList<Integer> tip)
 	{
 		if(tip != null)
 		{
@@ -147,8 +154,8 @@ public abstract class PermaTT extends TipTicket
 		return 0;
 	}
 	
-	public abstract int validateTip(int[] tip);
-	public int[] getTip(){ return tip; }
+	public abstract int validateTip(ArrayList<Integer> tip);
+	public ArrayList<Integer> getTip(){return new ArrayList<Integer>(tip); }
 	
 	public void setDurationType(int durationType){ this.durationType = durationType; DB_UPDATE(); }
 	public void setExpired(boolean expired){ this.expired = expired; DB_UPDATE(); }

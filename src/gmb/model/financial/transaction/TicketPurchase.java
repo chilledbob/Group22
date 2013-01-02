@@ -1,5 +1,6 @@
 package gmb.model.financial.transaction;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToOne;
@@ -41,6 +42,7 @@ public class TicketPurchase extends InternalTransaction
 	{
 		super(ticket.getOwner(),  ticket.getPrice().negate());
 		this.ticket = ticket;
+		financialManagementId = Lottery.getInstance().getFinancialManagement();
 	}
 	
 	/**

@@ -17,13 +17,13 @@ import javax.persistence.OneToOne;
 @Entity
 public class ExternalTransactionRequest extends Request 
 {
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne
 	protected ExternalTransaction transaction;
 	
 	@ManyToOne
 	protected LotteryBankAccount lotteryBankAccount;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	protected FinancialManagement financialManagementId;
 
 	@Deprecated

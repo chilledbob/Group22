@@ -1,5 +1,7 @@
 package gmb.model.tip.tipticket.perma;
 
+import java.util.ArrayList;
+
 import gmb.model.CDecimal;
 
 import gmb.model.Lottery;
@@ -47,10 +49,11 @@ public class DailyLottoPTT extends PermaTT implements DailyLottoTT
 	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
 	 * </ul>
 	 */
-	public int validateTip(int[] tip)
+	public int validateTip(ArrayList<Integer> tip)
 	{
-		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoPTT!";
+		assert tip.size() == 10 : "Wrong tip length (!=10) given to DailyLottoPTT!";
 		
 		return (new DailyLottoTip((DailyLottoTT)null, new DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(5)))).validateTip(tip);//use temporary objects for validation
 	}
+
 }

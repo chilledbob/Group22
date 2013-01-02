@@ -370,10 +370,19 @@
 				</c:forEach>
 		</tr>
 	</table>
-		<c:url value="LottoConfirm" var="url">
-			<c:param name="uid" value="${currentUser.identifier}" />
-		</c:url>
-		<section><a href ="${url}">jetzt Tippen</a></section>
+	<c:url value="LottoConfirm" var="url">
+		<c:param name="uid" value="${currentUser.identifier}" />
+	</c:url>
+	<form id="form" action="${url }" method="post">
+		<fieldset style="border:0px;">
+						<label for="tipType">Bitte wählen Sie die Art des Tipscheins:</label><br>
+						<input type="radio" name="tipType" value="single" checked> Einzeltip<br>
+						<input type="radio" name="tipType" value="month">Dauertip für einen Monat <br>
+						<input type="radio" name="tipType" value="halfyear">Dauertip für ein halbes Jahr <br>
+						<input type="radio" name="tipType" value="year">Dauertip für ein Jahr
+		</fieldset>
+		<div class="button1"><button class="btn">Tipschein erstellen</button></div>
+	</form>
 	</c:otherwise>  
 </c:choose>
 	</div>

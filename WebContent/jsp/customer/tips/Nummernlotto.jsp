@@ -36,59 +36,68 @@ hallo ich bin die Nummernlotto :)
             <table border="1" cellspacing="1" cellpadding="1">
 	<tr> 
 		<td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="1" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="1" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">1</a>	
            </td>
             <td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="2" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="2" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">2</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="3" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="3" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">3</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="4" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="4" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">4</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="5" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="5" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">5</a>	
            </td>
           <td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="6" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="6" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">6</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="7" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="7" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">7</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="8" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="8" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">8</a>	
            </td><td>
-            <c:url value="Zahl" var="url">
-				<c:param name="Zahl" value="9" />
+            <c:url value="number_Group" var="url">
+				<c:param name="number" value="9" />
 				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<a href ="${url}">9</a>	
            </td>
@@ -104,26 +113,12 @@ hallo ich bin die Nummernlotto :)
 		</tr>
 		</table>
 		<br>${failureComment}
-        	<c:url value="ZahlenConfirmSingle" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
+        	<c:url value="NumberConfirmSingle_Group" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<section><a href ="${url}">Einzeltipschein</a></section>
 			
-			<c:url value="ZahlenConfirmPermaMonth" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Monat</a></section>
-			
-			
-			<c:url value="ZahlenConfirmPermaHalf" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Halbes Jahr</a></section>
-			
-			<c:url value="ZahlenConfirmPermaYear" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Jahr</a></section>
 	</div>
    </c:otherwise>
 </c:choose>

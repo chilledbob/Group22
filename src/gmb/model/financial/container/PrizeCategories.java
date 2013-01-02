@@ -11,6 +11,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 
 /**
  * Container class storing the winnings for each
@@ -22,7 +23,7 @@ import javax.persistence.Entity;
 @Entity
 public class PrizeCategories extends PersiObject
 {	
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
 	@AttributeOverride(name="myAmount", column= @Column(name="weeklyLottoCategories",precision = 10, scale = 2))
 	protected List<CDecimal> weeklyLottoCategories;
 	@ElementCollection
@@ -74,7 +75,7 @@ public class PrizeCategories extends PersiObject
 	public void setDailyLottoCategories(List<CDecimal> dailyLottoCategories){ this.dailyLottoCategories = dailyLottoCategories; DB_UPDATE(); }
 	public void setTotoCategories(List<CDecimal> totoCategories){ this.totoCategories = totoCategories; DB_UPDATE(); }	
 	
-	public ArrayList<CDecimal> getWeeklyLottoCategories(){ return (ArrayList<CDecimal>)weeklyLottoCategories; }
+	public ArrayList<CDecimal> getWeeklyLottoCategories(){ return new ArrayList<CDecimal>(weeklyLottoCategories); }
 	public ArrayList<CDecimal> getDailyLottoCategories(){ return (ArrayList<CDecimal>)dailyLottoCategories; }
 	public ArrayList<CDecimal> getTotoCategories(){ return (ArrayList<CDecimal>)totoCategories; }
 }

@@ -1,24 +1,41 @@
 package gmb.model.tip.draw;
 
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
+import gmb.model.PersiObjectSingleTable;
 import gmb.model.ReturnBox;
+import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.container.EvaluationResult;
 import gmb.model.tip.tip.group.GroupTip;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
 import gmb.model.CDecimal;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -29,17 +46,20 @@ import org.joda.time.Duration;
  * and the final evaluation.
  */
 @Entity
-public abstract class Draw extends PersiObject
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class Draw extends PersiObjectSingleTable
 {
-
-	protected int[] result;
+	@ElementCollection
+	protected List<Integer> result = new ArrayList<Integer>();
 	
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date planedEvaluationDate;	
 
 	//temporary variables used for evaluation:
+	@Transient
 	protected CDecimal prizePotential;//temp
+	@Transient
 	protected List<SingleTip> allSingleTips;//temp
 
 	
@@ -47,7 +67,8 @@ public abstract class Draw extends PersiObject
 	@PrimaryKeyJoinColumn
 	protected EvaluationResult drawEvaluationResult;
 
-	@OneToMany
+	@OneToMany(mappedBy="draw")
+//	@JoinTable(joinColumns = @JoinColumn(name = "PERSISTENCEID"), inverseJoinColumns = @JoinColumn(name="DRAW_PERSISTENCEID"))
 	protected List<SingleTip> singleTips;
 	@OneToMany(mappedBy="draw")
 	protected List<GroupTip> groupTips;
@@ -55,9 +76,13 @@ public abstract class Draw extends PersiObject
 	protected static final CDecimal dec100 = new CDecimal(100);
 	protected static final CDecimal dec2 = new CDecimal(2);
 	
+	@ManyToOne
+	protected TipManagement tipManagementId;
+	
 	@Deprecated
 	protected Draw(){}
 
+	
 	public Draw(DateTime planedEvaluationDate)
 	{
 		prizePotential = new CDecimal(0);
@@ -68,6 +93,8 @@ public abstract class Draw extends PersiObject
 		
 		this.planedEvaluationDate = planedEvaluationDate.toDate();
 		
+		this.tipManagementId = Lottery.getInstance().getTipManagement();
+		
 		result = null;
 		
 	}
@@ -77,10 +104,13 @@ public abstract class Draw extends PersiObject
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return false if this Draw is already evaluated, otherwise true
 	 */
-	public boolean evaluate(int[] result)
+	public boolean evaluate(ArrayList<Integer> result)
 	{	
 		if(this.result == null)
 		this.result = result; 
+		
+		prizePotential = new CDecimal(0);
+		allSingleTips = new LinkedList<SingleTip>();
 		
 		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
@@ -135,7 +165,7 @@ public abstract class Draw extends PersiObject
 	 * <li> 5 - the ticket is already associated with this draw
 	 * </ul>
 	 */
-	public int check_createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public int check_createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
 	{	
 		SingleTip tip = this.createSingleTipSimple(ticket);
 
@@ -176,7 +206,7 @@ public abstract class Draw extends PersiObject
 	 * <li> var1 != 0 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
 	{	
 		int result = check_createAndSubmitSingleTip(ticket, tipTip);
 		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
@@ -249,7 +279,7 @@ public abstract class Draw extends PersiObject
 		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			singleTips.add(tip); 
-			DB_UPDATE(); 
+//			DB_UPDATE(); 
 			
 			return true;
 		}
@@ -314,7 +344,7 @@ public abstract class Draw extends PersiObject
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 
-	public int[] getResult(){ return result; }
+	public ArrayList<Integer> getResult(){ return (ArrayList<Integer>) result; }
 	
 	/**
 	 * [intended for direct usage by controller]
@@ -323,4 +353,6 @@ public abstract class Draw extends PersiObject
 	 * @param result
 	 */
 //	public abstract void setResult(int[] result);
+	
+
 }

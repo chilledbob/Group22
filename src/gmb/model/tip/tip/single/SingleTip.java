@@ -1,5 +1,8 @@
 package gmb.model.tip.tip.single;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gmb.model.Lottery;
 import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
@@ -9,9 +12,19 @@ import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.PermaTT;
 import gmb.model.tip.tipticket.type.GenericTT;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.eclipse.persistence.annotations.JoinFetch;
+import org.eclipse.persistence.annotations.JoinFetchType;
+import org.eclipse.persistence.annotations.ReadOnly;
 
 /**
  * Abstract super class for all tip classes which
@@ -20,14 +33,17 @@ import javax.persistence.OneToOne;
 @Entity
 public abstract class SingleTip extends Tip 
 {
-	protected int[] tip;
+	@ElementCollection
+	protected List<Integer> tip = new ArrayList<Integer>();
 	@ManyToOne
 	protected PermaTT permaTT;
-	@OneToOne
+
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIPTICKET_PERSISTENCEID")
 	protected TipTicket tipTicket;
 	@ManyToOne
 	protected GroupTip groupTip;
-
+	
 	
 	@Deprecated
 	protected SingleTip(){}
@@ -105,7 +121,7 @@ public abstract class SingleTip extends Tip
 				return -1;
 			
 			draw.removeTip(this);
-			tipTicket.removeTip(this);
+//			tipTicket.removeTip(this);
 			
 			return 0;
 		}
@@ -126,13 +142,13 @@ public abstract class SingleTip extends Tip
 	 * <li>   - check {@link WeeklyLottoTip.validateTip(int[] tip)} and {@link DailyLottoTip.validateTip(int[] tip)} for further failure codes
 	 * <ul>
 	 */
-	public int setTip(int[] tip)
+	public int setTip(ArrayList<Integer> tip)
 	{ 		
 		int result = this.validateTip(tip);
 		if(result != 0) return result;
 		
 		this.tip = tip;
-		DB_UPDATE();
+//		DB_UPDATE();
 		
 		return 0;
 	}
@@ -147,7 +163,7 @@ public abstract class SingleTip extends Tip
 	 * <li>-2 - not enough time left until the planned evaluation of the draw
 	 * <ul>
 	 */
-	public int validateTip(int[] tip)
+	public int validateTip(ArrayList<Integer> tip)
 	{
 		if(draw.isTimeLeftUntilEvaluationForChanges())
 			return 0;
@@ -155,10 +171,10 @@ public abstract class SingleTip extends Tip
 			return -2;
 	}
 	
-	public int[] getTip(){ return tip; }
+	public ArrayList<Integer> getTip(){ return (ArrayList<Integer>) tip; }
 	
 	public TipTicket getTipTicket(){ return tipTicket; }
 	public GroupTip getGroupTip(){ return groupTip; }
 	
-	public Customer getOwner(){ return tipTicket.getOwner(); }
+//	public Customer getOwner(){ return tipTicket.getOwner(); }
 }

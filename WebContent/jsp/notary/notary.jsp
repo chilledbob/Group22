@@ -88,6 +88,13 @@
 		<p>Copyright SuperLotterie ©</p>
 </div>
 
+<c:forEach var="blub" items="${drawlist1 }">
+	${blub.getId()}<br>
+</c:forEach>
+<c:forEach var="bla" items="${drawlist }">
+	${bla.getId() }
+</c:forEach>
+
 
 
 

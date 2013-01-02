@@ -104,6 +104,15 @@
 						<td><label for="accountNumber">Kontonummer</label></td>
 						<td><input name="accountNumber" id="accountNumber" type="text" size="30" maxlength="30" value="${accountNumber}"/></td>
 					</tr>
+					<tr>
+						<td>
+							<label for="age">Ich bin:</label>
+						</td>
+						<td>
+							<input type="radio" name="age" value="false" checked> noch nicht 18<br>
+							<input type="radio" name="age" value="true"> 18 oder älter
+						</td>
+					</tr>
 				</table>
 				<div class="button1"><button class="btn">abschicken</button></div>
 			</fieldset> 

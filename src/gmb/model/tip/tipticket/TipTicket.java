@@ -3,6 +3,7 @@ package gmb.model.tip.tipticket;
 import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
 import gmb.model.PersiObject;
+import gmb.model.PersiObjectSingleTable;
 
 import java.util.Date;
 
@@ -10,6 +11,10 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,24 +35,26 @@ import org.joda.time.DateTime;
  * a respective lottery drawing or football-toto evaluation.
  */
 @Entity
-public abstract class TipTicket extends PersiObject implements  GenericTT
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class TipTicket extends PersiObjectSingleTable implements  GenericTT
 {	
 	@Temporal(value = TemporalType.DATE)
 	protected Date purchaseDate;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="paidPurchasePrice"))
+	@AttributeOverride(name="myAmount", column= @Column(name="paidPurchasePrice", precision = 10, scale = 2))
 	protected CDecimal paidPurchasePrice;
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="perTicketPaidPurchasePrice"))
+	@AttributeOverride(name="myAmount", column= @Column(name="perTicketPaidPurchasePrice", precision = 10, scale = 2))
 	protected CDecimal perTicketPaidPurchasePrice;//the price of the corresponding SingleTT (the same like paidPurchasePrice for SingleTTs of course)
 	@Embedded
-	@AttributeOverride(name="myAmount", column= @Column(name="remainingValue"))
+	@AttributeOverride(name="myAmount", column= @Column(name="remainingValue", precision = 10, scale = 2))
 	protected CDecimal remainingValue;//decrement this by perTicketPaidPurchasePrice for each submitted tip (in the case of PermaTTs the treasury has to pay as soon this one goes under 0)
 	
 	@OneToOne
 	protected TicketPurchase ticketPurchaseId;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="USER_ID", referencedColumnName="USER_ID")
 	protected Customer owner;
 	protected int drawType;
 	
@@ -74,7 +81,8 @@ public abstract class TipTicket extends PersiObject implements  GenericTT
 
 			perTicketPaidPurchasePrice = this.getPricePerTicket();
 
-			(GmbFactory.new_TicketPurchase(this)).init();
+			ticketPurchaseId = GmbFactory.new_TicketPurchase(this);
+			this.ticketPurchaseId.init();
 			this.addToOwner();
 
 			DB_UPDATE(); 

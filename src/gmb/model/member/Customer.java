@@ -16,9 +16,15 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+
+import org.eclipse.persistence.annotations.JoinFetch;
+import org.eclipse.persistence.annotations.JoinFetchType;
 
 /**
  * The customer class representing the gambler.
@@ -34,6 +40,7 @@ public class Customer extends Member
 	protected List<Group> groups;
 	
 	@OneToMany(mappedBy="owner")
+	@JoinFetch(JoinFetchType.INNER)
 	protected List<WeeklyLottoSTT> weeklyLottoSTTs;
 	@OneToMany(mappedBy="owner")
 	protected List<DailyLottoSTT> dailyLottoSTTs;
@@ -44,11 +51,11 @@ public class Customer extends Member
 	@OneToMany(mappedBy="owner")
 	protected List<DailyLottoPTT> dailyLottoPTTs;
 	
-	@OneToMany
+	@OneToMany(mappedBy="member")
 	protected List<GroupMembershipApplication> groupInvitations;
 	@OneToMany
 	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
-	@OneToMany
+	@OneToMany(mappedBy="member")
 	protected List<GroupMembershipApplication> groupMembershipApplications;
 	
 
@@ -101,15 +108,15 @@ public class Customer extends Member
 	public boolean removeGroup(Group group){ boolean result = groups.remove(group); DB_UPDATE(); return result;}
 
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
- 	public LinkedList<Group> getGroups(){ return (LinkedList<Group>) groups; }
+ 	public List<Group> getGroups(){ return groups; }
  	
-	public LinkedList<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return (LinkedList<WeeklyLottoSTT>) weeklyLottoSTTs; }
-	public LinkedList<DailyLottoSTT> getDailyLottoSTTs(){ return (LinkedList<DailyLottoSTT>) dailyLottoSTTs; }
-	public LinkedList<TotoSTT> getTotoSTTs(){ return (LinkedList<TotoSTT>) totoSTTs; }
-	public LinkedList<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return (LinkedList<WeeklyLottoPTT>) weeklyLottoPTTs; }
-	public LinkedList<DailyLottoPTT> getDailyLottoPTTs(){ return (LinkedList<DailyLottoPTT>) dailyLottoPTTs; }
+	public List<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return weeklyLottoSTTs; }
+	public List<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }
+	public List<TotoSTT> getTotoSTTs(){ return totoSTTs; }
+	public List<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
+	public List<DailyLottoPTT> getDailyLottoPTTs(){ return dailyLottoPTTs; }
 	
-	public LinkedList<GroupMembershipApplication> getGroupInvitations(){ return (LinkedList<GroupMembershipApplication>) groupInvitations; }
-	public LinkedList<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return (LinkedList<GroupAdminRightsTransfereOffering>) groupAdminRightsTransfereOfferings; }
-	public LinkedList<GroupMembershipApplication> getGroupMembershipApplications(){ return (LinkedList<GroupMembershipApplication>) groupMembershipApplications; }	
+	public List<GroupMembershipApplication> getGroupInvitations(){ return groupInvitations; }
+	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
+	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 }
