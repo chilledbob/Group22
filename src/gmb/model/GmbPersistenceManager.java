@@ -152,8 +152,8 @@ public class GmbPersistenceManager
 	
 }
 
-////dummy required for unit tests of model code
-//
+//dummy required for unit tests of model code
+
 //public class GmbPersistenceManager 
 //{		
 //	public static Member add(Member obj){ return obj; }
@@ -179,4 +179,6 @@ public class GmbPersistenceManager
 //	public static void remove(Object obj){}
 //	
 //	public static void update(Object obj){}
+//	
+//	public static PersiObjectSingleTable add(PersiObjectSingleTable obj){return obj;}
 //}

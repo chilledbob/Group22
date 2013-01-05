@@ -55,23 +55,15 @@ public class TotoEvaluation extends Draw
 	
 	/**
 	 * [Intended for direct usage by controller]<br>
-	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
-	 * @return false if this Draw is already evaluated, otherwise true
+	 * Sets the results of the games for this TotoEvaluation. 
+	 * Has to be done before evaluation.
+	 * Create the actual result array containing only the general results of the games and copies exact results to gameData.
+	 * @param result
 	 */
-	public boolean evaluate(int[] result) 
-	{
-		if(evaluated) return false;
-		evaluated = true;
-		
+	public int[] setResult(int[] result)
+	{ 
 		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
-		
-		//withdraw all not submitted GroupTips associated with this draw:
-		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
-			for(TotoGroupTip tip : group.getTotoGroupTips())
-				if(!tip.isSubmitted() && tip.getDraw() == this)
-					tip.withdraw();
-		
-		//create the actual result array containing only the general results of the games, copy exact results to gameData:
+
 		int[] newResult = new int[9];
 		for(int i = 0; i < 9; ++i)
 		{
@@ -85,12 +77,42 @@ public class TotoEvaluation extends Draw
 				else
 					newResult[i] = 2;//visitor club wins
 		}
+		
+		DB_UPDATE(); 
+		
+		return newResult;
+	}
+	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
+	 * @return false if this Draw is already evaluated, otherwise true
+	 */
+	public boolean evaluate(int[] result) 
+	{
+		if(evaluated) return false;
+		evaluated = true;
+		
+		//withdraw all not submitted GroupTips associated with this draw:
+		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
+			for(TotoGroupTip tip : group.getTotoGroupTips())
+				if(!tip.isSubmitted() && tip.getDraw() == this)
+					tip.withdraw();
+		
+		//create the actual result array containing only the general results of the games, copy exact results to gameData:
+		int[] newResult = null;
+		if(result != null)
+		{
+			assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
+			newResult = setResult(result);
+		}
+
 		result = newResult;//just to make sure the right array is used later
 		
 		drawEvaluationResult = GmbFactory.new_ExtendedEvaluationResult(categoryCount);
 		
 		super.evaluate(newResult);//set actualEvaluationDate and init prizePotential 
-
+		
 		ArrayList<CDecimal> jackpot = Lottery.getInstance().getFinancialManagement().getJackpots().getTotoJackpot();
 
 		((ExtendedEvaluationResult) drawEvaluationResult).createJackpotImageBefore(jackpot);
@@ -244,7 +266,7 @@ public class TotoEvaluation extends Draw
 		
 		DB_UPDATE(); 
 		
-		return false;
+		return true;
 	}
 	
 	/**
