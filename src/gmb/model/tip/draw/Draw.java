@@ -207,8 +207,8 @@ public abstract class Draw extends PersiObjectSingleTable
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
-//		int result = check_createAndSubmitSingleTip(ticket, tipTip);
-//		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
+		int result = check_createAndSubmitSingleTip(ticket, tipTip);
+		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
 		
 		SingleTip tip = this.createSingleTipPersistent(ticket);
 		tip.setTip(tipTip);

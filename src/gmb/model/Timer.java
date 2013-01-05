@@ -1,6 +1,7 @@
 package gmb.model;
 
 import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.draw.TotoEvaluation;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -14,6 +15,7 @@ public class Timer extends DefaultTime
 	protected Duration offset1 = new Duration(0);
 	protected Duration offset2 = new Duration(0);
 
+	protected boolean totoEvaluationAutoEvaluation = true;
 	protected boolean dailyLottoDrawAutoCreation = true;
 	protected boolean dailyLottoDrawAutoEvaluation = true;
 
@@ -71,6 +73,21 @@ public class Timer extends DefaultTime
 		}
 	}
 
+	protected void evaluateUnevaluatedTotoEvaluations()
+	{
+		if(!totoEvaluationAutoEvaluation) return;
+
+		for(TotoEvaluation eval : Lottery.getInstance().getTipManagement().getTotoEvaluations())
+			if(eval.getEvaluated() == false)
+			{
+				if(eval.getPlanedEvaluationDate().isBefore(getDateTime()))
+				{			
+					eval.evaluate(null);
+					eval.getDrawEvaluationResult().setEvaluationDate(eval.getPlanedEvaluationDate());
+				}
+			}
+	}
+
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Time simulation for testing purposes.
@@ -84,6 +101,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -99,6 +117,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -114,6 +133,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -129,6 +149,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -144,6 +165,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -159,6 +181,7 @@ public class Timer extends DefaultTime
 
 		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
 		evaluateUnevaluatedDailyLottoDrawings(); 
+		evaluateUnevaluatedTotoEvaluations();
 	}
 
 	/**
@@ -229,4 +252,23 @@ public class Timer extends DefaultTime
 	 * Deactivates the automatic evaluation of DailyLottoDraws.
 	 */
 	public void resetDailyLottoDrawAutoEvaluation(){ dailyLottoDrawAutoEvaluation = false; }
+	
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Returns whether TotoEvaluations will be evaluated automatically.
+	 * @return dailyLottoDrawAutoCreation
+	 */
+	public boolean isTotoEvaluatioAutoEvaluation(){ return totoEvaluationAutoEvaluation; }
+
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Activates the automatic evaluation of TotoEvaluations.
+	 */
+	public void setTotoEvaluatioAutoEvaluation(){ totoEvaluationAutoEvaluation = true; }
+
+	/**
+	 * [Intended for direct usage by controller]<br>
+	 * Deactivates the automatic evaluation of TotoEvaluations.
+	 */
+	public void resetTotoEvaluatioAutoEvaluation(){ totoEvaluationAutoEvaluation = false; }
 }

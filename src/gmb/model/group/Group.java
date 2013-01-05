@@ -337,7 +337,7 @@ public class Group extends PersiObject
 	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public List<GroupMembershipInvitation> getgroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
