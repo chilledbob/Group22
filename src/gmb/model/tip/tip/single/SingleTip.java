@@ -113,7 +113,7 @@ public abstract class SingleTip extends Tip
 				return -1;
 			
 			draw.removeTip(this);
-//			tipTicket.removeTip(this);
+			tipTicket.removeTip(this);
 			
 			return 0;
 		}

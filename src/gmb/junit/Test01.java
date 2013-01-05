@@ -27,6 +27,7 @@ import gmb.model.request.RequestState;
 import gmb.model.request.data.MemberDataUpdateRequest;
 import gmb.model.request.data.RealAccountDataUpdateRequest;
 import gmb.model.request.group.GroupMembershipApplication;
+import gmb.model.request.group.GroupMembershipInvitation;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
@@ -109,6 +110,7 @@ public class Test01
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
 		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoCreation();//don't automatically create DailyLottoDrawings for now
+		Lottery.getInstance().getTimer().resetTotoEvaluatioAutoEvaluation();
 		
 		Adress admin1Adress = GmbFactory.new_Adress("Eich Strasse", "18", "90378", "SomeTown");
 		MemberData admin1Data = GmbFactory.new_MemberData("Heinrich", "Siegel", new DateTime(1950,1,1,0,0), "892537", "heino@mail.gmb", admin1Adress);
@@ -259,7 +261,7 @@ public class Test01
 		Lottery.getInstance().getTimer().addMinutes(5);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
 
 		//smart cus1(groupadmin) browsing group1's lists:
-		for(GroupMembershipApplication invitation : group1.getGroupInvitations())
+		for(GroupMembershipInvitation  invitation : group1.getGroupInvitations())
 		{
 			if(invitation.getMember() == cus5)
 				invitation.withdraw();//if Heino says so then better not...
@@ -353,7 +355,7 @@ public class Test01
 		assertEquals(false, group3.getGroupMembers().contains(cus1));
 		assertEquals(false, group3.getGroupMembers().contains(cus4));
 		assertEquals(null, group3.getGroupAdmin());
-		assertEquals(RequestState.Withdrawn, ((LinkedList<GroupMembershipApplication>)cus3.getGroupInvitations()).getLast().getState());
+		assertEquals(RequestState.Withdrawn, ((LinkedList<GroupMembershipInvitation>)cus3.getGroupInvitations()).getLast().getState());
 		//=========================================================================================================================//TIPTICKET TESTs NO 1
 
 		Lottery.getInstance().getTimer().addDays(1);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
@@ -813,7 +815,8 @@ public class Test01
 		//=========================================================================================================================//TOTO-EVAL EVALUATION
 		
 		Lottery.getInstance().getTimer().addDays(2);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
-		draw3.evaluate(new int[]{1,1, 2,2, 0,0, 2,0, 1,0, 3,2, 1,3, 0,2, 0,1});
+		assertEquals(false,draw3.isEvaluated());
+		assertEquals(true, draw3.evaluate(new int[]{1,1, 2,2, 0,0, 2,0, 1,0, 3,2, 1,3, 0,2, 0,1}));
 
 		assertEquals(1, draw3.getDrawEvaluationResult().getTipsInCategory(0).size());
 		assertEquals(1, draw3.getDrawEvaluationResult().getTipsInCategory(1).size());
@@ -993,11 +996,11 @@ public class Test01
 		assertEquals(1, DLDrawX01.getDrawEvaluationResult().getTipsInCategory(6).size());
 		assertEquals(1, DLDrawX01.getDrawEvaluationResult().getTipsInCategory(5).size());
 		
-		assertEquals(false, Lottery.getInstance().getTipManagement().getDailyLottoDrawings().getLast().isEvaluated());
+		assertEquals(false, ((LinkedList<DailyLottoDraw>)(Lottery.getInstance().getTipManagement().getDailyLottoDrawings())).getLast().isEvaluated());
 		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoCreation();
 		Lottery.getInstance().getTimer().resetDailyLottoDrawAutoEvaluation();
 		
-		DailyLottoDraw  DLDrawX021 = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().getLast();//the last automatically created draw
+		DailyLottoDraw  DLDrawX021 = ((LinkedList<DailyLottoDraw>)(Lottery.getInstance().getTipManagement().getDailyLottoDrawings())).getLast();//the last automatically created draw
 		assertEquals(true, DLDrawX021.evaluate(new int[]{0,1,2,3,0,0,0,0,0,0}));
 		assertEquals(4, DLDrawX021.getDrawEvaluationResult().getWinnings().size());
 		
@@ -1086,6 +1089,12 @@ public class Test01
 		assertNull(cus4TSTT01.getTip());
 		assertNull(cus4TSTT01.getTip());
 		assertNull(cus4TSTT01.getTip());
+		
+		assertEquals(false, TotoEvalX01.isEvaluated());
+		Lottery.getInstance().getTimer().setTotoEvaluatioAutoEvaluation();
+		Lottery.getInstance().getTimer().addDays(3);//<------------------------------------------------------------------------------------------------[TIME SIMULATION]
+		assertEquals(true, TotoEvalX01.isEvaluated());
+		Lottery.getInstance().getTimer().resetTotoEvaluatioAutoEvaluation();
 		
 		printCurrentTimeToConsol("Withdrawing of group tips has been tested.");//<------------------------------------------------------------------<TIMELINE UPDATE>
 	}
