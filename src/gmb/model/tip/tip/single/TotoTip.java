@@ -55,13 +55,13 @@ public class TotoTip extends SingleTip
 	 * <li> 3 - a tipped number is smaller than 0 oder greater than 2
 	 * </ul>
 	 */
-	public int validateTip(ArrayList<Integer> tip)
+	public int validateTip(int[] tip)
 	{ 
-		assert tip.size() == 9 : "Wrong tip length (!=9) given to TotoTip.setTip(int[] tip)!";
+		assert tip.length == 9 : "Wrong tip length (!=9) given to TotoTip.setTip(int[] tip)!";
 		
 		for(int i = 0; i < 9; ++i)
 		{
-			if(tip.get(i) < 0 || tip.get(i) > 2)
+			if(tip[i] < 0 || tip[i] > 2)
 				return 3;
 		}
 		

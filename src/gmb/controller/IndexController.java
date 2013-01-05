@@ -1,8 +1,16 @@
 package gmb.controller;
 
+import java.rmi.RemoteException;
+
+import gmb.model.GmbPersistenceManager;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import de.msiggi.Sportsdata.Webservices.Matchdata;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoap;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoapProxy;
 
 @Controller	
 	public class IndexController {
@@ -17,14 +25,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 		@RequestMapping("/index")
 		public String index2() {
-			
+			GmbPersistenceManager.getGroup("TrollScheiße");
 			return "index";
 		}
 		
 		@RequestMapping("/home")
-		public ModelAndView home() {
+		public ModelAndView home(){
 			ModelAndView mav = new ModelAndView();
-			mav.setViewName("index");
+			mav.setViewName("home");
 			return mav;
 	    }
 		

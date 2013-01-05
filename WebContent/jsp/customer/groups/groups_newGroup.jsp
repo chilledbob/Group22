@@ -32,6 +32,16 @@
 
 			<section>Erstellen</section>
 			
+			<c:url value="showInvitations" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
+			
+			<c:url value="showApplications" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
+			
 			<c:url value="myGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
@@ -45,19 +55,15 @@
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content" >
+			<H4 align="center">- Gruppen Erstellen -</H4>
 			<c:url value="customerGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
 			<div align="center"><a href ="${url}">Abbrechen</a></div>      
-			<p/>
-			<H4 align="center">- Gruppen Erstellen -</H4>
+			<div align="center">${comment}</div>
+			
 			<form id="form" action="createNewGroup" method="post" style="border:0px;"> 
-				<div class="failComment">${comment}</div>
 				<table>
-					<tr>
-					<th></th>
-					<th></th>
-				</tr>
 				<tr>
 					<td><label for="groupName">Name</label></td>
 					<td><input name="groupName" id="groupName"  type="text" size="30" maxlength="30"/></td> 

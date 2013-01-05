@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gmb.model.Lottery;
-import gmb.model.member.Customer;
 import gmb.model.tip.draw.Draw;
 import gmb.model.tip.tip.Tip;
 import gmb.model.tip.tip.group.GroupTip;
@@ -12,19 +11,13 @@ import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.PermaTT;
 import gmb.model.tip.tipticket.type.GenericTT;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
-import org.eclipse.persistence.annotations.JoinFetch;
-import org.eclipse.persistence.annotations.JoinFetchType;
-import org.eclipse.persistence.annotations.ReadOnly;
 
 /**
  * Abstract super class for all tip classes which
@@ -33,8 +26,7 @@ import org.eclipse.persistence.annotations.ReadOnly;
 @Entity
 public abstract class SingleTip extends Tip 
 {
-	@ElementCollection
-	protected List<Integer> tip = new ArrayList<Integer>();
+	protected int[] tip;
 	@ManyToOne
 	protected PermaTT permaTT;
 
@@ -142,13 +134,13 @@ public abstract class SingleTip extends Tip
 	 * <li>   - check {@link WeeklyLottoTip.validateTip(int[] tip)} and {@link DailyLottoTip.validateTip(int[] tip)} for further failure codes
 	 * <ul>
 	 */
-	public int setTip(ArrayList<Integer> tip)
+	public int setTip(int[] tip)
 	{ 		
 		int result = this.validateTip(tip);
 		if(result != 0) return result;
 		
 		this.tip = tip;
-//		DB_UPDATE();
+		DB_UPDATE();
 		
 		return 0;
 	}
@@ -156,14 +148,14 @@ public abstract class SingleTip extends Tip
 	/**
 	 * [Intended for direct usage by controller][check-method]<br>
 	 * Checks whether "tip" would be a valid result to be tipped.
-	 * @param tip
+	 * @param tip2
 	 * @return
 	 * <ul>
 	 * <li> 0 - successful
 	 * <li>-2 - not enough time left until the planned evaluation of the draw
 	 * <ul>
 	 */
-	public int validateTip(ArrayList<Integer> tip)
+	public int validateTip(int[] tip2)
 	{
 		if(draw.isTimeLeftUntilEvaluationForChanges())
 			return 0;
@@ -171,7 +163,7 @@ public abstract class SingleTip extends Tip
 			return -2;
 	}
 	
-	public ArrayList<Integer> getTip(){ return (ArrayList<Integer>) tip; }
+	public int[] getTip(){ return tip; }
 	
 	public TipTicket getTipTicket(){ return tipTicket; }
 	public GroupTip getGroupTip(){ return groupTip; }

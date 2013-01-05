@@ -1,6 +1,8 @@
 package gmb.model.tip.tipticket.single;
 
 import gmb.model.CDecimal;
+import gmb.model.GmbFactory;
+import gmb.model.GmbPersistenceManager;
 
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
@@ -32,6 +34,7 @@ public abstract class SingleTT extends TipTicket
 	{
 		if(this.tip.equals(tip))
 		{
+			GmbPersistenceManager.remove(this.tip);
 			this.tip = null;
 			DB_UPDATE(); 
 			

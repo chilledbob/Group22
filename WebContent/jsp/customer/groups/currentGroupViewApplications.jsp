@@ -35,6 +35,16 @@
 			</c:url>
 			<section><a href ="${url}">Erstellen</a></section>
 			
+			<c:url value="showInvitations" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Einladungen (0)</a></section>
+			
+			<c:url value="showApplications" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Bewerbungen (0)</a></section>
+			
 			<c:url value="myGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier }"/>
 			</c:url>
@@ -51,54 +61,67 @@
 	<div class="main_content_full">
 		<div class="current_content">		
 			
+			<h4 align="center">- Bewerbungen -</h4>
+			
 			<c:url value="currentGroupView" var="url1">
 				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.getName()}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<c:url value="currentGroupViewTips_Admin" var="url2">
 				<c:param name="uid" value="${currentUser.identifier}" />
 				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
-			<c:url value="currentGroupView" var="url3">
+			<c:url value="currentGroupViewApplications" var="url3">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<c:url value="closeGroup" var="url4">
+			<c:url value="currentGroupViewInvitations" var="url4">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
 			<c:url value="myGroups" var="url5">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
+			<c:url value="closeGroup" var="url6">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
 			
 			<div align="center">
-				<a href ="${url1}">Mitglieder</a> <a href ="${url2}">Tipps</a>    
-				<a href ="${url5}">Abbrechen</a>
-			</div>
-		<p/>	
-		<h4 align="center">- Bewerbungen -</h4>
+				<a href ="${url1}">Mitglieder</a>
+				<a href ="${url2}">Tipps</a>
+				<a href ="${url3}">Bewerbungen</a>
+				<a href ="${url4}">Einladungen</a> 
+				<a href ="${url6}">Schliessen</a>    
+				   <a href ="${url5}">Abbrechen</a>
+			</div>	
+			<br>		
+		
 		<table>
+		
 				<tr>
 					<th>Bewerber</th>
-					<th>Ablehnen</th>
-					<th>Akzeptieren</th>
+					<th>Status</th>
+					<th>ID</th>
+					<th>Aktion</th>
 				</tr>
-				<c:forEach items="${openApplList}" var="al" varStatus="status">
-					<tr>
-						<td>${al.member}</td>
-						<td>
-							<c:url value="refuseApplication" var="url">
-								<c:param name="uid" value="${currentUser.identifier}" />
-								<c:param name="applId" value="${status.index}" />
-							</c:url>
-							<section><a href ="${url}">X</a></section>
-						</td> 
-						<td>
-							<c:url value="acceptApplication" var="url">
-								<c:param name="uid" value="${currentUser.identifier}" />
-								<c:param name="applId" value="${status.index}" />
-							</c:url>
-							<section><a href ="${url}">ok</a></section>
-						</td>
-					</tr>
+				<c:forEach items="${applList}" var="alItem" varStatus="status">
+					<c:if test="${alItem.getState().toString()=='Unhandled'}">
+						<tr>
+							<td>${alItem.member}</td>
+							<td>${alItem.getState().toString()}</td>
+							<td>${status.index}</td>
+							<td>
+								<c:url value="refuseApplication" var="urlRef">
+									<c:param name="uid" value="${currentUser.identifier}" />
+									<c:param name="applId" value="${status.index}" />
+								</c:url>
+								<c:url value="acceptApplication" var="urlAccept">
+									<c:param name="uid" value="${currentUser.identifier}" />
+									<c:param name="applId" value="${status.index}" />
+								</c:url>
+								<section><a href ="${urlRef}">X</a></section><section><a href ="${urlAccept}">ok</a></section>
+							</td>
+						</tr>
+					</c:if>
 				</c:forEach>
 			</table>
 			

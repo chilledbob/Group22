@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Banking Customer</title>
+<title>Edit Account</title>
 <link rel="stylesheet" type="text/css" 	href="<c:url value="/res/css/css.css" />" />
 </head>
 <body>
@@ -36,7 +36,6 @@
 				</th>
 				</tr>
 			</table>
-		
 	</div>
 			
 </div>
@@ -54,58 +53,65 @@
 		</div>	
 		
 		<div class="sub_navi" >
-			<c:url value="editUser" var="url">
+			<section>Account</section>
+			<c:url value="bankingCustomer" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Account</a></section>
-			<section>Banking</section>
+			<section><a href ="${url}">Banking</a></section>
 		</div>	
 	</div>
 </div>
 		
 <div id="middle">
 
-	<div class="main_content">
+	<div class="main_content_full">
 		<div class="current_content">
-		<p style="text-align:left;">Nutzer</p>
-    <br>BLZ : ${currentUser.getBankAccount().getRealAccountData().getBankCode()}
-    <br>KtNr.: ${currentUser.getBankAccount().getRealAccountData().getAccountNumber()}
-    <br>Kontostand : ${currentUser.getBankAccount().getCredit().toString()}
-    <br>
-<form id="form" action="loadingBankAccount" method="post" style="border:0px;"> 
-			<fieldset style="border:0px;"> 	
+			<h4 align="center">- Kontodaten von ${currentUser.identifier} -</h4>
+		
+	   		  <c:url value="editUser" var="url1">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="editCustomerPassword" var="url2">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="editCustomerRealAccount" var="url3">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+	   		<c:url value="cancelEditingCustomer" var="url4">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+	    	
+			<div align="center">
+				<a href ="${url1}">Nutzerdaten</a>
+				<a href ="${url2}">Passwort</a>
+				<a href ="${url3}">Kontodaten</a>  
+				<a href ="${url4}">Abbrechen</a>
+			</div>	
+			<br><div align="center">${comment}</div><br>	
+    	
+		<form id="form" action="changeCustomerRealAccount" method="post" style="border:0px;"> 
 			<table>
 				<tr>
-					<td><input name="uid" id="uid"  type="hidden" size="15" maxlength="15" value="${currentUser.identifier}"/></td> 
-					<td><label for="load">Aufladen</label></td>
-					<td><input name="load" id="load"  type="text" size="15" maxlength="15"/></td> 
-					<td><div class="button1"><button class="btn">abschicken</button></div>
+					<td><label for="newBankCode">Bankleitzahl</label></td>
+					<td><input name="newBankCode" id="newBankCode" type="text" size="30" maxlength="30" value="${currentUser.getBankAccount().getRealAccountData().getBankCode()}"/></td>
 				</tr>
-			</table>
-			</fieldset>
-		</form>
-		<form id="form" action="chargingBankAccount" method="post" style="border:0px;"> 
-			<fieldset style="border:0px;"> 	
-			<table>
 				<tr>
-				<td><input name="uid" id="uid"  type="hidden" size="15" maxlength="15" value="${currentUser.identifier}"/></td>
-					<td><label for="load">Abbuchen</label></td>
-					<td><input name="load" id="load"  type="text" size="15" maxlength="15"/></td> 
-					<td><div class="button1"><button class="btn">abschicken</button></div>
+					<td><label for="newAccountNumber">Kontonummer</label></td>
+					<td><input name="newAccountNumber" id="newAccountNumber" type="text" size="30" maxlength="30" value="${currentUser.getBankAccount().getRealAccountData().getAccountNumber()}"/></td>
 				</tr>
 			</table>
-			</fieldset>
-		</form>
-	
+			
+			<input name="uid" id="uid" type="hidden" value="${currentUser.identifier}"/>
+			<div align="center" class="button"><button class="btn">Ändern</button></div>
+		</form> 
+		
+			
 	</div>
+</div>
+	
+
 </div>
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>
 </div>
-
-
-
-
-</body>
-</html>

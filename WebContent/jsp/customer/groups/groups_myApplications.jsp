@@ -45,7 +45,10 @@
 			</c:url>
 			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
 			
-			<section>Gruppen</section>
+			<c:url value="myGroups" var="url">
+				<c:param name="uid" value="${currentUser.identifier }"/>
+			</c:url>
+			<section><a href="${url }">Gruppen</a></section>
 
 		</div>	
 	</div>
@@ -54,69 +57,49 @@
 	
 <div id="middle">
 	<div class="main_content_full">
-		<div class="current_content" >
-			<H4 align="center">- Meine Gruppen -</H4>
-			<c:url value="myGroups" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="allGroups" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<div align="center"><a href ="${url1}">Eigene</a> <a href ="${url2}">Alle</a></div>
+		<div class="current_content">		
 			
-			<table align="center">
+			<h4 align="center">- Meine Bewerbungen -</h4>
+			
+			
+		
+		<table>
 				<tr>
-					<th>Name</th>
-					<th>Admin</th>
-					<th>Mitgl</th>
-					<th>Bew</th>
+					<th>Gruppe</th>
 					<th>Status</th>
+					<th>ID</th>
 					<th>Aktion</th>
 				</tr>
-				<sp:forEach items="${groupList}" var="gl">
-					<tr>
-						<td>${gl.getName()}</td>
-						<td>${gl.getGroupAdmin()}</td>
-						<td>${gl.getGroupMembers().size()}</td> 
-						<td>${gl.countUnhandled()}</td> 
-							<c:choose>
-								<c:when test="${gl.getGroupAdmin().equals(currentUser)}">
-									<td>Admin</td>
-									<td>
-										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
-									</td>
-								</c:when>
-								<c:when test="${gl.getGroupMembers().contains(currentUser)}">
-									<td>Mitglied</td>
-									<td>
-										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
-									</td>
-								</c:when>
-								<c:otherwise>
-									<td></td>
-									<td>
-										<c:url value="applyGroupMembership" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Bewerben</a> 
-									</td>
-								</c:otherwise>
-							</c:choose>
-					</tr>
-				</sp:forEach>
+				<c:forEach items="${myApplList}" var="alItem" varStatus="status">
+					<c:if test="${alItem.getState().toString()=='Unhandled'}">
+						<tr>
+							<td>${alItem.getGroup().getName()}</td>
+							<td>${alItem.getState().toString()}</td>
+							<td>${status.index}</td>
+							<td>
+								<c:url value="withdrawApplication" var="url">
+									<c:param name="uid" value="${currentUser.identifier}" />
+									<c:param name="applId" value="${status.index}" />
+								</c:url>
+								<section><a href ="${url}">Aufheben</a></section>
+							</td>
+						</tr>
+					</c:if>
+				</c:forEach>
 			</table>
+			
+			
+		</div>	
+
 		</div>		
 	</div>
-</div>
-				
+	
 
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>
 </div>
+
+
+</body>
+</html>

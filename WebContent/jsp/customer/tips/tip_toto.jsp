@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Tippverwaltung</title>
 <link rel="stylesheet" type="text/css" 	href="<c:url value="/res/css/css.css" />" />
 </head>
@@ -52,9 +52,8 @@
 <div id="middle">
 	<div class="main_content">
 
-				<div class="current_content">
-			
-				
+		<div class="current_content">
+		
 	<c:choose>
 	<c:when test="${confirm}">
 	
@@ -91,114 +90,8 @@
 		<section><a href="${url}">neuer Tipp</a></section>
 	
 	</c:when>
-	<c:when test="${confirm2}">
-	<table border="1" cellspacing="1" cellpadding="1">
-	<tr>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2000" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2000</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2001" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2001</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2002" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2002</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2003" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2003</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2004" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2004</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2005" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2005</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2006" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2006</a>	
-		</td>
-		</tr>
-		<tr>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2007" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2007</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2008" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2008</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2009" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2009</a>	
-			<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2010" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2010</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2011" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2011</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2012" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2012</a>	
-		</td>
-		<td>
-			<c:url value="Saison" var="url">
-			<c:param name="saison" value="2013" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2013</a>	
-		</td>
-	</tr>
-	</table>
-	
-	</c:when>
-	
 	<c:when test="${confirm1}">
+	<h3>Wählen Sie einen Spieltag der aktuellen Saison 2012/2013</h3>
 	<table border="1" cellspacing="1" cellpadding="1">
 	<tr> 
 		<td>
@@ -391,8 +284,11 @@
 		</table>	
 	</c:when>
 	<c:otherwise>
-	
-<form id="form" action="TotoConfirm?GroupOrderID=${goid }" method="post" style="border:0px;">
+		<c:url var="url" value="TotoConfirm">
+			<c:param name="GroupOrderID" value="${goid }" />
+			<c:param name="uid" value="${currentUser.identifier }" />
+		</c:url>
+<form action="${url }" method="post">
   <table border="1">
 		<tr>
 			<th> SpielID</th>
@@ -430,12 +326,8 @@
  			</c:forEach>
 	</table>
 	0 (Heimmannschaft gewinnt), 1 (Gastmannschaft gewinnt) oder 2 (Unentschieden)
-
-			<input type="hidden" name="uid" value="${currentUser.identifier}" > 
-					<input type="submit" class="btn" name="type" value="Einzeltip abschicken">
-					<input type="submit" class="btn" name="type" value="Gruppentip abschicken">
-	
-</form>
+			<button class="btn" >Einzeltip abschicken</button>
+		</form>
 	</c:otherwise>  
 	
 </c:choose>

@@ -49,8 +49,7 @@ import org.joda.time.Duration;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Draw extends PersiObjectSingleTable
 {
-	@ElementCollection
-	protected List<Integer> result = new ArrayList<Integer>();
+	protected int[] result;
 	
 	protected boolean evaluated = false;
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -68,7 +67,6 @@ public abstract class Draw extends PersiObjectSingleTable
 	protected EvaluationResult drawEvaluationResult;
 
 	@OneToMany(mappedBy="draw")
-//	@JoinTable(joinColumns = @JoinColumn(name = "PERSISTENCEID"), inverseJoinColumns = @JoinColumn(name="DRAW_PERSISTENCEID"))
 	protected List<SingleTip> singleTips;
 	@OneToMany(mappedBy="draw")
 	protected List<GroupTip> groupTips;
@@ -104,7 +102,7 @@ public abstract class Draw extends PersiObjectSingleTable
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return false if this Draw is already evaluated, otherwise true
 	 */
-	public boolean evaluate(ArrayList<Integer> result)
+	public boolean evaluate(int[] result)
 	{	
 		if(this.result == null)
 		this.result = result; 
@@ -165,7 +163,7 @@ public abstract class Draw extends PersiObjectSingleTable
 	 * <li> 5 - the ticket is already associated with this draw
 	 * </ul>
 	 */
-	public int check_createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
+	public int check_createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
 		SingleTip tip = this.createSingleTipSimple(ticket);
 
@@ -180,6 +178,7 @@ public abstract class Draw extends PersiObjectSingleTable
 		if(result2 != 0) return result2;
 
 		ticket.removeTip(tip);//clean up
+		
 		
 		return 0;			
 	}
@@ -196,7 +195,7 @@ public abstract class Draw extends PersiObjectSingleTable
 	 * <li>-1 - the duration of the "PermaTT" has expired
 	 * <li> 1 - the "SingleTT" is already associated with another "SingleTip"
 	 * <li> [2 - the list of the "PermaTT" already contains the "tip"]
-	 * <li> 3 - a tipped number is smaller than 1 oder greater than 49
+	 * <li> 3 - a tipped number is smaller than 1 or greater than 49
 	 * <li> 4 - the same number has been tipped multiple times
 	 * <li> 5 - the ticket is already associated with this draw
 	 * </ul>
@@ -206,10 +205,10 @@ public abstract class Draw extends PersiObjectSingleTable
 	 * <li> var1 != 0 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
-		int result = check_createAndSubmitSingleTip(ticket, tipTip);
-		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
+//		int result = check_createAndSubmitSingleTip(ticket, tipTip);
+//		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
 		
 		SingleTip tip = this.createSingleTipPersistent(ticket);
 		tip.setTip(tipTip);
@@ -279,7 +278,7 @@ public abstract class Draw extends PersiObjectSingleTable
 		if(isTimeLeftUntilEvaluationForSubmission())
 		{
 			singleTips.add(tip); 
-//			DB_UPDATE(); 
+			DB_UPDATE(); 
 			
 			return true;
 		}
@@ -308,7 +307,8 @@ public abstract class Draw extends PersiObjectSingleTable
 
 		if(isTimeLeftUntilEvaluationForSubmission())
 		{
-			boolean result = singleTips.remove(tip); 
+			boolean result = singleTips.remove(tip);
+			GmbPersistenceManager.remove(tip);
 			DB_UPDATE(); 
 			
 			return result;
@@ -323,7 +323,8 @@ public abstract class Draw extends PersiObjectSingleTable
 
 		if(isTimeLeftUntilEvaluationForSubmission())
 		{
-			boolean result = groupTips.remove(tip); 
+			boolean result = groupTips.remove(tip);
+			GmbPersistenceManager.remove(tip);
 			DB_UPDATE(); 
 			
 			return result;
@@ -344,7 +345,7 @@ public abstract class Draw extends PersiObjectSingleTable
 	public DateTime getPlanedEvaluationDate(){ return new DateTime(planedEvaluationDate); }
 	public DateTime getActualEvaluationDate(){ return new DateTime(drawEvaluationResult.getEvaluationDate()); }
 
-	public ArrayList<Integer> getResult(){ return (ArrayList<Integer>) result; }
+	public int[] getResult(){ return result; }
 	
 	/**
 	 * [intended for direct usage by controller]

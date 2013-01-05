@@ -76,6 +76,6 @@ public class PrizeCategories extends PersiObject
 	public void setTotoCategories(List<CDecimal> totoCategories){ this.totoCategories = totoCategories; DB_UPDATE(); }	
 	
 	public ArrayList<CDecimal> getWeeklyLottoCategories(){ return new ArrayList<CDecimal>(weeklyLottoCategories); }
-	public ArrayList<CDecimal> getDailyLottoCategories(){ return (ArrayList<CDecimal>)dailyLottoCategories; }
-	public ArrayList<CDecimal> getTotoCategories(){ return (ArrayList<CDecimal>)totoCategories; }
+	public ArrayList<CDecimal> getDailyLottoCategories(){ return new ArrayList<CDecimal>(dailyLottoCategories); }
+	public ArrayList<CDecimal> getTotoCategories(){ return new ArrayList<CDecimal>(totoCategories); }
 }

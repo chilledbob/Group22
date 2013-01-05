@@ -1,15 +1,27 @@
 package gmb.model;
 
+import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.salespointframework.core.shop.Shop;
 import org.salespointframework.core.user.UserIdentifier;
+
+import de.msiggi.Sportsdata.Webservices.Matchdata;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoap;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoapProxy;
 
 import gmb.model.Lottery;
 import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.tip.*;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.WeeklyLottoDraw;
+import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 import gmb.model.financial.*;
@@ -51,6 +63,8 @@ public class Main {
 
 	private void initData() {
 		if(GmbPersistenceManager.get(new UserIdentifier("admin")) == null){
+		
+		Lottery.getInstance().getTimer().setReferenceDate(new DateTime(2012,7,31,12,0,0,0));
 		Adress a = GmbFactory.new_Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = GmbFactory.new_MemberData("a","b",d,"c","d",a);
@@ -117,7 +131,35 @@ public class Main {
 			}
 		}
 		
+		
+		
+//		------------------------------------------------------------------------------------
+//		SportsdataSoap sportDataSoup = new SportsdataSoapProxy().getSportsdataSoap();
+//		Matchdata[] data = null;
+//		Matchdata[] matchdaydata = new Matchdata[9];
+//		ArrayList<FootballGameData> footballData = new ArrayList<FootballGameData>();
+//		
+//		try {
+//			data=sportDataSoup.getMatchdataByLeagueSaison("bl1", "2012");
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		for(int i = 0; i < 34; i++){
+//			footballData.clear();
+//			for(int j = 0; j < 9; j++){
+//				matchdaydata[j] = data[i*9+j];
+//			}
+//			for(int k = 0; k < 9; k++){
+//				FootballGameData fgd = GmbFactory.new_FootballGameData(new DateTime(matchdaydata[k].getMatchDateTime().getTime()), matchdaydata[k].getNameTeam1(), matchdaydata[k].getNameTeam2());
+//				footballData.add(fgd);
+//			}
+//			
+//			GmbFactory.new_TotoEvaluation(new DateTime(footballData.get(0).getMatchDay()), footballData);
+//		}
+		
 		}
+		
 	}
 }
 

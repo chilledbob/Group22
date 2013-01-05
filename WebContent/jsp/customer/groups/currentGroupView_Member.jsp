@@ -35,6 +35,16 @@
 			</c:url>
 			<section><a href ="${url}">Erstellen</a></section>
 			
+			<c:url value="showInvitations" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Einladungen (0)</a></section>
+			
+			<c:url value="showApplications" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Bewerbungen (0)</a></section>
+			
 			<c:url value="myGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier }"/>
 			</c:url>

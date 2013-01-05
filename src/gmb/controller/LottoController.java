@@ -22,10 +22,13 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.PTTDuration;
+import gmb.model.tip.tipticket.perma.PermaTT;
+import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
 import gmb.model.tip.tipticket.single.DailyLottoSTT;
 import gmb.model.tip.tipticket.single.SingleTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 
+import org.joda.time.DateTime;
 import org.salespointframework.core.user.Capability;
 import org.salespointframework.core.user.UserIdentifier;
 import org.springframework.stereotype.Controller;
@@ -37,7 +40,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LottoController {
 
-	ArrayList<Integer> lottoliste=new ArrayList<Integer>();
+	ArrayList<Integer> lottoliste= new ArrayList<Integer>(7);
+	int[] tipliste = new int[7];
 	static int index=0;
 	
 	
@@ -63,8 +67,8 @@ public class LottoController {
 			@RequestParam("Zahl") int zahl,
 			@RequestParam("uid") UserIdentifier uid
 			)throws ServiceException, RemoteException{
-		if(lottoliste.contains(new Integer(zahl))){
-			lottoliste.remove(zahl);
+		if(lottoliste.equals(zahl)){
+			lottoliste.remove(new Integer(zahl));
 			index--;
 			mav.setViewName("customer/tips/tip_lotto");
 			mav.addObject("confirm", false);
@@ -101,21 +105,38 @@ public class LottoController {
 		if(index == 7){
 		mav.setViewName("customer/tips/tip_lotto");
 		mav.addObject("confirm", true);
-		
+		for(int i = 0; i < 7; i++){
+			tipliste[i] = lottoliste.get(i);
+		}
 		if(tipType.equals(new String("single"))){
 			ReturnBox<Integer, WeeklyLottoSTT> rb = GmbFactory.createAndPurchase_WeeklyLottoSTT(currentUser);
 			if(rb.var1 == 0 ){
 				SingleTT ticket = rb.var2;
 				int last = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().size()-1;
 				WeeklyLottoDraw draw = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().get(last);
-				SingleTip tip=draw.createAndSubmitSingleTip(ticket, lottoliste).var2;
+				draw.createAndSubmitSingleTip(ticket, tipliste);
 			}
 			else{
-				switch(tipType){
-					case "halfyear" : GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Halfyear); break;
-					case "year" : GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Year); break;
-					default : GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Month); break;
-				}
+				mav.setViewName("customer/tips/tip_lotto");
+				mav.addObject("confirm", false);
+				mav.addObject("failureComment", "Sie benötigen mehr Geld um ein Tipticket zu erwerben. Bitte <a href='bankingCustomer?uid="+currentUser.getIdentifier()+"'>Konto aufladen</a>!");
+			}
+		}
+		else{
+			ReturnBox<Integer, WeeklyLottoPTT> rb = null;
+			switch(tipType){
+				case "halfyear" : rb = GmbFactory.createAndPurchase_WeeklyLottoPTT(currentUser, PTTDuration.Halfyear); break;
+				case "year" : rb = GmbFactory.createAndPurchase_WeeklyLottoPTT(currentUser, PTTDuration.Year); break;
+				default : rb = GmbFactory.createAndPurchase_WeeklyLottoPTT(currentUser, PTTDuration.Month); break;
+			}
+			if(rb.var1 == 0){
+				WeeklyLottoPTT ticket = rb.var2;
+				ticket.setTip(tipliste);
+			}
+			else{
+				mav.setViewName("customer/tips/tip_lotto");
+				mav.addObject("confirm", false);
+				mav.addObject("failureComment", "Sie benötigen mehr Geld um ein Tipticket zu erwerben. Bitte <a href='bankingCustomer?uid="+currentUser.getIdentifier()+"'>Konto aufladen</a>!");
 			}
 		}
 		index = 0;
@@ -190,7 +211,6 @@ public class LottoController {
 		if(index == 7){
 		mav.setViewName("customer/groups/currentGroupViewTips_Admin");
 		mav.addObject("confirm", true);
-		
 		mav.addObject("numbers",lottoliste);
 		int last = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().size()-1;
 		WeeklyLottoDraw draw = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().get(last);
@@ -201,11 +221,12 @@ public class LottoController {
 			ReturnBox<Integer, WeeklyLottoSTT> rb = GmbFactory.createAndPurchase_WeeklyLottoSTT(currentUser);
 			if(rb.var1 == 0 ){
 				SingleTT ticket = rb.var2;
-//				SingleTip tip=draw.createAndSubmitSingleTip(ticket, tips).var2;
+				for(int i = 0; i < 7; i++)
+					tipliste[i] = lottoliste.get(i);
 		
 		
-				LinkedList<ArrayList<Integer>> cus_tipTips = new LinkedList<ArrayList<Integer>>();
-				cus_tipTips.add(lottoliste);
+				LinkedList<int[]> cus_tipTips = new LinkedList<int[]>();
+				cus_tipTips.add(tipliste);
 		
 				LinkedList<TipTicket> cusWLSTTs = new LinkedList<TipTicket>();
 				cusWLSTTs.add(ticket);
@@ -245,17 +266,9 @@ public class LottoController {
 			@RequestParam("extraNumber") int en,
 			@RequestParam("superNumber") int sn){
 		WeeklyLottoDraw draw = (WeeklyLottoDraw) GmbPersistenceManager.get(WeeklyLottoDraw.class, id);
-		ArrayList<Integer> result = new ArrayList<Integer>(8);
-		result.add(n1);
-		result.add(n2);
-		result.add(n3);
-		result.add(n4);
-		result.add(n5);
-		result.add(n6);
-		result.add(en);
-		result.add(sn);
+		int[] result = new int[]{n1,n2,n3,n4,n5,n6,en,sn};
 		for(int j = 0; j < 8; j++){
-			if(result.get(j)==0){
+			if(result[j]==0){
 				mav.setViewName("notary/notary");
 				mav.addObject("failureComment", "Die Zahl an der Stelle "+j+" wurde nicht eingetragen");
 				mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
@@ -263,14 +276,14 @@ public class LottoController {
 			}
 		}
 		for(int l = 0; l < 7; l++){
-			if((result.get(l) < 1) || (result.get(l) > 49)){
+			if((result[l] < 1) || (result[l] > 49)){
 				mav.setViewName("notary/notary");
 				mav.addObject("failureComment", "Die Zahl an der Stelle "+l+" war nicht zwischen 1 und 49");
 				mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
 				return mav;
 			}
 		}
-		if((result.get(7) < 1) || (result.get(7) > 9)){
+		if((result[7] < 1) || (result[7] > 9)){
 			mav.setViewName("notary/notary");
 			mav.addObject("failureComment", "Die Superahl war nicht zwischen 1 und 9");
 			mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
@@ -278,7 +291,7 @@ public class LottoController {
 		}
 		for(int i = 0; i < 7; i++){
 			for(int k = i+1; k < 7; k++){
-				if(result.get(i) == result.get(k)){
+				if(result[i] == result[k]){
 					mav.setViewName("notary/notary");
 					mav.addObject("failureComment", "Die Zahl an der Stelle "+i+" war gleich der Zahl an der stelle "+k);
 					mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
@@ -286,16 +299,37 @@ public class LottoController {
 				}
 			}
 		}
-		if(draw.evaluate(result)){
+		tipliste = result;
+		mav.addObject("result", tipliste);
+		mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
+		mav.addObject("confirm", true);
+		mav.setViewName("notary/notary");
+		
+		return mav;
+	}
+	
+	@RequestMapping("/WeeklyLottoDrawEvaluate")
+	public ModelAndView weeklyLottoDrawEval(ModelAndView mav,
+			@RequestParam("drawID") int id){
+		WeeklyLottoDraw draw = (WeeklyLottoDraw) GmbPersistenceManager.get(WeeklyLottoDraw.class, id);
+		
+		if(draw.evaluate(tipliste)){
 			mav.setViewName("notary/done");
-			WeeklyLottoDraw nextDraw = GmbFactory.new_WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
+			DateTime dt = Lottery.getInstance().getTimer().getDateTime();
+			WeeklyLottoDraw nextDraw = GmbFactory.new_WeeklyLottoDraw(dt.plusDays(7));
 		}
 		else{
 			mav.setViewName("notary/notary");
-			mav.addObject("failureComment", "hat nicht geklappt :(");
+			mav.addObject("failureComment", "Ist bereits evaluiert!");
 		}
 		return mav;
 	}
 	
-	
+	@RequestMapping("/WeeklyLottoDrawCancel")
+	public ModelAndView weeklyLottoDrawCancel(ModelAndView mav,
+			@RequestParam("drawID") int id){
+		mav.addObject("draw", GmbPersistenceManager.get(WeeklyLottoDraw.class, id));
+		mav.setViewName("notary/notary");
+		return mav;
+	}
 }

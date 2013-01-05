@@ -201,7 +201,7 @@ public abstract class GroupTip extends Tip
 	 * <li> 6 - not enough tickets submitted to reach the minimum stake per contributer
 	 * </ul>
 	 */
-	public int check_createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<ArrayList<Integer>> tipTips)
+	public int check_createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{	
 		if(tickets.size() == 0 || tipTips.size() == 0 || (tickets.size() != tipTips.size())) return 5;
 		if(!(this.draw.isTimeLeftUntilEvaluationForSubmission())) return -2;
@@ -272,7 +272,7 @@ public abstract class GroupTip extends Tip
 	 * <li> var1 != 1 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<ArrayList<Integer>> tipTips)
+	public ReturnBox<Integer, LinkedList<SingleTip>> createAndSubmitSingleTipList(LinkedList<TipTicket> tickets, LinkedList<int[]> tipTips)
 	{	
 		int result = check_createAndSubmitSingleTipList(tickets, tipTips);
 		if(result!=0) return new ReturnBox<Integer, LinkedList<SingleTip>>(new Integer(result), null);

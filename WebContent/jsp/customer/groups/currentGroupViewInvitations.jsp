@@ -38,12 +38,12 @@
 			<c:url value="showInvitations" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="${url}">Meine Einladungen (0)</a></section>
 			
 			<c:url value="showApplications" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
+			<section><a href ="${url}">Meine Bewerbungen (0)</a></section>
 			
 			<c:url value="myGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier }"/>
@@ -59,8 +59,9 @@
 	
 <div id="middle">
 	<div class="main_content_full">
-		<div class="current_content">
-			<h4 align="center">- Mitglieder -</h4>
+		<div class="current_content">		
+			
+			<h4 align="center">- Einladungen -</h4>
 			
 			<c:url value="currentGroupView" var="url1">
 				<c:param name="uid" value="${currentUser.identifier}" />
@@ -85,54 +86,74 @@
 			</c:url>
 			
 			<div align="center">
-				<a href ="${url1}">Mitglieder (${memberList.size()})</a>
+				<a href ="${url1}">Mitglieder</a>
 				<a href ="${url2}">Tipps</a>
-				<a href ="${url3}">Bewerbungen (${groupApplCount})</a>
-				<a href ="${url4}">Einladungen (${groupInvCount})</a> 
+				<a href ="${url3}">Bewerbungen</a>
+				<a href ="${url4}">Einladungen</a> 
 				<a href ="${url6}">Schliessen</a>    
 				   <a href ="${url5}">Abbrechen</a>
 			</div>	
-			<br>		
-			
-		<table>
-				<th>Nickname</th>
-				<th>Vorname</th>
-				<th>Nachname</th>
-				<th>Status</th>
-				<th> Aktion</th>
+			<br>
+		<div align="left">
+		${failure}
+		<br>
+		  Nutzer einladen :
+		<form method="post" action="invite">
+			<label for="invID">Nutzername: </label>
+				<input type="text" id="invID" name="invID" size="12" maxlength="16">
+				<br>
+			<label for="infoText">Info Text</label>
+			<textarea name="infoText" id="infoText"  type="text" size="10" rows="2" cols="18"></textarea>
+			<br>
+			<input type="hidden" id="uid" name="uid" size="12" maxlength="16" value="${currentUser.identifier}">
+			<div class="button"><button class="btn">einladen</button></div>
+		</form> 	
+		</div>	
 				
-				<sp:forEach items="${memberList}" var="ml">
+		
+		<table align="right">
+				<tr>
+					<th>User</th>
+					<th>Status</th>
+					<th>ID</th>
+					<th>Aktion</th>
+				</tr>
+				<c:forEach items="${invList}" var="ilItem" varStatus="status">
+					
 					<tr>
-						<td>${ml.identifier}</td>
-						<td>${ml.getMemberData().getFirstName()}</td>
-						<td>${ml.getMemberData().getLastName()}</td>
-						<c:choose>
-							<c:when test="${currentGroup.getGroupAdmin().equals(ml)}">
-								<td>Admin</td>
-								<td></td>
-							</c:when>
-							<c:otherwise>
-								<td>Mitglied</td>
-								<td>
-									<c:url value="declineApplication" var="url">
-										<c:param name="uid" value="${currentUser.identifier}" />
-									</c:url>
-									<a href ="">Entfernen</a> 
-								</td>
-							</c:otherwise>
-						</c:choose>
+						<td>${ilItem.member}</td>
+						<td>${ilItem.getState().toString()}</td>
+						<td>${status.index}</td>
+						
+						<td><c:if test="${alItem.getState().toString()=='Unhandled'}">
+							<c:url value="refuseApplication" var="urlRef">
+								<c:param name="uid" value="${currentUser.identifier}" />
+								<c:param name="applId" value="${status.index}" />
+							</c:url>
+							<section><a href ="${urlRef}">X</a></section>
+							</c:if>
+						</td> 
+						<td><c:if test="${alItem.getState().toString()=='Unhandled'}">
+							<c:url value="acceptApplication" var="urlAccept">
+								<c:param name="uid" value="${currentUser.identifier}" />
+								<c:param name="applId" value="${status.index}" />
+							</c:url>
+							<section><a href ="${urlAccept}">ok</a></section>
+							</c:if>
+						</td>
+						
 					</tr>
-				</sp:forEach>
+					
+				</c:forEach>
 			</table>
 			
 			
-			
+		</div>	
 
 		</div>		
 	</div>
 	
-	
-</div>
+
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>

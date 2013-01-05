@@ -45,7 +45,12 @@
 			</c:url>
 			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
 			
-			<section>Gruppen</section>
+			<c:url value="myGroups" var="url">
+				<c:param name="uid" value="${currentUser.identifier }"/>
+			</c:url>
+			<section><a href="${url }">Gruppen</a></section>
+			
+			<section>${currentGroup.name} : Admin</section>
 
 		</div>	
 	</div>
@@ -54,69 +59,64 @@
 	
 <div id="middle">
 	<div class="main_content_full">
-		<div class="current_content" >
-			<H4 align="center">- Meine Gruppen -</H4>
-			<c:url value="myGroups" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="allGroups" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<div align="center"><a href ="${url1}">Eigene</a> <a href ="${url2}">Alle</a></div>
+		<div class="current_content">
+			<h4 align="center">- Mitglieder -</h4>
 			
-			<table align="center">
-				<tr>
-					<th>Name</th>
-					<th>Admin</th>
-					<th>Mitgl</th>
-					<th>Bew</th>
-					<th>Status</th>
-					<th>Aktion</th>
-				</tr>
-				<sp:forEach items="${groupList}" var="gl">
-					<tr>
-						<td>${gl.getName()}</td>
-						<td>${gl.getGroupAdmin()}</td>
-						<td>${gl.getGroupMembers().size()}</td> 
-						<td>${gl.countUnhandled()}</td> 
-							<c:choose>
-								<c:when test="${gl.getGroupAdmin().equals(currentUser)}">
-									<td>Admin</td>
-									<td>
-										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
-									</td>
-								</c:when>
-								<c:when test="${gl.getGroupMembers().contains(currentUser)}">
-									<td>Mitglied</td>
-									<td>
-										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
-									</td>
-								</c:when>
-								<c:otherwise>
-									<td></td>
-									<td>
-										<c:url value="applyGroupMembership" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Bewerben</a> 
-									</td>
-								</c:otherwise>
-							</c:choose>
-					</tr>
-				</sp:forEach>
-			</table>
-		</div>		
+			<c:url value="currentGroupView" var="url1">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
+			<c:url value="currentGroupViewTips_Admin" var="url2">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
+			<c:url value="currentGroupViewApplications" var="url3">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="currentGroupViewInvitations" var="url4">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="myGroups" var="url5">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="closeGroup" var="url6">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
+			
+			<div align="center">
+				<a href ="${url1}">Mitglieder</a>
+				<a href ="${url2}">Tipps</a>
+				<a href ="${url3}">Bewerbungen</a>
+				<a href ="${url4}">Einladungen</a> 
+				<a href ="${url6}">Schliessen</a>    
+				   <a href ="${url5}">Abbrechen</a>
+			</div>	
+			<br>		
+			
+			<br>
+			<div align="center">Sie schliessen die Gruppe :<b>${currentGroup.name}</b> ! </div>
+		
+			<c:url value="closeGroupConf" var="url1">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
+			<c:url value="currentGroupView" var="url2">
+				<c:param name="uid" value="${currentUser.identifier}" />
+				<c:param name="groupName" value="${currentGroup.name }" />
+			</c:url>
+			<br>
+			<div align="center">
+				<a href ="${url1}">Bestätigen</a>  <a href ="${url2}">Abbrechen</a>
+			</div>		
+		</div>
 	</div>
 </div>
-				
-
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>
 </div>
+
+
+</body>
+</html>

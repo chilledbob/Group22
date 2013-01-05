@@ -46,20 +46,23 @@ public class DailyLottoDraw extends Draw
 	{
 		super(planedEvaluationDate);
 		
-		//automatically create SingleTips from PermaTTs:
-		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
-			if(customer.getType() == MemberType.Customer)
-				for(DailyLottoPTT ticket : ((Customer)customer).getDailyLottoPTTs())
-					if(!ticket.isExpired() && ticket.getTip() != null)
-						this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
-
+/**
+ * Automatically create SingleTips from PermaTTs
+ */
+	public void createSingleTipsfromPermaTTs(){
+	for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
+		if(customer.getType() == MemberType.Customer)
+			for(DailyLottoPTT ticket : ((Customer)customer).getDailyLottoPTTs())
+				if(!ticket.isExpired() && ticket.getTip() != null)
+					this.createAndSubmitSingleTip(ticket, ticket.getTip());
+	}
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return false if this Draw is already evaluated, otherwise true
 	 */
-	public boolean evaluate(ArrayList<Integer> result) 
+	public boolean evaluate(int[] result) 
 	{
 		if(evaluated) return false;
 		evaluated = true;
@@ -67,13 +70,13 @@ public class DailyLottoDraw extends Draw
 		//generate random result if no result has been set:
 		if(this.result == null && result == null)
 		{
-			result = new ArrayList<>(10);
+			result = new int[10];
 			
 			for(int i = 0; i < 10; ++i)
-				result.set(i, (int)(Math.random() * 100000) % 10);
+				result[i] = (int)((Math.random() * 100000) % 10);
 		}
 		
-		assert this.result != null || result.size() == 10 : "Wrong result length (!=10) given to DailyLottoDraw.evaluate(int[] result)!";
+		assert this.result != null || result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.evaluate(int[] result)!";
 		
 		//withdraw all not submitted GroupTips associated with this draw:
 		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
@@ -100,7 +103,7 @@ public class DailyLottoDraw extends Draw
 
 			for(int i = 0; i < 10; ++i)
 			{
-				if(tip.getTip().get(i) == this.result.get(i))
+				if(tip.getTip()[i] == this.result[i])
 					++hitCount;
 				else
 					break;
@@ -146,9 +149,9 @@ public class DailyLottoDraw extends Draw
 	 * Has to be done before evaluation.
 	 * @param result
 	 */
-	public void setResult(ArrayList<Integer> result)
+	public void setResult(int[] result)
 	{ 
-		assert result.size() == 10 : "Wrong result length (!=10) given to DailyLottoDraw.setResult(int[] result)!";
+		assert result.length == 10 : "Wrong result length (!=10) given to DailyLottoDraw.setResult(int[] result)!";
 		this.result = result; 
 
 		DB_UPDATE(); 
@@ -193,7 +196,7 @@ public class DailyLottoDraw extends Draw
 	 * <li> var1 != 0 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof DailyLottoTT : "Wrong TipTicket type given to DailyLottoDraw.createAndSubmitSingleTip()! Expected DailyLottoTT!";
 

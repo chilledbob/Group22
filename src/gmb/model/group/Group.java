@@ -7,6 +7,7 @@ import gmb.model.member.Customer;
 import gmb.model.request.RequestState;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
 import gmb.model.request.group.GroupMembershipApplication;
+import gmb.model.request.group.GroupMembershipInvitation;
 import gmb.model.tip.tip.group.DailyLottoGroupTip;
 import gmb.model.tip.tip.group.TotoGroupTip;
 import gmb.model.tip.tip.group.WeeklyLottoGroupTip;
@@ -16,9 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
@@ -61,12 +64,10 @@ public class Group extends PersiObject
 	protected List<TotoGroupTip> totoGroupTips;
 
 	@OneToMany(mappedBy="group",fetch=FetchType.EAGER)
-	@JoinColumn(name="GROUP_PERSISTENCEID",referencedColumnName="PERSISTENCEID")
-	protected List<GroupMembershipApplication> groupInvitations;
+	protected List<GroupMembershipInvitation> groupInvitations;
 	@OneToMany(mappedBy="group")
 	protected List<GroupAdminRightsTransfereOffering> groupAdminRightsTransfereOfferings;
 	@OneToMany(mappedBy="group",fetch=FetchType.EAGER)
-	@JoinColumn(name="GROUP_PERSISTENCEID")
 	protected List<GroupMembershipApplication> groupMembershipApplications;
 
 	@Deprecated
@@ -91,7 +92,7 @@ public class Group extends PersiObject
 		weeklyLottoGroupTips = new LinkedList<WeeklyLottoGroupTip>();
 		totoGroupTips = new LinkedList<TotoGroupTip>();
 
-		groupInvitations = new LinkedList<GroupMembershipApplication>();
+		groupInvitations = new LinkedList<GroupMembershipInvitation>();
 		groupAdminRightsTransfereOfferings = new LinkedList<GroupAdminRightsTransfereOffering>();
 		groupMembershipApplications = new LinkedList<GroupMembershipApplication>();
 		
@@ -126,7 +127,7 @@ public class Group extends PersiObject
 	 */
 	public GroupMembershipApplication sendGroupInvitation(Customer customer, String note)
 	{
-		GroupMembershipApplication invitation =  GmbFactory.new_GroupMembershipApplication(this, customer, note);
+		GroupMembershipInvitation invitation =  GmbFactory.new_GroupMembershipInvitation(this, customer, note);
 
 		customer.addGroupInvitation(invitation);
 		this.groupInvitations.add(invitation);
@@ -336,7 +337,7 @@ public class Group extends PersiObject
 	public boolean isClosed(){ return closed; }
 	
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }
-	public List<GroupMembershipApplication> getgroupInvitations(){ return groupInvitations; }
+	public List<GroupMembershipInvitation> getgroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
 	public List<Customer> getGroupMembers(){ return groupMembers; }
@@ -359,5 +360,13 @@ public class Group extends PersiObject
 		}
 		
 		return "null";
+	}
+	
+	public int countUnhandled(){
+		int count = 0;
+		for(GroupMembershipApplication gma : this.groupMembershipApplications){
+			if(gma.getState().toString() == "Uhandled")count++;
+		}
+		return count;
 	}
 }

@@ -153,26 +153,23 @@
 		</tr>
 		</table>
 		<br>${failureComment}
-        	<c:url value="ZahlenConfirmSingle" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Einzeltipschein</a></section>
-			
-			<c:url value="ZahlenConfirmPermaMonth" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Monat</a></section>
-			
-			
-			<c:url value="ZahlenConfirmPermaHalf" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Halbes Jahr</a></section>
-			
-			<c:url value="ZahlenConfirmPermaYear" var="url">
-           		<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Dauertipschein Jahr</a></section>
+		<c:url value="ZahlenConfirm" var="url">
+			<c:param name="uid" value="${currentUser.identifier}" />
+		</c:url>
+		<form id="form" action="${url }" method="post">
+			<fieldset style="border:0px;">
+					<label for="tipType">Bitte wählen Sie die Art des Tipscheins:</label><br>
+					<input type="radio" name="tipType" value="single" checked> Einzeltip<br>
+					<input type="radio" name="tipType" value="month">Dauertip für einen Monat <br>
+					<input type="radio" name="tipType" value="halfyear">Dauertip für ein halbes Jahr <br>
+					<input type="radio" name="tipType" value="year">Dauertip für ein Jahr
+			</fieldset>
+			<div class="button1"><button class="btn">Tipschein erstellen</button></div>
+		</form>
+		<c:url value="customerNumeral" var="url">
+			<c:param name="uid" value="${currentUser.identifier}" />
+		</c:url>
+		<a href="${url }">Zahlen löschen</a>
 	</div>
    </c:otherwise>
 </c:choose>

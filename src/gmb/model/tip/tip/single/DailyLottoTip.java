@@ -55,13 +55,13 @@ public class DailyLottoTip extends SingleTip
 	 * <li> 3 - a tipped number is smaller than 0 oder greater than 9
 	 * </ul>
 	 */
-	public int validateTip(ArrayList<Integer> tip)
+	public int validateTip(int[] tip)
 	{ 
-		assert tip.size() == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
+		assert tip.length == 10 : "Wrong tip length (!=10) given to DailyLottoTip.setTip(int[] tip)!";
 		
 		for(int i = 0; i < 10; ++i)
 		{
-			if(tip.get(i) < 0 || tip.get(i) > 9)
+			if(tip[i] < 0 || tip[i] > 9)
 				return 3;
 		}
 		

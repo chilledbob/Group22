@@ -70,6 +70,9 @@
 	 	<td>
 	 			<h4>Ziehungsdatum</h4>
 	 	</td>
+	 	<td>
+	 			<h4>Aktion</h4>
+	 	</td>
 	</tr>
 	<c:forEach var="wSTT" items="${weeklySTTList}">
 		<tr>
@@ -81,6 +84,13 @@
 			</td>
 			<td>
 				${wSTT.getTip().getDraw().getPlanedEvaluationDate() }
+			</td>
+			<td>
+				<c:url value="customerEditSTT" var="url">
+					<c:param name="uid" value="${currentUser.identifier }" />
+					<c:param name="STTid" value="${wSTT.getId() }" />
+				</c:url>
+				<a href="${url }">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>
@@ -95,6 +105,13 @@
 			<td>
 				${tSTT.getTip().getDraw().getPlanedEvaluationDate() }
 			</td>
+			<td>
+				<c:url value="customerEditSTT" var="url">
+					<c:param name="uid" value="${currentUser.identifier }" />
+					<c:param name="STTid" value="${tSTT.getId() }" />
+				</c:url>
+				<a href="${url }">bearbeiten</a>
+			</td>
 		</tr>
 	</c:forEach>
 	<c:forEach var="dSTT" items="${dailySTTList}">
@@ -107,6 +124,13 @@
 			</td>
 			<td>
 				${dSTT.getTip().getDraw().getPlanedEvaluationDate() }
+			</td>
+			<td>
+				<c:url value="customerEditSTT" var="url">
+					<c:param name="uid" value="${currentUser.identifier }" />
+					<c:param name="STTid" value="${dSTT.getId() }" />
+				</c:url>
+				<a href="${url }">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>
@@ -124,6 +148,9 @@
 	 	<td>
 	 			<h4>Tip</h4>
 	 	</td>
+	 	<td>
+	 			<h4>Aktion</h4>
+	 	</td>
 	</tr>
 	<c:forEach var="wPTT" items="${weeklyPTTList}">
 		<tr>
@@ -131,10 +158,15 @@
 				${wPTT.getId()}
 			</td>
 			<td>
-				${wPTT.getClass().getSimpleName() }
+				wöchentliches Zahlenlotto
 			</td>
 			<td>
-				${wPTT.getTip() }
+				<c:forEach items="${wPTT.getTip() }" var="i">
+					${i }
+				</c:forEach>
+			</td>
+			<td>
+				<a href="customerEditPTT">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>
@@ -144,7 +176,15 @@
 				${dPTT.getId()}
 			</td>
 			<td>
-				${dPTT.getClass().getSimpleName() }
+				tägliches Nummernlotto
+			</td>
+			<td>
+				<c:forEach items="${dPTT.getTip() }" var="i">
+					${i }
+				</c:forEach>
+			</td>
+			<td>
+				<a href="customerEditPTT">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>
@@ -169,7 +209,6 @@
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>
 </div>
-
 
 </body>
 </html>

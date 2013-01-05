@@ -63,64 +63,68 @@
 </div>
 		
 <div id="middle">
-
-	<div class="main_content">
+	<div class="main_content_full">
 		<div class="current_content">
-		<p style="text-align:left;">Nutzer</p>
-    <br>
-		<form id="form" action="changeCustomer" method="post" style="border:0px;"> 
-			<fieldset style="border:0px;"> 	
+			<h4 align="center">- Nutzerdaten von ${currentUser.identifier} -</h4>
+		
+	   		 <c:url value="editUser" var="url1">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="editCustomerPassword" var="url2">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<c:url value="editCustomerRealAccount" var="url3">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+	   		<c:url value="cancelEditingCustomer" var="url4">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+	    	
+			<div align="center">
+				<a href ="${url1}">Nutzerdaten</a>
+				<a href ="${url2}">Passwort</a>
+				<a href ="${url3}">Kontodaten</a>  
+				<a href ="${url4}">Abbrechen</a>
+			</div>	
+			<br><div align="center">${comment}</div><br>	
+    	
+		<form id="form" action="changeCustomerUserData" method="post" style="border:0px;"> 
 			<table>
-				<tr>
-					<th></th>
-					<th></th>
-				</tr>
 				<tr>
 					<td><label for="vame">Vorname</label></td>
 					<td><input name="vname" id="vname"  type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getFirstName()}"/></td> 
 				</tr>
-					<tr>
-						<td><label for="name">Nachname</label></td>
-						<td><input name="nname"  id="nname"  type="text" size="30" maxlength="30" value="${currentUser.memberData.getLastName()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="uid">Nutzername</label></td>
-						<td><input name="uid" id="uid" class="${uidFail}" type="text" size="30" maxlength="30" value="${currentUser.identifier}"/></td>
-					</tr>
-					<tr>
-						<td><label for="email">eMail</label></td>
-						<td><input name="email" id="email" type="text" size="30" maxlength="30" value="${currentUser.memberData.getEMail()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="street">Strasse</label></td>
-						<td><input name="street" id="street" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getStreetName()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="hNumber">Hausnummer</label></td>
-						<td><input name="hNumber" id="hNumber" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getHouseNumber()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="plz">PLZ</label></td>
-						<td><input name="plz" id="plz" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getPostCode()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="city">Stadt</label></td>
-						<td><input name="city" id="city" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getTownName()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="bankCode">Bankleitzahl</label></td>
-						<td><input name="bankCode" id="bankCode" type="text" size="30" maxlength="30" value="${currentUser.getBankAccount().getRealAccountData().getAccountNumber()}"/></td>
-					</tr>
-					<tr>
-						<td><label for="accountNumber">Kontonummer</label></td>
-						<td><input name="accountNumber" id="accountNumber" type="text" size="30" maxlength="30" value="${currentUser.getBankAccount().getRealAccountData().getBankCode()}"/></td>
-					</tr>
-				</table>
-				<div class="button"><button class="btn">ändern</button></div>
-			</fieldset> 
+				<tr>
+					<td><label for="name">Nachname</label></td>
+					<td><input name="nname"  id="nname"  type="text" size="30" maxlength="30" value="${currentUser.memberData.getLastName()}"/></td>
+				</tr>
+				<tr>
+					<td><label for="email">eMail</label></td>
+					<td><input name="email" id="email" type="text" size="30" maxlength="30" value="${currentUser.memberData.getEMail()}"/></td>
+				</tr>
+				<tr>
+					<td><label for="street">Strasse</label></td>
+					<td><input name="street" id="street" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getStreetName()}"/></td>
+				</tr>
+				<tr>
+					<td><label for="hNumber">Hausnummer</label></td>
+					<td><input name="hNumber" id="hNumber" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getHouseNumber()}"/></td>
+				</tr>
+				<tr>
+					<td><label for="plz">PLZ</label></td>
+					<td><input name="plz" id="plz" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getPostCode()}"/></td>
+				</tr>
+				<tr>
+					<td><label for="city">Stadt</label></td>
+					<td><input name="city" id="city" type="text" size="30" maxlength="30" value="${currentUser.getMemberData().getAdress().getTownName()}"/></td>
+				</tr>
+			</table>
+			<input name="uid" id="uid" type="hidden" value="${currentUser.identifier}"/>
+			
+			<div align="center" class="button"><button class="btn">Ändern</button></div>
 		</form> 
 		
-		<div class="button"><a href ="<c:url value="/" />">Cancel</a></div>	
+			
 	</div>
 </div>
 	

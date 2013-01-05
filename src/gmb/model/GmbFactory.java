@@ -30,6 +30,7 @@ import gmb.model.request.data.MemberDataUpdateRequest;
 import gmb.model.request.data.RealAccountDataUpdateRequest;
 import gmb.model.request.group.GroupAdminRightsTransfereOffering;
 import gmb.model.request.group.GroupMembershipApplication;
+import gmb.model.request.group.GroupMembershipInvitation;
 import gmb.model.tip.TipManagement;
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.Draw;
@@ -120,7 +121,7 @@ public class GmbFactory
 		DailyLottoDraw obj = new DailyLottoDraw(planedEvaluationDate);
 		obj = (DailyLottoDraw) obj.DB_ADD();
 		Lottery.getInstance().getTipManagement().addDraw(obj);
-		
+		obj.createSingleTipsfromPermaTTs();
 		return obj;
 	}
 	
@@ -144,7 +145,7 @@ public class GmbFactory
 		WeeklyLottoDraw obj = new WeeklyLottoDraw(planedEvaluationDate);
 		obj = (WeeklyLottoDraw) obj.DB_ADD();
 		Lottery.getInstance().getTipManagement().addDraw(obj);
-		
+		obj.createSingleTipsfromPermaTTs();
 		return obj;
 	}
 	
@@ -498,6 +499,12 @@ public class GmbFactory
 	{
 		GroupMembershipApplication obj = new GroupMembershipApplication(group, member, note);
 		return (GroupMembershipApplication) obj.DB_ADD();
+	}
+	
+	public static GroupMembershipInvitation new_GroupMembershipInvitation(Group group, Customer member, String note)
+	{
+		GroupMembershipApplication obj = new GroupMembershipInvitation(group, member, note);
+		return (GroupMembershipInvitation) obj.DB_ADD();
 	}
 	
 	public static ExternalTransactionRequest new_ExternalTransactionRequest(ExternalTransaction transaction, String note)

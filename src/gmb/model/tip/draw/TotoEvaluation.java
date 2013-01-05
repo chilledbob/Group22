@@ -58,12 +58,12 @@ public class TotoEvaluation extends Draw
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return false if this Draw is already evaluated, otherwise true
 	 */
-	public boolean evaluate(ArrayList<Integer> result) 
+	public boolean evaluate(int[] result) 
 	{
 		if(evaluated) return false;
 		evaluated = true;
 		
-		assert result.size() == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
+		assert result.length == 18 : "Wrong result length (!=18) given to TotoEvaluation.evaluate(int[] result)! (9 x [homeResult, visitorResult])";
 		
 		//withdraw all not submitted GroupTips associated with this draw:
 		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
@@ -72,18 +72,18 @@ public class TotoEvaluation extends Draw
 					tip.withdraw();
 		
 		//create the actual result array containing only the general results of the games, copy exact results to gameData:
-		ArrayList<Integer> newResult = new ArrayList<>(9);
+		int[] newResult = new int[9];
 		for(int i = 0; i < 9; ++i)
 		{
-			gameData.get(i).setResults(result.get(i*2), result.get(i*2+1));
+			gameData.get(i).setResults(result[i*2], result[i*2+1]);
 			
-			if(result.get(i*2) == result.get(i*2+1))
-				newResult.set(i,0);//standoff
+			if(result[i*2] == result[i*2+1])
+				newResult[i] = 0;//standoff
 			else
-				if(result.get(i*2) > result.get(i*2+1))
-					newResult.set(i,1);//home club wins
+				if(result[i*2] > result[i*2+1])
+					newResult[i] = 1;//home club wins
 				else
-					newResult.set(i,2);//visitor club wins
+					newResult[i] = 2;//visitor club wins
 		}
 		result = newResult;//just to make sure the right array is used later
 		
@@ -119,7 +119,7 @@ public class TotoEvaluation extends Draw
 			int hitCount = -5;
 
 			for(int i = 0; i < 9; ++i)
-					if(tip.getTip().get(i) == this.result.get(i))
+					if(tip.getTip()[i] == this.result[i])
 						++hitCount;
 
 			if(hitCount > -1)
@@ -287,7 +287,7 @@ public class TotoEvaluation extends Draw
 	 * <li> var1 != 0 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof TotoSTT : "Wrong TipTicket type given to TotoEvaluation.createAndSubmitSingleTip()! Expected TotoSTT!";
 		

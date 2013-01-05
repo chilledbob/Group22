@@ -20,6 +20,7 @@
 		
 		<div class="top_navi">
 			<section>Ergebnisse für 6 aus 49</section>
+			<p style="text-align:right">${time }</p>
 		</div>	
 		
 		<div class="sub_navi" >
@@ -32,6 +33,21 @@
 
 	<div class="main_content">
 		<div class="current_content">
+		<c:choose>
+		<c:when test="${confirm }">		
+		<table border="1" cellspacing="1" cellpadding="1">
+			<tr> 
+				<td>Sie haben die folgenden Zahlen als Ergebnis für die Lottoziehung am ${draw.planedEvaluationDate } eingetippt:</td>
+				<c:forEach var="num" items="${result}">
+					<td>${num}</td>
+				</c:forEach>
+				
+			</tr>
+		</table>
+			<a href="WeeklyLottoDrawEvaluate?drawID=${draw.getId() }">Bestätigen</a>
+			<a href="WeeklyLottoDrawCancel?drawID=${draw.getId() }">Abbrechen</a>
+		</c:when>
+		<c:otherwise>
 		<p style="text-align:center;">Ergebnise der letzten Ziehung ${fail}</p>
 		<p style="text-align:left;">Bitte geben Sie die Daten ein.</p>
    		<div class="failComment">${failureComment}</div>
@@ -77,7 +93,9 @@
 			</fieldset> 
 		</form> 
 		
-		<div class="button"><a href ="<c:url value="/" />">Cancel</a></div>	
+		<div class="button"><a href ="<c:url value="/" />">Cancel</a></div>
+		</c:otherwise>
+		</c:choose>
 	</div>
 </div>
 	
@@ -88,14 +106,7 @@
 		<p>Copyright SuperLotterie ©</p>
 </div>
 
-<c:forEach var="blub" items="${drawlist1 }">
-	${blub.getId()}<br>
-</c:forEach>
-<c:forEach var="bla" items="${drawlist }">
-	${bla.getId() }
-</c:forEach>
-
-
+<jsp:include page="../timesimulation/sim.jsp" />
 
 
 </body>

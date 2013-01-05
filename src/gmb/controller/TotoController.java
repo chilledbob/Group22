@@ -69,38 +69,18 @@ public class TotoController {
 	int goid;
 	String ls;
 	
-	//----------------------------Lotto------------------------------------------
-//	@RequestMapping("/Lotto")
-//	public ModelAndView lotto(ModelAndView mav){
-//		mav.setViewName("Games/lotoschein");
-//		mav.addObject("zahlen",lottomap.keySet());
-//		return mav;
-//}
-	
 	
 	@RequestMapping(value="/customerToto",method=RequestMethod.GET)
 	public ModelAndView customerToto(ModelAndView mav,
 			@RequestParam("uid") UserIdentifier uid
 			){
+		ls = "2012";
 		mav.setViewName("customer/tips/tip_toto");
-		mav.addObject("confirm2", true);
+		mav.addObject("confirm1", true);
 		mav.addObject("currentUser",GmbPersistenceManager.get(uid));
 		return mav;	
 	}
 	
-
-	@RequestMapping("Saison")
-	public ModelAndView saison (
-			@RequestParam("uid") UserIdentifier uid,
-			@RequestParam("saison") String saison,
-			ModelAndView mav ){
-		ls=saison;
-		mav.setViewName("customer/tips/tip_toto");
-		mav.addObject("confirm2", false);
-		mav.addObject("confirm1", true);
-		mav.addObject("currentUser",GmbPersistenceManager.get(uid));
-		return mav;
-	}
 	
 	
 	
@@ -150,7 +130,6 @@ public class TotoController {
 			@RequestParam("8") String er8,
 			@RequestParam("GroupOrderID") int groupOrderID,
 			@RequestParam("uid") UserIdentifier uid,
-			@RequestParam("type") String type,
 			ModelAndView mav)throws ServiceException, RemoteException{
 			Integer erg0=new Integer(er0);
 			Integer erg1=new Integer(er1);
@@ -194,11 +173,14 @@ public class TotoController {
 			mav.setViewName("customer/tips/tip_toto");
 			mav.addObject("confirm", true);
 			mav.addObject("tips",tips);
-			
+			int[] tiparray = new int[9];
+			for(int i = 0; i < 9;i++){
+				tiparray[i] = tips.get(i);
+			}
 			
 			TotoSTT ticket = GmbFactory.createAndPurchase_TotoSTT(currentUser).var2;
 			TotoEvaluation eva= GmbFactory.new_TotoEvaluation(new DateTime(), results) ;
-			eva.createAndSubmitSingleTip(ticket, (ArrayList<Integer>) tips);
+			eva.createAndSubmitSingleTip(ticket, tiparray);
 		//	eva.evaluate(tore);
 			
 //			Matchdata[] data= sportDataSoup.getMatchdataByGroupLeagueSaison(goid, "bl1", ls);

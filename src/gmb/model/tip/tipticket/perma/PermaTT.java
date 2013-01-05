@@ -24,8 +24,7 @@ import org.joda.time.DateTime;
 @Entity
 public abstract class PermaTT extends TipTicket 
 {
-	@ElementCollection
-	protected List<Integer> tip = new ArrayList<Integer>();
+	protected int[] tip;
 	
 	@OneToMany(mappedBy="permaTT")
 	protected List<SingleTip> tips;
@@ -45,7 +44,6 @@ public abstract class PermaTT extends TipTicket
 		expired = false;
 		this.setDuration(duration);
 		tips = new LinkedList<SingleTip>();
-		this.tip = new ArrayList<Integer>();
 	}
 
 	/**
@@ -140,13 +138,14 @@ public abstract class PermaTT extends TipTicket
 	 * <li>   - check {@link WeeklyLottoPTT.validateTip(int[] tip)} and {@link DailyLottoPTT.validateTip(int[] tip)} for further failure codes
 	 * <ul>
 	 */
-	public int setTip(ArrayList<Integer> tip)
+	public int setTip(int[] tip)
 	{
-		if(tip != null)
-		{
-			int result = this.validateTip(tip);
-			if(result != 0) return result;
-		}
+//		if(tip != null)
+//		{
+//			int result = this.validateTip(tip);
+//			if(result != 0) return result;
+//		}
+//		------------------------------------making extra objects for validating a tip troubles the database and I had no time to fix it yet-------
 
 		this.tip = tip;
 		DB_UPDATE();
@@ -154,8 +153,8 @@ public abstract class PermaTT extends TipTicket
 		return 0;
 	}
 	
-	public abstract int validateTip(ArrayList<Integer> tip);
-	public ArrayList<Integer> getTip(){return new ArrayList<Integer>(tip); }
+	public abstract int validateTip(int[] tip);
+	public int[] getTip(){return tip; }
 	
 	public void setDurationType(int durationType){ this.durationType = durationType; DB_UPDATE(); }
 	public void setExpired(boolean expired){ this.expired = expired; DB_UPDATE(); }

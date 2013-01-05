@@ -56,17 +56,17 @@ public class WeeklyLottoTip extends SingleTip
 	 * <li> 4 - the same number has been tipped multiple times
 	 * </ul>
 	 */
-	public int validateTip(ArrayList<Integer> tip)
+	public int validateTip(int[] tip)
 	{
-		assert tip.size() == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
+		assert tip.length == 6 : "Wrong tip length (!=6) given to DailyLottoTip.setTip(int[] tip)!";
 
 		for(int i = 0; i < 6; ++i)
 		{
-			if(tip.get(i) < 1 || tip.get(i) > 49)
+			if(tip[i] < 1 || tip[i] > 49)
 				return 3;
 
 			for(int j = 0; j < 6; ++j)
-				if(i != j && tip.get(i) == tip.get(j))
+				if(i != j && tip[i] == tip[j])
 					return 4;
 		}
 

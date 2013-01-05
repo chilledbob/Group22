@@ -50,9 +50,9 @@ public class WeeklyLottoPTT extends PermaTT implements WeeklyLottoTT
 	 * <li> 4 - the same number has been tipped multiple times
 	 * </ul>
 	 */
-	public int validateTip(ArrayList<Integer> tip)
+	public int validateTip(int[] tip)
 	{
-		assert tip.size() == 6 : "Wrong tip length (!=6) given to WeeklyLottoPTT!";
+		assert tip.length == 6 : "Wrong tip length (!=6) given to WeeklyLottoPTT!";
 		
 		return (new WeeklyLottoTip((WeeklyLottoTT)null, new WeeklyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(5)))).validateTip(tip);//use temporary objects for validation
 	}

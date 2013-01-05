@@ -14,6 +14,7 @@ import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -45,9 +46,16 @@ public class GmbPersistenceManager
 	
 	public static Group getGroup(String name){
 		EntityManager em = emf.createEntityManager();
+		Group g = null;
 		String q = "SELECT g FROM Group g WHERE g.name='"+name+"'";
 		Query query = em.createQuery(q);
-		return (Group) query.getSingleResult();
+		try{
+			g = (Group) query.getSingleResult();
+		}
+		catch (NoResultException e){
+			System.out.println("Die Gruppe "+name+" konnte nicht gefunden werden "+e.getMessage());
+		}
+		return g;
 	}
 
 	public static void login(Member user, HttpSession session) {
@@ -88,6 +96,7 @@ public class GmbPersistenceManager
 		EntityManager em = emf.createEntityManager();
 		
 		em.getTransaction().begin();
+		obj = em.merge(obj);
 		em.remove(obj);
 		em.getTransaction().commit();
 	}

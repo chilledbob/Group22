@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Gewinngemeinschaften</title>
 <link rel="stylesheet" type="text/css" 	href="<c:url value="/res/css/css.css" />" />
 </head>
@@ -35,6 +35,16 @@
 			</c:url>
 			<section><a href ="${url}">Erstellen</a></section>
 			
+			<c:url value="showInvitations" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
+			
+			<c:url value="showApplications" var="url">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
+			
 			<section>Gruppen</section>
 
 		</div>	
@@ -45,65 +55,63 @@
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content">
-			<c:url value="myGroups" var="url">
+		
+			
+		
+			<H4 align="center">- Alle Gruppen -</H4>
+			<c:url value="myGroups" var="url1">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<div align="center"><a href ="${url}">Eigene Anzeigen</a></div>
-			<p/>
-			<H4 align="center">- Alle Gruppen -</H4>
+			<c:url value="allGroups" var="url2">
+				<c:param name="uid" value="${currentUser.identifier}" />
+			</c:url>
+			<div align="center"><a href ="${url1}">Eigene</a> <a href ="${url2}">Alle</a></div>
+
 			<table align="center">
 				<tr>
 					<th>Name</th>
 					<th>Admin</th>
-					<th>Mitglieder</th>
+					<th>Mitgl</th>
 					<th>Status</th>
 					<th>Aktion</th>
 				</tr>
-				<sp:forEach items="${groupList}" var="gl">
+				<sp:forEach items="${groupList}" var="glItem">
 					<tr>
-						<td>${gl.getName()}</td>
-						<td>${gl.getGroupAdmin()}</td>
-						<td>${gl.getGroupMembers().size()}</td> 
+						<td>${glItem.getName()}</td>
+						<td>${glItem.getGroupAdmin()}</td>
+						<td>${glItem.getGroupMembers().size()}</td> 
 							<c:choose>
-								<c:when test="${gl.getGroupAdmin().equals(currentUser)}">
+								<c:when test="${glItem.getGroupAdmin().equals(currentUser)}">
 									<td>Admin</td>
 									<td>
 										<c:url value="currentGroupView" var="url">
 											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
+											<c:param name="groupName" value="${glItem.getName()}" />
+										</c:url>
+										<a href="${url}">öffnen</a> 
 									</td>
 								</c:when>
-								<c:when test="${gl.getGroupMembers().contains(currentUser)}">
+								<c:when test="${glItem.getGroupMembers().contains(currentUser)}">
 									<td>Mitglied</td>
 									<td>
 										<c:url value="currentGroupView" var="url">
 											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
+											<c:param name="groupName" value="${glItem.getName()}" />
+										</c:url><a href="${url}">öffnen</a> 
 									</td>
 								</c:when>
 								<c:otherwise>
-									<c:if test="${gl.testForAppl(currentUser)=='Unhandled'}">
+									<c:if test="${glItem.testForAppl(currentUser)}">
 										<td>Beworben</td>
 										<td></td>
 									</c:if>
-									<c:if test="${gl.testForAppl(currentUser)=='Refused'}">
+									<c:if test="${glItem.testForAppl(currentUser)==false}">
 										<td></td>
 										<td>
 											<c:url value="applyGroupMembership" var="url">
 												<c:param name="uid" value="${currentUser.identifier}" />
-												<c:param name="groupName" value="${gl.getName()}" />
-											</c:url><a href="${url}">Bewerben</a> 
-										</td>
-									</c:if>
-									<c:if test="${gl.testForAppl(currentUser)=='null'}">
-										<td></td>
-										<td>
-											<c:url value="applyGroupMembership" var="url">
-												<c:param name="uid" value="${currentUser.identifier}" />
-												<c:param name="groupName" value="${gl.getName()}" />
-											</c:url><a href="${url}">Bewerben</a> 
+												<c:param name="groupName" value="${glItem.getName()}" />
+											</c:url><a href="${url}">Bewerben</a>
 										</td>
 									</c:if>
 								</c:otherwise>

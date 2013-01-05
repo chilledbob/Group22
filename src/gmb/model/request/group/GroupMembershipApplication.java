@@ -1,5 +1,6 @@
 package gmb.model.request.group;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
 import gmb.model.group.Group;

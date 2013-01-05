@@ -15,6 +15,8 @@ import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.DailyLottoPTT;
 import gmb.model.tip.tipticket.perma.PTTDuration;
+import gmb.model.tip.tipticket.perma.PermaTT;
+import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
 import gmb.model.tip.tipticket.single.DailyLottoSTT;
 import gmb.model.tip.tipticket.single.SingleTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
@@ -46,7 +48,7 @@ public class ZahlenController {
 		int latest = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().size()-1;
 		mav.addObject("draw", Lottery.getInstance().getTipManagement().getDailyLottoDrawings().get(latest));
 		
-		return mav;	
+		return mav;
 	}
 	
 	//monatlich, halb und ganzjährig
@@ -82,24 +84,45 @@ public class ZahlenController {
 		}
 	}
 	
-	@RequestMapping("/ZahlenConfirmSingle")
+	@RequestMapping("/ZahlenConfirm")
 	public ModelAndView zahlenConfirmSingle(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid){
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("tipType") String tipType){
 		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
 		if(zahlen.size()==10){
 		mav.setViewName("customer/tips/tip_numeral");
 		mav.addObject("confirm", true);
 		mav.addObject("zahlenliste",zahlen);
+		int[] tip = new int[10];
+		for(int i = 0; i < 10; i++)
+			tip[i] = zahlen.get(i);
 		
-		ReturnBox<Integer, DailyLottoSTT> rb = GmbFactory.createAndPurchase_DailyLottoSTT(currentUser);
-		if(rb.var1 == 0 ){
-			DailyLottoSTT ticket = rb.var2;
-			int last = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().size()-1;
-			DailyLottoDraw draw = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().get(last);
-			draw.createAndSubmitSingleTip(ticket, zahlen);
+		if(tipType.equals(new String("single"))){
+			ReturnBox<Integer, DailyLottoSTT> rb = GmbFactory.createAndPurchase_DailyLottoSTT(currentUser);
+			if(rb.var1 == 0 ){
+				DailyLottoSTT ticket = rb.var2;
+				int last = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().size()-1;
+				DailyLottoDraw draw = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().get(last);
+				draw.createAndSubmitSingleTip(ticket, tip);
+			}
 		}
-		
-		
+		else{
+			ReturnBox<Integer, DailyLottoPTT> rb = null;
+			switch(tipType){
+				case "halfyear" : rb = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Halfyear); break;
+				case "year" : rb = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Year); break;
+				default : rb = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Month); break;
+			}
+			if(rb.var1 == 0){
+				DailyLottoPTT ticket = rb.var2;
+				ticket.setTip(tip);
+			}
+			else{
+				mav.setViewName("customer/tips/tip_numeral");
+				mav.addObject("confirm", false);
+				mav.addObject("failureComment", "Sie benötigen mehr Geld um ein Tipticket zu erwerben. Bitte <a href='bankingCustomer?uid="+currentUser.getIdentifier()+"'>Konto aufladen</a>!");
+			}
+		}
 		zahlen=new ArrayList<Integer>();
 		}else{
 			mav.setViewName("customer/tips/tip_numeral");
@@ -111,85 +134,6 @@ public class ZahlenController {
 		return mav;
 	}
 	
-
-	@RequestMapping("/ZahlenConfirmPermaMonth")
-	public ModelAndView zahlenConfirmSigleMonth (ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid){
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-		if(zahlen.size()==10){
-		mav.setViewName("customer/tips/tip_numeral");
-		mav.addObject("confirm", true);
-		mav.addObject("zahlenliste",zahlen);		
-		
-		DailyLottoPTT ticket = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Month).var2;
-		DailyLottoDraw draw=GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
-		DailyLottoTip tip=GmbFactory.new_DailyLottoTip(ticket, draw);
-		
-		tip.validateTip(zahlen);
-		
-		zahlen=new ArrayList<Integer>();
-		}else{
-			mav.setViewName("customer/tips/tip_numeral");
-			mav.addObject("confirm", false);
-			mav.addObject("zahlenliste",zahlen);			
-			mav.addObject("failureComment", "Es werden 10 Zahlen für einen gültigen Tip benötigt!");
-		}
-		mav.addObject("currentUser", GmbPersistenceManager.get(uid));
-		return mav;
-	}
-
-
-@RequestMapping("/ZahlenConfirmPermaHalf")
-public ModelAndView zahlenConfirmSigleHalf (ModelAndView mav,
-		@RequestParam("uid") UserIdentifier uid){
-	Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-	if(zahlen.size()==10){
-	mav.setViewName("customer/tips/tip_numeral");
-	mav.addObject("confirm", true);
-	mav.addObject("zahlenliste",zahlen);		
-	
-	DailyLottoPTT ticket = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Halfyear).var2;
-	DailyLottoDraw draw=GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
-	DailyLottoTip tip=GmbFactory.new_DailyLottoTip(ticket, draw);
-	
-	tip.validateTip(zahlen);
-	
-	zahlen=new ArrayList<Integer>();
-	}else{
-		mav.setViewName("customer/tips/tip_numeral");
-		mav.addObject("confirm", false);
-		mav.addObject("zahlenliste",zahlen);			
-		mav.addObject("failureComment", "Es werden 10 Zahlen für einen gültigen Tip benötigt!");
-	}
-	mav.addObject("currentUser", GmbPersistenceManager.get(uid));
-	return mav;
-}
-
-@RequestMapping("/ZahlenConfirmPermaYear")
-public ModelAndView zahlenConfirmSigleYear (ModelAndView mav,
-		@RequestParam("uid") UserIdentifier uid){
-	Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-	if(zahlen.size()==10){
-	mav.setViewName("customer/tips/tip_numeral");
-	mav.addObject("confirm", true);
-	mav.addObject("zahlenliste",zahlen);		
-	
-	DailyLottoPTT ticket = GmbFactory.createAndPurchase_DailyLottoPTT(currentUser, PTTDuration.Year).var2;
-	DailyLottoDraw draw=GmbFactory.new_DailyLottoDraw(Lottery.getInstance().getTimer().getDateTime().plusDays(7));
-	DailyLottoTip tip=GmbFactory.new_DailyLottoTip(ticket, draw);
-	
-	tip.validateTip(zahlen);
-	
-	zahlen=new ArrayList<Integer>();
-	}else{
-		mav.setViewName("customer/tips/tip_numeral");
-		mav.addObject("confirm", false);
-		mav.addObject("zahlenliste",zahlen);			
-		mav.addObject("failureComment", "Es werden 10 Zahlen für einen gültigen Tip benötigt!");
-	}
-	mav.addObject("currentUser", GmbPersistenceManager.get(uid));
-	return mav;
-}
 
 //-----------------------------------------for groups-------------------------------
 @RequestMapping("/new_dailyLotto_GroupTip")
@@ -255,14 +199,17 @@ public ModelAndView NumberConfirmSingle_Group(ModelAndView mav,
 	DailyLottoDraw draw = Lottery.getInstance().getTipManagement().getDailyLottoDrawings().get(last);
 	
 	if(currentGroup.getGroupAdmin().equals(currentUser)){
+		int[] tip = new int[10];
 		DailyLottoGroupTip dlgt = GmbFactory.new_DailyLottoGroupTip(draw, currentGroup, 1, 1);
 	
 		ReturnBox<Integer, DailyLottoSTT> rb = GmbFactory.createAndPurchase_DailyLottoSTT(currentUser);
 		if(rb.var1 == 0 ){
-			SingleTT ticket = rb.var2;	
+			SingleTT ticket = rb.var2;
+			for(int i = 0; i < 10; i++)
+				tip[i] = zahlen.get(i);
 	
-			LinkedList<ArrayList<Integer>> cus_tipTips = new LinkedList<ArrayList<Integer>>();
-			cus_tipTips.add(zahlen);
+			LinkedList<int[]> cus_tipTips = new LinkedList<int[]>();
+			cus_tipTips.add(tip);
 	
 			LinkedList<TipTicket> cusWLSTTs = new LinkedList<TipTicket>();
 			cusWLSTTs.add(ticket);

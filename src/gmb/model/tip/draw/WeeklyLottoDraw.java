@@ -47,13 +47,16 @@ public class WeeklyLottoDraw extends Draw
 	public WeeklyLottoDraw(DateTime planedEvaluationDate)
 	{
 		super(planedEvaluationDate);
-		
-		//automatically create SingleTips from PermaTTs:
-		for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
-			if(customer.getType() == MemberType.Customer)
-				for(WeeklyLottoPTT ticket : ((Customer)customer).getWeeklyLottoPTTs())
-					if(!ticket.isExpired() && ticket.getTip() != null)
-						this.createAndSubmitSingleTip(ticket, ticket.getTip());
+	}
+	/**
+	 * Automatically create SingleTips from PermaTipTickets.
+	 */
+	public void createSingleTipsfromPermaTTs(){
+	for(Member customer : Lottery.getInstance().getMemberManagement().getMembers())
+		if(customer.getType() == MemberType.Customer)
+			for(WeeklyLottoPTT ticket : ((Customer)customer).getWeeklyLottoPTTs())
+				if(!ticket.isExpired() && ticket.getTip() != null)
+					this.createAndSubmitSingleTip(ticket, ticket.getTip());
 	}
 
 	/**
@@ -61,12 +64,12 @@ public class WeeklyLottoDraw extends Draw
 	 * Evaluates the "Draw" with all implications (creating and sending "Winnings", updating the "Jackpot", updating the "LotteryCredits",...).
 	 * @return false if this Draw is already evaluated, otherwise true
 	 */
-	public boolean evaluate(ArrayList<Integer> result) 
+	public boolean evaluate(int[] result) 
 	{
 		if(evaluated) return false;
 		evaluated = true;
 		
-		assert result.size() == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.evaluate(int[] result)! (6 + extraNumber + superNumber)";
+		assert result.length == 8 : "Wrong result length (!=8) given to WeeklyLottoDraw.evaluate(int[] result)! (6 + extraNumber + superNumber)";
 
 		//withdraw all not submitted GroupTips associated with this draw:
 		for(Group group : Lottery.getInstance().getGroupManagement().getGroups())
@@ -116,7 +119,7 @@ public class WeeklyLottoDraw extends Draw
 
 			for(int i = 0; i < 6; ++i)
 				for(int j = 0; j < 6; ++j)
-					if(tip.getTip().get(i) == this.result.get(j))
+					if(tip.getTip()[i] == this.result[j])
 					{
 						hits[i] = true;
 						++hitCount;
@@ -124,7 +127,7 @@ public class WeeklyLottoDraw extends Draw
 
 			if(hitCount == 6)//*drum roll...
 			{
-				if(superNumber == this.result.get(7))
+				if(superNumber == this.result[7])
 					category.get(0).add(tip);//awesome! 8D
 				else
 					category.get(1).add(tip);//nearly awesome! xD
@@ -138,7 +141,7 @@ public class WeeklyLottoDraw extends Draw
 
 					for(int i = 0; i < 6; ++i)
 						if(hits[i] == false)
-							if(tip.getTip().get(i) == this.result.get(6))
+							if(tip.getTip()[i] == this.result[6])
 							{
 								extraNumberHit = 1;//nicer! :D
 								break;
@@ -324,7 +327,7 @@ public class WeeklyLottoDraw extends Draw
 	 * <li> var1 != 0 -> null 
 	 * </ul>
 	 */
-	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, ArrayList<Integer> tipTip) 
+	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{
 		assert ticket instanceof WeeklyLottoTT : "Wrong TipTicket type given to WeeklyLottoDraw.createAndSubmitSingleTip()! Expected WeeklyLottoTT!";
 
