@@ -1,6 +1,7 @@
 package gmb.model.group;
 
 import gmb.model.GmbFactory;
+import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
 import gmb.model.PersiObject;
 import gmb.model.member.Customer;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -52,6 +54,7 @@ public class Group extends PersiObject
 	protected GroupManagement groupManagementId;
 
 	@OneToOne
+	@JoinColumn(name="USER_ID", referencedColumnName="USER_ID")
 	protected Customer groupAdmin;
 	@ManyToMany
 	protected List<Customer> groupMembers;
@@ -214,7 +217,7 @@ public class Group extends PersiObject
 		if(resign(groupMember, "You have been resigned from Group " + name + "."))
 		{
 			groupMembers.remove(groupMember);
-
+			
 			DB_UPDATE(); 
 			
 			return true;
@@ -340,7 +343,7 @@ public class Group extends PersiObject
 	public List<GroupMembershipInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupMembershipApplication> getGroupMembershipApplications(){ return groupMembershipApplications; }	
 
-	public List<Customer> getGroupMembers(){ return groupMembers; }
+	public LinkedList<Customer> getGroupMembers(){ return new LinkedList<Customer>(groupMembers); }
 
 	public String getName(){ return name;}
 	public String getInfoText(){ return infoText; }	
@@ -352,21 +355,32 @@ public class Group extends PersiObject
 	public List<TotoGroupTip> getTotoGroupTips(){ return totoGroupTips; }	
 	
 //---------------Änderung von Andre----------------------------------------------
-	public String testForAppl(Customer cus)
-	{
+	public boolean testForAppl(Customer cus)
+	{	boolean erg = false;
 		for(GroupMembershipApplication gma : this.groupMembershipApplications)
 		{
-			if (gma.getMember().equals(cus)) return gma.getState().name(); 
+			if (gma.getMember().equals(cus) && gma.getState().toString() == "Unhandled") erg = true; 
 		}
-		
-		return "null";
+		return erg;
+	}
+	
+	public boolean testForInv(Customer cus)
+	{	boolean erg = false;
+	for(GroupMembershipInvitation gmi : this.groupInvitations)
+		{
+			if (gmi.getMember().equals(cus) && gmi.getState().toString() == "Unhandled") erg = true; 
+		}
+		return erg;
 	}
 	
 	public int countUnhandled(){
 		int count = 0;
 		for(GroupMembershipApplication gma : this.groupMembershipApplications){
-			if(gma.getState().toString() == "Uhandled")count++;
+			if(gma.getState().toString() == "Unhandled"){
+				count++;
+			}
 		}
+		System.out.println(count);
 		return count;
 	}
 }

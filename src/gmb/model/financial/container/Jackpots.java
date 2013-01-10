@@ -39,5 +39,5 @@ public class Jackpots extends PersiObject
 	public void setTotoJackpot(List<CDecimal> totoJackpot){ this.totoJackpot = totoJackpot; DB_UPDATE(); }	
 	
 	public ArrayList<CDecimal> getWeeklyLottoJackpot(){ return new ArrayList<CDecimal>(weeklyLottoJackpot); }
-	public ArrayList<CDecimal> getTotoJackpot(){ return (ArrayList<CDecimal>)totoJackpot; }
+	public ArrayList<CDecimal> getTotoJackpot(){ return new ArrayList<CDecimal>(totoJackpot); }
 }

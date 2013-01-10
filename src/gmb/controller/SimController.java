@@ -12,45 +12,40 @@ public class SimController {
 	
 	@RequestMapping("/SimControllerMi")
 	public ModelAndView plusMinute(ModelAndView mav){
-		Timer timer = Lottery.getInstance().getTimer();
-		timer.addMinutes(5);
-		mav.addObject("time", timer.getDateTime());
+		Lottery.getInstance().getTimer().addMinutes(5);
+		mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 		mav.setViewName("/notary/notary");
 		return mav;
 	}
 	
 	@RequestMapping("/SimControllerH")
 	public ModelAndView plusHoure(ModelAndView mav){
-		Timer timer = Lottery.getInstance().getTimer();
-		timer.addHours(1);
-		mav.addObject("time", timer.getDateTime());
+		Lottery.getInstance().getTimer().addHours(1);
+		mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 		mav.setViewName("/notary/notary");
 		return mav;
 	}
 	
 	@RequestMapping("/SimControllerD")
 	public ModelAndView plusDay(ModelAndView mav){
-		Timer timer = Lottery.getInstance().getTimer();
-		timer.addDays(1);
-		mav.addObject("time", timer.getDateTime());
+		Lottery.getInstance().getTimer().addDays(1);
+		mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 		mav.setViewName("/notary/notary");
 		return mav;
 	}
 	
 	@RequestMapping("/SimControllerW")
 	public ModelAndView plusWeek(ModelAndView mav){
-		Timer timer = Lottery.getInstance().getTimer();
-		timer.addWeeks(1);
-		mav.addObject("time", timer.getDateTime());
+		Lottery.getInstance().getTimer().addWeeks(1);
+		mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 		mav.setViewName("/notary/notary");
 		return mav;
 	}
 	
 	@RequestMapping("/SimControllerMo")
 	public ModelAndView plusMonth(ModelAndView mav){
-		Timer timer = Lottery.getInstance().getTimer();
-		timer.addMonths(1);
-		mav.addObject("time", timer.getDateTime());
+		Lottery.getInstance().getTimer().addMonths(1);
+		mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 		mav.setViewName("/notary/notary");
 		return mav;
 	}

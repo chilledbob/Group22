@@ -47,7 +47,9 @@ import gmb.model.tip.tipticket.single.TotoSTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
 
 import org.joda.time.DateTime;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.salespointframework.core.database.Database;
 
 public class Test01 
 {
@@ -83,8 +85,8 @@ public class Test01
 	Group group3;
 	Group group4;
 
-	//	@BeforeClass
-	//	public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
+		@BeforeClass
+		public static void beforeClass(){ Database.INSTANCE.initializeEntityManagerFactory("Lotterie"); }
 	
 	/**
 	 * A test simulating user behavior in the system over a certain period of time.<br>
@@ -95,7 +97,7 @@ public class Test01
 	{
 		//=========================================================================================================================//USER TESTs NO 1
 
-		FinancialManagement financialManagement = new FinancialManagement(GmbFactory.new_TipTicketPrices(), GmbFactory.new_ReceiptsDistribution());
+		FinancialManagement financialManagement = GmbFactory.new_FinancialManagement(GmbFactory.new_TipTicketPrices(), GmbFactory.new_ReceiptsDistribution());
 		MemberManagement memberManagement = GmbFactory.new_MemberManagement();
 		GroupManagement groupManagement = GmbFactory.new_GroupManagement();
 		TipManagement tipManagement = GmbFactory.new_TipManagement();

@@ -27,31 +27,11 @@
 				<section>Gewinngemeinschaften</section>							
 		</div>	
 		
-		
 		<div class="sub_navi">
-		
-			<c:url value="newGroup" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (0)</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (0)</a></section>
-			
-			<c:url value="myGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier }"/>
-			</c:url>
-			<section><a href="${url }">Gruppen</a></section>
-			
-			<section>${currentGroup.name} : Admin</section>
-
+			<section><a href ="newGroup">Erstellen</a></section>
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
+			<section>Gruppen</section>
 		</div>	
 	</div>
 </div>
@@ -59,42 +39,23 @@
 	
 <div id="middle">
 	<div class="main_content_full">
-		<div class="current_content">		
-			
-			<h4 align="center">- Einladungen -</h4>
-			
-			<c:url value="currentGroupView" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			<c:url value="currentGroupViewTips_Admin" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			<c:url value="currentGroupViewApplications" var="url3">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="currentGroupViewInvitations" var="url4">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="myGroups" var="url5">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="closeGroup" var="url6">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			
-			<div align="center">
-				<a href ="${url1}">Mitglieder</a>
-				<a href ="${url2}">Tipps</a>
-				<a href ="${url3}">Bewerbungen</a>
-				<a href ="${url4}">Einladungen</a> 
-				<a href ="${url6}">Schliessen</a>    
-				   <a href ="${url5}">Abbrechen</a>
-			</div>	
+		<div class="current_content">
+		
 			<br>
-		<div align="left">
+			<h4 align="center">Einladungen<sup style="text-shadow: aqua;font-size: x-small;">${currentGroup.name} | Admin</sup></h4>
+
+			<div align="center">
+				<a href ="currentGroupViewAdmin">Mitglieder (${currentGroup.getGroupMembers().size()})</a>
+				<a href ="currentGroupViewTips_Admin">Tipps</a>
+				<a href ="currentGroupViewApplications">Bewerbungen (${groupApplCount})</a>
+				<a href ="currentGroupViewInvitations">Einladungen (${groupInvCount})</a>   
+				<a href ="myGroups">Abbrechen</a>
+			</div>	
+			<br>			
+		
+		<div>
+		
+		<div style="float:left; width:400px;">
 		${failure}
 		<br>
 		  Nutzer einladen :
@@ -103,15 +64,14 @@
 				<input type="text" id="invID" name="invID" size="12" maxlength="16">
 				<br>
 			<label for="infoText">Info Text</label>
-			<textarea name="infoText" id="infoText"  type="text" size="10" rows="2" cols="18"></textarea>
+			<textarea name="infoText" id="infoText"  rows="2" cols="18"></textarea>
 			<br>
-			<input type="hidden" id="uid" name="uid" size="12" maxlength="16" value="${currentUser.identifier}">
 			<div class="button"><button class="btn">einladen</button></div>
 		</form> 	
 		</div>	
 				
-		
-		<table align="right">
+		<div style="width:400px;">
+			<table>
 				<tr>
 					<th>User</th>
 					<th>Status</th>
@@ -119,7 +79,7 @@
 					<th>Aktion</th>
 				</tr>
 				<c:forEach items="${invList}" var="ilItem" varStatus="status">
-					
+					<c:if test="${ilItem.getState().toString().equals('Unhandled')}">
 					<tr>
 						<td>${ilItem.member}</td>
 						<td>${ilItem.getState().toString()}</td>
@@ -143,11 +103,11 @@
 						</td>
 						
 					</tr>
-					
+					</c:if>
 				</c:forEach>
 			</table>
-			
-			
+		</div>
+	</div>		
 		</div>	
 
 		</div>		

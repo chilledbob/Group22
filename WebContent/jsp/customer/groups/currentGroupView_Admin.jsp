@@ -26,98 +26,56 @@
 
 				<section>Gewinngemeinschaften</section>							
 		</div>	
-		
-		
 		<div class="sub_navi">
-		
-			<c:url value="newGroup" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
-			
-			<c:url value="myGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier }"/>
-			</c:url>
-			<section><a href="${url }">Gruppen</a></section>
-			
-			<section>${currentGroup.name} : Admin</section>
-
+			<section><a href ="newGroup">Erstellen</a></section>
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
+			<section>Gruppen</section>
 		</div>	
 	</div>
 </div>
 
-	
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content">
-			<h4 align="center">- Mitglieder -</h4>
-			
-			<c:url value="currentGroupView" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			<c:url value="currentGroupViewTips_Admin" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			<c:url value="currentGroupViewApplications" var="url3">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="currentGroupViewInvitations" var="url4">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="myGroups" var="url5">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="closeGroup" var="url6">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
-			</c:url>
-			
+		
+			<br>
+			<h4 align="center">Mitglieder<sup style="text-shadow: aqua;font-size: x-small;">${currentGroup.name} | Admin</sup></h4>
+
 			<div align="center">
-				<a href ="${url1}">Mitglieder (${memberList.size()})</a>
-				<a href ="${url2}">Tipps</a>
-				<a href ="${url3}">Bewerbungen (${groupApplCount})</a>
-				<a href ="${url4}">Einladungen (${groupInvCount})</a> 
-				<a href ="${url6}">Schliessen</a>    
-				   <a href ="${url5}">Abbrechen</a>
+				<a href ="currentGroupViewAdmin">Mitglieder (${currentGroup.getGroupMembers().size()})</a>				<a href ="currentGroupViewTips_Admin">Tipps</a>
+				<a href ="currentGroupViewApplications">Bewerbungen (${groupApplCount})</a>
+				<a href ="currentGroupViewInvitations">Einladungen (${groupInvCount})</a>    
+				<a href ="myGroups">Abbrechen</a>
 			</div>	
 			<br>		
 			
-		<table>
-				<th>Nickname</th>
-				<th>Vorname</th>
-				<th>Nachname</th>
-				<th>Status</th>
-				<th> Aktion</th>
+			<table>
+				<tr>
+					<th>Nickname</th>
+					<th>Vorname</th>
+					<th>Nachname</th>
+					<th>Status</th>
+					<th> Aktion</th>
+				</tr>
 				
-				<sp:forEach items="${memberList}" var="ml">
+				<sp:forEach items="${memberList}" var="mlItem">
 					<tr>
-						<td>${ml.identifier}</td>
-						<td>${ml.getMemberData().getFirstName()}</td>
-						<td>${ml.getMemberData().getLastName()}</td>
+						<td>${mlItem.identifier}</td>
+						<td>${mlItem.getMemberData().getFirstName()}</td>
+						<td>${mlItem.getMemberData().getLastName()}</td>
 						<c:choose>
-							<c:when test="${currentGroup.getGroupAdmin().equals(ml)}">
+							<c:when test="${currentGroup.getGroupAdmin().equals(mlItem)}">
 								<td>Admin</td>
 								<td></td>
 							</c:when>
 							<c:otherwise>
 								<td>Mitglied</td>
 								<td>
-									<c:url value="declineApplication" var="url">
-										<c:param name="uid" value="${currentUser.identifier}" />
+									<c:url value="currentGroupViewApplications" var="url">
+										<c:param name="removeUid" value="${mlItem.identifier}" />
 									</c:url>
-									<a href ="">Entfernen</a> 
+									<a href ="url">Entfernen</a> 
 								</td>
 							</c:otherwise>
 						</c:choose>

@@ -1,0 +1,807 @@
+@font-face 
+{
+    font-family: 'Grand Hotel';
+    src: url('GrandHotel-Regular.ttf');
+}
+
+@font-face 
+{
+    font-family: 'Cambria';
+    src: url('Cambria.ttf');
+}
+
+html,body
+{
+	font:serif;
+	margin:0;
+}
+
+body
+{	
+	width : 800px;
+    font-family: 'Cambria', Arial, sans-serif;
+	font-style : normal;
+    color: #181818;
+   
+    
+    margin : auto;
+	
+	/*
+	border: 2px dotted;
+	border-color : #CC0033;
+	*/
+}
+
+label
+{
+	font-size : 14px;
+}
+
+
+
+
+/************************************** < div id = "logo" > *********************************************/
+
+#logo
+{
+	font-family: 'Grand Hotel', cursive;
+	font-size: 35px;
+	
+	position : relative;
+	left : 20px;
+	bottom : 20px;
+
+}
+
+/* "Lotterie" logo */
+#logo h1
+{
+	display: inline-block;
+	vertical-align: top;	
+	color :  #7db149;
+	
+	position : relative;
+	bottom : 20px;
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+}
+/* Bild des Klees zwischen "L" und "tterie"*/
+#L
+{
+	/*rechts Verschiebung*/
+	position: relative;
+	left : 6px;	
+}
+#tterie
+{
+	/*links Verschiebung*/
+	position: relative;
+	right : 6px;
+}
+/*Stelle des Klee Bilds*/
+#trefle
+{
+	display: inline-block;
+	vertical-align: top;	
+
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+
+	position: relative;
+	top : 55px;
+}
+
+
+
+
+/************************************** < div class = "login" > ********************************************/
+
+
+
+
+/*div logo ist mit div login aufgereiht*/
+#logo
+{
+	display: inline-block;
+	vertical-align: top;
+	/*border: 2px dotted;
+	border-color : #CC0033;
+	word-wrap: break-word;*/
+
+}
+
+.login
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*"login" Elemente befinden sich rechts im Body*/
+	float : right;	
+	margin-right : -30px;
+	
+	text-shadow: 2px 2px 4px black;
+}
+
+.login #name-passwort, .login #registrieren
+{
+	display: inline-block;
+	vertical-align: top;
+	background-color : #a49456;
+	
+	/*the border is really bold to create this separation effect between "account", "logout" and "namevorname" */
+	border: 5px solid;
+	border-color : white;
+	
+	height: 40px;	
+	/*the section is shifted upwards, so that the top is out of the frame --> hidden*/
+	position: relative;
+	bottom: 18px;
+	
+	/*text details*/
+	text-decoration : none;
+	font-size: 15px;
+	color: white;
+}
+
+.login label, .login input, .login button, l.login a
+{	
+	margin-left : 5px;
+	/*the sections have been shifted upwards, thus we have to shift these elements downwards*/
+	position : relative;
+	top : 14px;
+	
+}
+
+.login #name-passwort
+{
+	/* the width is voluntary bigger so that the right extremity can be hidden*/
+	width : 400px;
+	
+	text-align : left;
+	padding-left : 7px;
+	/*the border is curved*/
+	border-radius: 20px;
+	/*the section is shifted to the right so that the right extremity is hidden*/
+	position : relative;
+	left : 23px;
+	z-index : 1; /*depth index - below */
+
+}
+
+.login #registrieren
+{
+	/*text centered*/
+	text-align : center;
+	padding-left : 7px;
+	padding-right : 7px;
+	
+	margin-right : 20px;
+	z-index : 2; /*depth index - above */
+}
+
+.login th
+{
+	display: inline-block;
+	vertical-align: top;
+	background-color : #a49456;
+
+	/*the border is really bold to create this separation effect between "account", "logout" and "namevorname" */
+	border: 5px solid;
+	border-color : white;
+	
+	
+	height: 40px;
+	/*the section is shifted upwards, so that the top is out of the frame --> hidden*/
+	position: relative;
+	bottom: 25px;
+	
+	/*text details*/
+	text-decoration : none;
+	font-size: 15px;
+	color: white;
+	
+}
+
+.login #account 
+{
+	/* the width is voluntary bigger so that the right extremity can be hidden*/
+	width : 80px;
+
+	text-align : left;
+	padding-left : 7px;
+	/*curved effect*/
+	border-radius: 20px;
+	/*the section is shifted to the right so that the right extremity is hidden*/
+	position : relative;
+	left : 23px;
+	z-index : 1; /*depth index - below */
+}
+
+.login #namevorname 
+{
+	
+	text-align : right;
+	padding-right : 7px; 
+	/*curved effect*/
+	border-radius: 20px;
+	/*the section is shifted to the right so that the right extremity is hidden*/
+	position : relative;
+	right : 20px;s
+	z-index : 1; /*depth index - below */
+}
+
+.login #logout
+{
+	/*text centered*/
+	text-align : center;
+	padding-left : 7px;
+	padding-right : 7px;
+	/*the "logout" section is above the other sections*/
+	position : relative;
+	z-index : 2;
+}
+
+.login a
+{
+	position : relative;
+	top : 17px;
+	
+	text-decoration : none;
+	color : white;
+}
+
+.login #name-vorname
+{
+	width : 300px;
+	position : relative;
+	top : 15px;
+}
+
+
+
+
+/************************************** < div class = "top-navi" > **************************************/
+
+.top_navi
+{
+	
+	display: inline-block;
+	vertical-align: top;
+	
+	/*width is tinier than with of "body" = 800px */
+	width : 800px;
+	height : 32px;
+	
+	/*puts some space with the page's border*/
+	margin-top : -30px;
+	margin-left : 15px;
+
+	background-color: #7db149;
+	
+	position : relative;
+	bottom : 60px;
+	
+	text-shadow: 1px 1px 1px black;
+}
+
+
+
+.top_navi section
+{	
+    display: inline-block;
+	vertical-align : top;
+	
+	/*text details*/
+	font-size: 17px;
+	color: white;
+
+	height : 32px;
+	
+	/*section's background is the same color that navigation bar*/
+	background-color: #7db149;
+	border: 5px solid;
+	border-color : white;
+	padding-left : 15px;
+	padding-right : 15px;
+	
+	/*sections are arranged on the navigation bar*/
+	position : relative;
+	margin-left : -10px;
+	bottom: 5px;
+}
+
+.top_navi a
+{
+	/*text is vertically centered*/
+	position : relative;
+	top : 4px;
+	
+	/*links are white and not underlined*/
+	color: white;
+    text-decoration: none;
+	
+}
+
+.top_navi #currentpagename
+{
+	background-color: #bfdaa5;
+	color: black;
+
+}
+
+.top_navi #textcurrent
+{
+	position : relative;
+	top : 4px;
+	text-shadow: 1px 1px 1px white;
+}
+
+.top_navi section:hover, .top_navi section:hover a
+{
+	color:black;
+	background-color: #bfdaa5;
+	text-shadow: 1px 1px 1px white;
+}
+
+
+
+/************************************** < div class = "sub-navi" > **************************************/
+
+.sub_navi
+{
+	display : inline-block;
+	vertical-align : top;
+	width : 750px;
+	
+	 text-shadow: 1px 1px 0.2em black;
+}
+.sub_navi section, .sub_navi_full section
+{
+	display : inline-block;
+	vertical-align :top;
+	height : 20px;
+	background-color : #7db149;
+	
+	/*puts sections on the green line*/
+	position : relative;
+	bottom : 30px;
+	left : 30px;
+	
+	/*puts some space between sections*/
+	margin-right : 5px;
+	
+	padding-left: 8px;
+	padding-right : 8px;
+	
+}
+.sub_navi a, .sub_navi_full a
+{
+	/* link's text is white and not underlined*/
+	font-size :14px;
+	color: white;
+    text-decoration: none;
+}
+
+.sub_navi #currentsubpagename
+{
+	background-color: #bfdaa5;
+	color: black;
+	font-size :14px;
+	
+	text-shadow: 2px 2px 4px white;
+}
+
+
+
+.sub_navi section:hover, .sub_navi section:hover a, .sub_navi_full section:hover, .sub_navi_full section:hover a
+{
+	/*background becomes lighter and text darker*/
+    background-color: #bfdaa5;
+	color: black;
+	
+	text-shadow: 2px 2px 4px white;
+}
+
+
+.main_content
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*width is tinier than the width of "body" = 800px */
+	width : 500px;
+	
+	overflow: auto;
+
+	margin-top : -40px;
+	margin-left : 15px;
+	padding-bottom : 30px;
+	
+	border: 1px solid;
+	border-color : green;
+}
+
+.main_content_full
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*width is tinier than the width of "body" = 800px */
+	width : 800px;
+
+	margin-top : -40px;
+	margin-left : 15px;
+	margin-right: 15px;
+	padding-bottom: 30px;
+	
+	border: 1px solid;
+	border-color : green;
+}
+.current_content
+{
+	font-size : 14px;
+	margin-top : 20px;
+	color : black;
+}
+.current_content *:not(a)
+{
+	margin-left : 20px;
+}
+
+.current_content button
+{
+	font-size : 14px;
+	font-style : 'Cambria';
+	
+	height: 25px;
+	border-radius : 5px;
+	
+	border: 0px solid;
+	
+	background-color: #bfdaa5;
+	color: black;
+}
+
+
+.current_content section a, .current_content div a, .current_content > a, .current_content ul a, #Lottoschein > a
+{
+	font-size : 16px;
+	color : black;
+	
+	display : inline-block;
+	vertical-align :top;
+	height: 25px;
+	
+	
+	background-color: #bfdaa5;
+	color: black;
+
+	padding-left: 8px;
+	padding-right : 8px;
+	text-decoration: none;
+	border-radius : 3px;
+}
+
+.current_content section a, .current_content div a, .current_content > a, #Lottoschein > a, .current_content button
+{
+	margin-top : 10px;
+}
+
+.current_content h5, #Lottoschein h3
+{
+	font-size : 16px;
+	color : black;
+}
+
+.current_content .titleicon
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	float : left;	
+	margin-right : 15px;
+}
+
+.current_content button:hover, .current_content section a:hover, .current_content div a:hover, .current_content > a:hover, .current_content ul a:hover, #Lottoschein > a:hover
+{
+	background-color: #7db149;
+	color: white;
+}
+
+.current_content h1, .current_content h2,  .current_content h3
+{
+	text-align : center;
+	font-size : 22px;
+}
+
+
+.failComment
+{
+	margin : auto;
+	
+	padding-top: 10px;
+	padding-bottom : 10px;
+	
+	font-size : 16px;
+	font-style : italic;	
+	color : red;
+}
+
+.current_content form, .current_content button, .current_content fieldset, .current_content tr section
+{
+	margin : 0px;
+}
+
+.current_content form > textarea, , #Lottoschein form textarea
+{
+	border-radius : 5px;	
+	margin-top : 4px;
+}
+
+.current_content form > input, #Lottoschein form input
+{
+	background-color : #ecfbd4;
+	margin-top : 4px;
+	
+	border-radius : 3px;
+}
+
+.current_content form > label, #Lottoschein form label
+{
+	display: block;
+	width: 150px;
+	float: left;
+	text-align : right;
+	padding-right : 20px;
+	margin-right : 10px;
+	margin-top : 5px;
+	
+	background-color : #bfdaa5;
+	border-radius : 5px;
+}
+
+.current_content ul
+{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.current_content li
+{
+	background-image: url('../img/cloverpuce.png');
+	background-repeat: no-repeat;
+	background-position: 0 0.4em;
+	padding-left: 30px;
+}
+
+
+.current_content li a
+{
+	position : relative;
+	right : 24px;
+	margin-left : 15px;
+}
+
+.current_content > table, .current_content form > table, #Lottoschein > table, #Lottoschein form > table
+{
+	margin : auto;
+
+	margin-bottom: 10px;
+	text-align: center;
+	
+	border-radius : 5px;
+	border : 0px outset;
+	border-color : #006e2e;
+}
+
+.current_content form > table, .current_content fieldset > table
+{
+	text-align: center;
+	margin-top : 10px;
+	margin-bottom : 10px;
+
+	border-radius : 5px;
+	border : 2px outset;
+	border-color : #006e2e;
+}
+
+
+.current_content tr, #Lottoschein tr
+{
+	height : 20px;	
+}
+
+.current_content td, .current_content th, #Lottoschein td, #Lottoschein th
+{
+	padding-left: 10px;
+	padding-right : 10px;
+}
+
+.current_content td input, .current_content td label, .current_content td button, .current_content th input, .current_content th label, .current_content th button,
+#Lottoschein td input, #Lottoschein td label, #Lottoschein td button, #Lottoschein th input, #Lottoschein th label, #Lottoschein th button
+{
+	margin-left : 0px;
+	margin-right : 0px;
+}
+
+
+.current_content table tr:nth-child(odd), #Lottoschein tr:nth-child(odd)
+{
+	background: #bfdaa5;
+}
+
+.current_content table tr:nth-child(even), #Lottoschein tr:nth-child(even)
+{	
+	background: #ecfbd4;
+}
+.current_content table th, #Lottoschein table th
+{	
+	color : white;
+	height : 25px;
+	
+	background: #006e2e; 
+}
+
+.current_content table tr a, #Lottoschein table tr a
+{
+	color: black;
+	text-decoration: none;
+}
+
+.current_content table th a, #Lottoschein table th a
+{
+	color: white;
+	text-decoration: none;
+}
+
+
+/************************************** < div class = "side" > **************************************/
+
+
+
+
+.side
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	margin-top : -30px;
+	/*width is tiny*/
+	width : 250px;
+	
+}
+#side_calendar
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*width is tiny*/
+	width : 270px;
+	margin-left : 15px;
+	
+	padding-bottom : 10px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+	
+	background-color : #bfdaa5;
+}
+
+#datepicker 
+{
+	margin-left : 15px;
+}
+
+#side_calendar .banner, #side_tipps .banner
+{
+	background:  url('../img/banner3.png');
+    background-repeat: no-repeat;
+    width: 170px;
+    height : 44px;
+    
+    position : relative;
+	bottom : 10px;
+	right : 18px;
+	
+	margin-top : 20px;
+	margin-bottom : 10px;
+		
+	text-shadow: 2px 2px 4px black;
+    
+}
+
+.banner p
+{
+	font-weight : bold;
+	position : relative;
+    top : 17px;
+	left : 30px;
+	
+	color: white;
+	
+}
+
+.side p[id]
+{
+	padding-left : 35px;
+	padding-bottom : 10px;
+	
+	margin-bottom : -15px;
+	margin-left : 15px;
+	
+	font-size : 15px;
+	
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	
+	color : white;
+	text-shadow: 1px 1px 1px black;
+	
+}
+
+#side_tipps
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*width is tiny */
+	width : 270px;
+	
+	/*puts some space with the side_calendar div*/
+	margin-top : 30px;
+	margin-left : 15px;
+	padding-bottom : 30px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+	
+	background-color : #bfdaa5;
+}
+
+
+#side_tipps #tipps
+{
+	background-image: url('../img/icontipps.png');
+}
+#side_tipps #statistik
+{
+	background-image: url('../img/iconstatistik.png');	
+}
+#side_tipps #kontostand
+{
+	background-image: url('../img/iconkontostand.png');	
+}
+#side_tipps #help
+{
+	background-image: url('../img/iconhelp.png');	
+}
+
+.footer
+{
+	display: inline-block;
+	vertical-align: top;
+	
+	/*text details*/
+	font-size: 10px;
+	text-align : right;
+	
+	/* full width */
+	width : 800px;
+	height : 25px;
+	
+	/*puts some space with the sub navigation*/
+	margin-top : 30px;
+	margin-left : 15px;
+	
+	border: 1px solid;
+	border-color : #bfdaa5;
+}
+.footer p
+{
+	margin-right : 15px;
+	
+}

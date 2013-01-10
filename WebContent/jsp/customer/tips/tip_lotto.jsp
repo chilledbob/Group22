@@ -377,9 +377,9 @@
 		<fieldset style="border:0px;">
 						<label for="tipType">Bitte wählen Sie die Art des Tipscheins:</label><br>
 						<input type="radio" name="tipType" value="single" checked> Einzeltip<br>
-						<input type="radio" name="tipType" value="month">Dauertip für einen Monat <br>
-						<input type="radio" name="tipType" value="halfyear">Dauertip für ein halbes Jahr <br>
-						<input type="radio" name="tipType" value="year">Dauertip für ein Jahr
+						<input type="radio" name="tipType" value="month" onclick="javascript:alert('ACHTUNG: Dauertipscheine können nach erstellen nicht gelöscht werden!')">Dauertip für einen Monat <br>
+						<input type="radio" name="tipType" value="halfyear" onclick="javascript:alert('ACHTUNG: Dauertipscheine können nach erstellen nicht gelöscht werden!')">Dauertip für ein halbes Jahr <br>
+						<input type="radio" name="tipType" value="year" onclick="javascript:alert('ACHTUNG: Dauertipscheine können nach erstellen nicht gelöscht werden!')">Dauertip für ein Jahr
 		</fieldset>
 		<div class="button1"><button class="btn">Tipschein erstellen</button></div>
 	</form>

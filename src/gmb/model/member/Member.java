@@ -108,6 +108,18 @@ public class Member extends PersistentUser
 		default : return MemberType.Customer;
 		}
 	}
+//--------------NEU ANDRE-------------------------------------
+	public String getTypeAsGerman()
+	{
+		switch(this.type)
+		{
+		case 0: return "Mitarbeiter";
+		case 1: return "Geschäftsführer";
+		case 2: return "Notar";
+		default : return "Spieler";
+		}
+	}
+//----------------------------------------------------------------------
 	
 	public int getTypeAsInt(){ return type; }
 	
@@ -142,6 +154,8 @@ public class Member extends PersistentUser
 	 * Sets "activated" to false and removes the capability "activated".
 	 */
 	public void deactivateAccount(){ activated = false; this.removeCapability(new Capability("activated")); DB_UPDATE(); }
+	
+	public boolean getActivationState(){ return activated;}
 	
 	/**
 	 * [Intended for direct usage by controller]<br>

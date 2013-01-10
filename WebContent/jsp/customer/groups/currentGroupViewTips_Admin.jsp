@@ -26,55 +26,31 @@
 
 				<section>Gewinngemeinschaften</section>							
 		</div>	
-		
-		
 		<div class="sub_navi">
-		
-			<c:url value="newGroup" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (0)</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (0)</a></section>
-			
-			<c:url value="myGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier }"/>
-			</c:url>
-			<section><a href="${url }">Gruppen</a></section>
-
+			<section><a href ="newGroup">Erstellen</a></section>
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
+			<section>Gruppen</section>
 		</div>	
 	</div>
 </div>
-
 	
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content">
+		
+			<br>
+			<h4 align="center">Tipps<sup style="text-shadow: aqua;font-size: x-small;">${currentGroup.name} | Admin</sup></h4>
 			
-			<c:url value="currentGroupView" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.getName()}" />
-			</c:url>
-			<c:url value="currentGroupViewTips_Admin" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="currentGroupViewApplications" var="url3">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="closeGroup" var="url4">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="myGroups" var="url5">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
+			<div align="center">
+				<a href ="currentGroupViewAdmin">Mitglieder (${currentGroup.getGroupMembers().size()})</a>
+				<a href ="currentGroupViewTips_Admin">Tipps</a>
+				<a href ="currentGroupViewApplications">Bewerbungen (${groupApplCount})</a>
+				<a href ="currentGroupViewInvitations">Einladungen (${groupInvCount})</a>    
+				<a href ="myGroups">Abbrechen</a>
+			</div>	
+			<br>		
+			
 			<c:url value="new_weeklyLotto_GroupTip" var="url6">
 				<c:param name="groupName" value="${currentGroup.name}" />
 				<c:param name="uid" value="${currentUser.identifier }" />
@@ -87,12 +63,6 @@
 				<c:param name="groupName" value="${currentGroup.name}" />
 				<c:param name="uid" value="${currentUser.identifier }" />
 			</c:url>
-			
-			<div align="center" style="width:90%; border-bottom:thin solid black; padding:15px;">
-				<a href ="${url1}">Mitglieder</a>
-				<a href ="${url3}">Bewerbungen</a>
-				<a href ="${url5}">Abbrechen</a>
-			</div>
 			<div align="center">
 				<a href="${url6 }">neuen 6 aus 49 Tip erstellen</a>
 				<a href="${url7 }">neuen Nummernlottotip erstellen</a>
@@ -108,22 +78,68 @@
 					<td>
 						Ziehungsdatum
 					</td>
+					<td>
+						Aktion
+					</td>
 				</tr>
 				<c:forEach var="wSTT" items="${weeklySTTList}">
 				<tr>
 					<td>
-						6 aus 49
+						wöchentliche Zahlenlotto
 					</td>
 					<td>
 						${wSTT.getDraw().getPlanedEvaluationDate() }
+					</td>
+					<td>
+						<c:url value="LottoGroupTipChangeAdmin" var="url">
+							<c:param name="uid" value="${currentCustomer.identifier }" />
+							<c:param name="groupName" value="${currentGroup.getName() }" />
+							<c:param name="tip" value="${wSTT.getId() }" />
+						</c:url>
+						<a href="${url }">bearbeiten</a>
+					</td>
+				</tr>
+				</c:forEach>
+				<c:forEach var="dSTT" items="${dailySTTList}">
+				<tr>
+					<td>
+						tägliche Nummernlotto
+					</td>
+					<td>
+						${dSTT.getDraw().getPlanedEvaluationDate() }
+					</td>
+					<td>
+						<c:url value="LottoGroupTipChangeAdmin" var="url">
+							<c:param name="uid" value="${currentCustomer.identifier }" />
+							<c:param name="groupName" value="${currentGroup.getName() }" />
+							<c:param name="tip" value="${wSTT.getId() }" />
+						</c:url>
+						<a href="${url }">bearbeiten</a>
+					</td>
+				</tr>
+				</c:forEach>
+				<c:forEach var="tSTT" items="${totoSTTList}">
+				<tr>
+					<td>
+						Fußballtoto
+					</td>
+					<td>
+						${tSTT.getDraw().getPlanedEvaluationDate() }
+					</td>
+					<td>
+						<c:url value="LottoGroupTipChangeAdmin" var="url">
+							<c:param name="uid" value="${currentCustomer.identifier }" />
+							<c:param name="groupName" value="${currentGroup.getName() }" />
+							<c:param name="tip" value="${wSTT.getId() }" />
+						</c:url>
+						<a href="${url }">bearbeiten</a>
 					</td>
 				</tr>
 				</c:forEach>
 			</table>
 		</div>		
-	</div>
-	
-
+	</div>	
+</div>
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>

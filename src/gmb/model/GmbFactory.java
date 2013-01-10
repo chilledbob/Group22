@@ -361,7 +361,8 @@ public class GmbFactory
 	public static Member new_Member(String nickName, String password, MemberData memberData, MemberType type)
 	{
 		Member obj = new Member(nickName, password, memberData, type);
-		return (Member) obj.DB_ADD();
+//		return (Member) obj.DB_ADD();
+		return obj;
 	}
 	
 	/**
@@ -372,7 +373,8 @@ public class GmbFactory
 		Customer obj = new Customer(nickName, password, memberData, lotteryBankAccount);
 		obj.getBankAccount().setOwner(obj);
 		
-		return (Customer) obj.DB_ADD();
+		return obj;
+//		return (Customer) obj.DB_ADD();
 	}
 	
 	//====================================================================================================================//

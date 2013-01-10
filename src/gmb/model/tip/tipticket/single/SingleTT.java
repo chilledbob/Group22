@@ -7,8 +7,10 @@ import gmb.model.GmbPersistenceManager;
 import gmb.model.tip.tip.single.SingleTip;
 import gmb.model.tip.tipticket.TipTicket;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 /**
@@ -18,8 +20,9 @@ import javax.persistence.OneToOne;
 @Entity
 public abstract class SingleTT extends TipTicket
 {	
-	@OneToOne(mappedBy="tipTicket",fetch=FetchType.EAGER)
+	@OneToOne(mappedBy="tipTicket")
 	protected SingleTip tip;
+	
 
 	@Deprecated
 	protected SingleTT(){}
@@ -28,6 +31,7 @@ public abstract class SingleTT extends TipTicket
 	{
 		super();
 		this.tip = null;
+		this.papaTicket = 0;
 	}
 	
 	public boolean removeTip(SingleTip tip)
@@ -62,4 +66,8 @@ public abstract class SingleTT extends TipTicket
 	}
 	
 	public CDecimal getPricePerTicket(){ return getPrice(); }
+	
+	public void setPapaTicket(int newPapa){ this.papaTicket = newPapa; }
+	
+	public int getPapaTicket(){ return papaTicket; }
 }

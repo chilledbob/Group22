@@ -29,37 +29,20 @@
 		
 		
 		<div class="sub_navi">
-
 			<section>Erstellen</section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
-			
-			<c:url value="myGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Gruppen</a></section>
-
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
+			<section><a href="myGroups">Gruppen</a></section>
 		</div>	
 	</div>
 </div>
 
-	
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content" >
-			<H4 align="center">- Gruppen Erstellen -</H4>
-			<c:url value="customerGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<div align="center"><a href ="${url}">Abbrechen</a></div>      
+			<br>
+			<h4 align="center">Gruppe erstellen<sup style="text-shadow: aqua;font-size: x-small;">${currentUser.identifier}</sup></h4>
+			   
 			<div align="center">${comment}</div>
 			
 			<form id="form" action="createNewGroup" method="post" style="border:0px;"> 
@@ -70,14 +53,22 @@
 				</tr>
 				<tr>
 					<td><label for="infoText">Info Text</label></td>
-					<td><textarea name="infoText" id="infoText"  type="text" rows="5" cols="30"></textarea></td> 
+					<td><textarea name="infoText" id="infoText"  rows="5" cols="30"></textarea></td> 
 				</tr>	
 				<tr>
 					<td><label for="uid">Admin</label></td>
 					<td><input name="uid" id="uid" type="text" size="30" maxlength="30" readonly value="${currentUser.identifier}"/></td>
 				</tr>
+				
 				</table>
-				<div class="button" align="center"><button class="btn">Erstellen</button></div>
+				<div class="button" align="center">
+					<button class="btn">
+						<img src="<c:url value="/res/img/accept.png" />" />
+					</button>
+					<a href ="returnToCustomerGroups">
+						<img src="<c:url value="/res/img/decline.png" />" />
+					</a>
+				</div>
 		</form> 		
 	</div>
 	

@@ -54,10 +54,7 @@
 		
 		<div class="sub_navi" >
 			<section>Account</section>
-			<c:url value="bankingCustomer" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Banking</a></section>
+			<section><a href ="bankingCustomer">Banking</a></section>
 		</div>	
 	</div>
 </div>
@@ -66,28 +63,16 @@
 
 	<div class="main_content_full">
 		<div class="current_content">
-			<h4 align="center">- Kontodaten von ${currentUser.identifier} -</h4>
-		
-	   		  <c:url value="editUser" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="editCustomerPassword" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="editCustomerRealAccount" var="url3">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-	   		<c:url value="cancelEditingCustomer" var="url4">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-	    	
+			<h4 align="center">Nutzer Daten<sup style="text-shadow: aqua;font-size: x-small;">${currentUser.identifier}</sup></h4>
+  
 			<div align="center">
-				<a href ="${url1}">Nutzerdaten</a>
-				<a href ="${url2}">Passwort</a>
-				<a href ="${url3}">Kontodaten</a>  
-				<a href ="${url4}">Abbrechen</a>
+				<a href ="editUser">Nutzerdaten</a>
+				<a href ="editCustomerPassword">Passwort</a>
+				<a href ="editCustomerRealAccount">Kontodaten</a>  
+				<a href ="cancelEditingCustomer">Abbrechen</a>
 			</div>	
-			<br><div align="center">${comment}</div><br>	
+			<br>
+			<div align="center">${comment}</div><br>	
     	
 		<form id="form" action="changeCustomerRealAccount" method="post" style="border:0px;"> 
 			<table>

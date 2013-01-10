@@ -38,9 +38,7 @@ public abstract class Tip extends PersiObjectSingleTable
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date submissionDate;
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="DRAW_PERSISTENCEID")
-	@JoinFetch(JoinFetchType.INNER)
+	@ManyToOne
 	protected Draw draw;
 	
 	@OneToOne

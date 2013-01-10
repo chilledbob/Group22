@@ -50,8 +50,6 @@
 			</c:url>
 			<section><a href="${url }">Gruppen</a></section>
 			
-			<section>${currentGroup.name} : Mitglied</section>
-
 		</div>	
 	</div>
 </div>
@@ -62,11 +60,11 @@
 		<div class="current_content">
 
 			
-			<c:url value="currentGroupViewTips" var="url">
+			<c:url value="currentGroupViewTips" var="url1">
 				<c:param name="uid" value="${currentUser.identifier}" />
 				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
-			<c:url value="currentGroupViewMember" var="url">
+			<c:url value="currentGroupViewMember" var="url2">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
 			<c:url value="resignGroup" var="url3">

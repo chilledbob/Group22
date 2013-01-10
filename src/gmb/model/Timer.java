@@ -1,17 +1,38 @@
 package gmb.model;
 
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.crypto.Data;
+
 import gmb.model.tip.draw.DailyLottoDraw;
 import gmb.model.tip.draw.TotoEvaluation;
 
+import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.salespointframework.core.time.DefaultTime;
 
+import de.msiggi.Sportsdata.Webservices.Matchdata;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoap;
+import de.msiggi.Sportsdata.Webservices.SportsdataSoapProxy;
+
 /**
  * Timer class which offers functionality for accessing the current date time with offsets for testing purposes.
  */
+@Entity
 public class Timer extends DefaultTime 
 {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	protected int id;
+	
 	protected Duration offset1 = new Duration(0);
 	protected Duration offset2 = new Duration(0);
 
@@ -33,7 +54,7 @@ public class Timer extends DefaultTime
 	public void setReferenceDate(DateTime refDate)
 	{
 		offset1 = new Duration(super.getDateTime(), refDate);
-		offset2 = new Duration(0); 
+		offset2 = new Duration(0);
 	}
 
 	protected void evaluateUnevaluatedDailyLottoDrawings()
@@ -76,16 +97,36 @@ public class Timer extends DefaultTime
 	protected void evaluateUnevaluatedTotoEvaluations()
 	{
 		if(!totoEvaluationAutoEvaluation) return;
-
-		for(TotoEvaluation eval : Lottery.getInstance().getTipManagement().getTotoEvaluations())
+		LinkedList<TotoEvaluation> evalist = Lottery.getInstance().getTipManagement().getTotoEvaluations();
+		for(TotoEvaluation eval : evalist){
 			if(eval.getEvaluated() == false)
 			{
+				int j = 1;
+				for(TotoEvaluation eva : evalist){
+					if(eval.getId() == eva.getId())
+						break;
+					j++;
+				}
 				if(eval.getPlanedEvaluationDate().isBefore(getDateTime()))
 				{			
-					eval.evaluate(null);
+					SportsdataSoap sportDataSoup = new SportsdataSoapProxy().getSportsdataSoap();
+					Matchdata[] data = null;
+					int[] result = new int[18];
+					try {
+						data=sportDataSoup.getMatchdataByGroupLeagueSaison(j, "bl1", "2012");
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					for(int i = 0; i < 9; i++){
+					result[2*i] = data[i].getGoals()[0].getGoalScoreTeam1();
+					result[2*i+1] = data[i].getGoals()[0].getGoalScoreTeam2();
+					}
+					eval.evaluate(result);
 					eval.getDrawEvaluationResult().setEvaluationDate(eval.getPlanedEvaluationDate());
 				}
 			}
+		}
 	}
 
 	/**
@@ -99,7 +140,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusMinutes(minutesCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -115,7 +157,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusHours(hoursCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -131,7 +174,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusDays(daysCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -147,7 +191,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusWeeks(weeksCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -163,7 +208,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusMonths(monthsCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -179,7 +225,8 @@ public class Timer extends DefaultTime
 		DateTime fakeDateTime = actualDateTime.plus(offset1).plus(offset2);
 		DateTime newFakeDateTime = fakeDateTime.plusYears(yearsCount);
 
-		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime)); 
+		this.offset2 = this.offset2.plus(new Duration(fakeDateTime, newFakeDateTime));
+		DB_UPDATE();
 		evaluateUnevaluatedDailyLottoDrawings(); 
 		evaluateUnevaluatedTotoEvaluations();
 	}
@@ -206,13 +253,13 @@ public class Timer extends DefaultTime
 	 * Time simulation for testing purposes.
 	 * @param offset The new duration offset which will be added to the date time.
 	 */
-	public void setOffset(Duration offset){ this.offset2 = offset; }
+	public void setOffset(Duration offset){ this.offset2 = offset; DB_UPDATE();}
 
 	/**
 	 * [Intended for direct usage by controller]<br>
 	 * Resets the time offset to 0.
 	 */
-	public void resetOffset(){ offset2 = new Duration(0); }
+	public void resetOffset(){ offset2 = new Duration(0); DB_UPDATE(); }
 	public Duration getOffset(){ return offset2; }
 
 	/**
@@ -271,4 +318,10 @@ public class Timer extends DefaultTime
 	 * Deactivates the automatic evaluation of TotoEvaluations.
 	 */
 	public void resetTotoEvaluatioAutoEvaluation(){ totoEvaluationAutoEvaluation = false; }
+	
+	public int getId(){ return this.id; }
+	
+	public void DB_UPDATE(){
+		GmbPersistenceManager.update(this);
+	}
 }

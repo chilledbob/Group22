@@ -83,5 +83,13 @@ public class Lottery
 			return this.tipManagement;
 	}
 	
-	public Timer getTimer(){ return timer; }
+	public Timer getTimer(){
+		Timer obj = (Timer) GmbPersistenceManager.get(Timer.class, this.timer.getId());
+		
+		if(obj != null) return obj;
+		else
+			return this.timer;
+	}
+	
+	public void setTimer(Timer timer){ this.timer = timer; }
 }

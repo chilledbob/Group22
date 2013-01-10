@@ -24,19 +24,15 @@
 	</div>
 				
 	<div class="login">
-			<c:url value="editUser" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<table>
-				<tr>
-				<th id="account"><a href ="${url}">Account</a></th>
+		<table>
+			<tr>
+				<th id="account"><a href ="editUser">Account</a></th>
 				<th id="logout"><a href ="<c:url value="/logout/" /> ">Logout</a></th>
 				<th id="namevorname">
-				<section id="name-vorname"> ${currentUser.getMemberData().getFirstName()}  ${currentUser.getMemberData().getLastName()}</section>
+					<section id="name-vorname"> ${currentUser.getMemberData().getFirstName()}  ${currentUser.getMemberData().getLastName()}</section>
 				</th>
-				</tr>
-			</table>
-		
+			</tr>
+		</table>	
 	</div>
 			
 </div>
@@ -54,10 +50,7 @@
 		</div>	
 		
 		<div class="sub_navi" >
-			<c:url value="editUser" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Account</a></section>
+			<section><a href ="editUser">Account</a></section>
 			<section>Banking</section>
 		</div>	
 	</div>
@@ -66,38 +59,44 @@
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content">
-			<h4 align="center"> Banking </h4>
-    		<br>
-    			<div align="center">Ihr Kontostand : <b>${currentUser.getBankAccount().getCredit().toString()} €</b></div>
+		
+			<h4 align="center">Banking<sup style="text-shadow: aqua;font-size: x-small;">${currentUser.identifier}</sup></h4>
+  			
+  			<br>
+    			<div align="center">Ihr Kontostand : <b>${currentUser.getBankAccount().getCredit().toString()} Euro</b></div>
     		<br>
     		
-			<form id="form" action="loadingBankAccount" method="post" style="border:0px;"> 
-			<table>
-				<tr>
-					
-					<td><label for="load">Aufladen</label></td>
-					<td><input name="load" id="load"  type="text" size="15" maxlength="15"/></td> 
-					<td><div class="button1"><button class="btn">abschicken</button></div>
-				</tr>
-				<input name="uid" id="uid"  type="hidden" size="15" maxlength="15" value="${currentUser.identifier}"/>
-			</table>
-		</form>
-		<form id="form" action="chargingBankAccount" method="post" style="border:0px;"> 	
-			<table>
-				<tr>
-				<td><input name="uid" id="uid"  type="hidden" size="15" maxlength="15" value="${currentUser.identifier}"/></td>
-					<td><label for="load">Abbuchen</label></td>
-					<td><input name="load" id="load"  type="text" size="15" maxlength="15"/></td> 
-					<td><div class="button1"><button class="btn">abschicken</button></div>
-				</tr>
-			</table>
-		</form>
+			<div align="center">
+				${comment}
+			</div>	
+			
+			<form id="form" action="doBanking" method="post" style="border:0px;"> 
+				<table>
+					<tr>
+						<td><label for="accountNumber">Kontonummer</label></td>
+						<td><input name="accountNumber" id="accountNumber"  type="text" size="15" maxlength="15" value="${accountNmber}"/></td>
+					</tr>
+					<tr>
+						<td><label for="bankCode">Bankleitzahl</label></td>
+						<td><input name="bankCode" id="bankCode"  type="text" size="15" maxlength="15" value="${bankCode}"/></td>
+					</tr>
+					<tr>
+						<td><label for="load">Betrag</label></td>
+						<td><input name="load" id="load"  type="text" size="15" maxlength="15" value="${load}"/></td>
+					</tr>
+				</table>
+				<div class="button1" align="center">
+					<button class="btn" name="mode" value="load">Aufladen</button>
+					<button class="btn" name="mode" value="charge">Abbuchen</button>
+				</div>
+			</form>
+		
 		</div>
 	</div>
 </div>
 
 <div class="footer">
-		<p>Copyright SuperLotterie ©</p>
+		<p>Copyright SuperLotterie Â©</p>
 </div>
 
 

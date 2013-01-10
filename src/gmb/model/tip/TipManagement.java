@@ -8,7 +8,9 @@ import gmb.model.tip.draw.WeeklyLottoDraw;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
@@ -21,11 +23,14 @@ import org.joda.time.Duration;
 @Entity
 public class TipManagement extends PersiObject
 {
-	@OneToMany(mappedBy="tipManagementId")
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIPMANAGEMENTID_PERSISTENCEID")
 	protected List<WeeklyLottoDraw> weeklyLottoDrawings;
-	@OneToMany(mappedBy="tipManagementId")
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIPMANAGEMENTID_PERSISTENCEID")
 	protected List<DailyLottoDraw> dailyLottoDrawings;
-	@OneToMany(mappedBy="tipManagementId")
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinColumn(name="TIPMANAGEMENTID_PERSISTENCEID")
 	protected List<TotoEvaluation> totoEvaluations;
 	
 	protected long tipSubmissionTimeLimitInMilliSeconds;
@@ -86,7 +91,7 @@ public class TipManagement extends PersiObject
 	
 	public List<WeeklyLottoDraw> getWeeklyLottoDrawings(){ return weeklyLottoDrawings; }
 	public List<DailyLottoDraw> getDailyLottoDrawings(){ return dailyLottoDrawings; }
-	public List<TotoEvaluation> getTotoEvaluations(){ return totoEvaluations; }
+	public LinkedList<TotoEvaluation> getTotoEvaluations(){ return new LinkedList<TotoEvaluation>(totoEvaluations); }
 	
 	public Duration getTipSubmissionTimeLimit(){ return new Duration(tipSubmissionTimeLimitInMilliSeconds); }
 }

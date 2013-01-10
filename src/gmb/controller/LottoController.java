@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.xml.rpc.ServiceException;
 
+import gmb.model.CDecimal;
 import gmb.model.GmbFactory;
 import gmb.model.GmbPersistenceManager;
 import gmb.model.Lottery;
@@ -27,6 +28,7 @@ import gmb.model.tip.tipticket.perma.WeeklyLottoPTT;
 import gmb.model.tip.tipticket.single.DailyLottoSTT;
 import gmb.model.tip.tipticket.single.SingleTT;
 import gmb.model.tip.tipticket.single.WeeklyLottoSTT;
+import gmb.model.tip.tipticket.type.WeeklyLottoTT;
 
 import org.joda.time.DateTime;
 import org.salespointframework.core.user.Capability;
@@ -67,7 +69,7 @@ public class LottoController {
 			@RequestParam("Zahl") int zahl,
 			@RequestParam("uid") UserIdentifier uid
 			)throws ServiceException, RemoteException{
-		if(lottoliste.equals(zahl)){
+		if(lottoliste.contains(zahl)){
 			lottoliste.remove(new Integer(zahl));
 			index--;
 			mav.setViewName("customer/tips/tip_lotto");
@@ -111,7 +113,7 @@ public class LottoController {
 		if(tipType.equals(new String("single"))){
 			ReturnBox<Integer, WeeklyLottoSTT> rb = GmbFactory.createAndPurchase_WeeklyLottoSTT(currentUser);
 			if(rb.var1 == 0 ){
-				SingleTT ticket = rb.var2;
+				WeeklyLottoSTT ticket = rb.var2;
 				int last = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().size()-1;
 				WeeklyLottoDraw draw = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().get(last);
 				draw.createAndSubmitSingleTip(ticket, tipliste);
@@ -152,6 +154,8 @@ public class LottoController {
 	
 	
 	//-----------------------------------------for grouptips------------------------------
+	
+//	---------------------------------------GROUP ADMIN------------------------------------
 	@RequestMapping("/new_weeklyLotto_GroupTip")
 	public ModelAndView new_weeklyLotto_GroupTip(ModelAndView mav,
 			@RequestParam("uid") UserIdentifier uid,
@@ -250,6 +254,129 @@ public class LottoController {
 		mav.addObject("currentUser", currentUser);
 		mav.addObject("currentGroup", currentGroup);
 		mav.addObject("weeklySTTList", GmbPersistenceManager.getGroup(groupName).getWeeklyLottoGroupTips());
+		return mav;
+	}
+	
+	@RequestMapping("/LottoGroupTipChangeAdmin")
+	public ModelAndView LottoGroupTipChangeAdmin(ModelAndView mav,
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("groupName") String groupName,
+			@RequestParam("tip") int tipId){
+		mav.setViewName("customer/tips/editGroupTip_Admin");
+		return mav;
+	}
+	
+//	--------------------------------------GROUP MEMBER---------------------------------------------------
+	
+	@RequestMapping("/new_weeklyLotto_GroupTip_Member")
+	public ModelAndView new_weeklyLotto_GroupTip_Member(ModelAndView mav,
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("groupName") String groupName,
+			@RequestParam("tipId") int tipId,
+			@RequestParam("drawId") int drawId){
+		WeeklyLottoDraw draw = (WeeklyLottoDraw) GmbPersistenceManager.get(WeeklyLottoDraw.class, drawId);
+		Customer currentCustomer = (Customer) GmbPersistenceManager.get(uid);
+		WeeklyLottoGroupTip wgt = (WeeklyLottoGroupTip) GmbPersistenceManager.get(WeeklyLottoGroupTip.class, tipId);
+		mav.addObject("confirm", false);
+		mav.addObject("tip", wgt.getTips().getFirst());
+		mav.addObject("currentUser", currentCustomer);
+		mav.addObject("currentGroup", GmbPersistenceManager.getGroup(groupName));
+		mav.addObject("draw", draw);
+		
+		mav.addObject("drawType", wgt.getTips().getFirst().getTipTicket().getDrawType().toString());
+		
+		
+		mav.setViewName("customer/tips/grouptip_Member");
+		return mav;
+	}
+	
+	
+	@RequestMapping("/LottoGroupConfirmMember")
+	public ModelAndView LottoGroupConfirmMember (ModelAndView mav,
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("groupName") String groupName,
+			@RequestParam("tipId") int tipID,
+			@RequestParam("anzahl") int count
+			){
+		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+		Group currentGroup = GmbPersistenceManager.getGroup(groupName);
+		WeeklyLottoGroupTip wlgt = (WeeklyLottoGroupTip) GmbPersistenceManager.get(WeeklyLottoGroupTip.class, tipID);
+		int papaTicketId = 0;
+		if(count > 0){
+		if(!wlgt.isSubmitted()){
+			for(int i = 0; i < count; i++){
+				
+			ReturnBox<Integer, WeeklyLottoSTT> rb = GmbFactory.createAndPurchase_WeeklyLottoSTT(currentUser);
+			WeeklyLottoSTT ticket = rb.var2;
+			if(rb.var1 == 0 ){
+				
+				LinkedList<int[]> cus_tipTips = new LinkedList<int[]>();
+				cus_tipTips.add(wlgt.getTips().getFirst().getTip());
+		
+				LinkedList<TipTicket> cusWLSTTs = new LinkedList<TipTicket>();
+				cusWLSTTs.add(ticket);
+		
+				wlgt.createAndSubmitSingleTipList(cusWLSTTs, cus_tipTips);
+			}
+			else{
+				//nicht genug kohle!!
+			}
+			papaTicketId = (i == 0 ) ? ticket.getId() : papaTicketId;
+			}
+			mav.setViewName("customer/tips/grouptip_Member");
+			mav.addObject("confirm", true);
+			mav.addObject("numbers",lottoliste);
+		}
+		}else{
+			mav.setViewName("customer/tips/grouptip_Member");
+			mav.addObject("confirm", false);
+			mav.addObject("drawType", wlgt.getTips().getFirst().getTipTicket().getDrawType().toString());
+		}
+		mav.addObject("currentUser", currentUser);
+		mav.addObject("currentGroup", currentGroup);
+		mav.addObject("weeklySTTList", GmbPersistenceManager.getGroup(groupName).getWeeklyLottoGroupTips());
+		return mav;
+	}
+	
+	@RequestMapping("/change_weeklyLotto_GroupTip_Member")
+	public ModelAndView changeLottoGroupTipMember (ModelAndView mav,
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("groupName") String groupName,
+			@RequestParam("tipId") int tipId
+			){
+		Customer currentCustomer = (Customer) GmbPersistenceManager.get(uid);
+		WeeklyLottoGroupTip wgt = (WeeklyLottoGroupTip) GmbPersistenceManager.get(WeeklyLottoGroupTip.class, tipId);
+		mav.addObject("confirm", false);
+		mav.addObject("tip", wgt.getTips().getFirst());
+		mav.addObject("currentUser", currentCustomer);
+		mav.addObject("currentGroup", GmbPersistenceManager.getGroup(groupName));
+		mav.addObject("draw", wgt.getDraw());
+		
+		mav.addObject("drawType", wgt.getTips().getFirst().getTipTicket().getDrawType().toString());
+		
+		
+		mav.setViewName("customer/tips/edit_grouptip_Member");
+		return mav;
+	}
+	
+	@RequestMapping("/confirmChange_weeklyLotto_GroupTip_Member")
+	public ModelAndView confirmChangeLottoGroupTipMember (ModelAndView mav,
+			@RequestParam("uid") UserIdentifier uid,
+			@RequestParam("groupName") String groupName,
+			@RequestParam("STTid") int ticketId,
+			@RequestParam("anzahl") int count){
+		Customer currentCustomer = (Customer) GmbPersistenceManager.get(uid);
+		WeeklyLottoSTT stt = (WeeklyLottoSTT) GmbPersistenceManager.get(WeeklyLottoSTT.class, ticketId);
+		
+		//löschen oder mehr setzen
+		
+		mav.addObject("confirm", false);
+		mav.addObject("currentUser", currentCustomer);
+		mav.addObject("currentGroup", GmbPersistenceManager.getGroup(groupName));
+		mav.addObject("draw", stt.getTip().getDraw());
+		
+		
+		mav.setViewName("customer/tips/edit_grouptip_Member");
 		return mav;
 	}
 	

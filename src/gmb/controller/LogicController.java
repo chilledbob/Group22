@@ -31,26 +31,28 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class LogicController {
-		
+	
+	private static UserIdentifier UID;
+	
+//------------------------------EDIT CUSTOMER-----------------------------------
 	
 	@RequestMapping(value="/editUser",method=RequestMethod.GET)
-	public ModelAndView editUser(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid) throws UnsupportedEncodingException{
-		uid = GmbDecoder.decodeUTF8String(uid);
-		Member currentMember = GmbPersistenceManager.get(uid);
+	public ModelAndView editUser(ModelAndView mav){
+		
+		Member currentMember = GmbPersistenceManager.get(UID);
 		if(currentMember.getType().name().equals("Customer")){
-			Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+			Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 			mav.addObject("currentUser", currentUser);
-			mav.addObject("comment", "Führen Sie Ihre Änderungswünsche im entsprechenden Feld aus !");  
+			mav.addObject("comment", "Fuehren Sie Ihre Aenderungswuensche im entsprechenden Feld aus !");  
 			mav.setViewName("customer/accountStuff/editCustomerUserData");
 		}
-		else if(currentMember.getType().name().equals("Notary")){
+		else if(currentMember.getType().toString().equals("Notary")){
 			mav.setViewName("editNotary");
-			mav.addObject("currentUser", GmbPersistenceManager.get(uid));
+			mav.addObject("currentUser", currentMember);
 		}
 		else{
 			mav.setViewName("editEmployee");
-			mav.addObject("currentUser", GmbPersistenceManager.get(uid));
+			mav.addObject("currentUser", currentMember);
 		}	
 		
 		return mav;	
@@ -58,7 +60,6 @@ public class LogicController {
 	
 	@RequestMapping(value="/changeCustomerUserData",method=RequestMethod.POST)
 	public ModelAndView changeCustomer(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid,
 			@RequestParam("vname") String vname,
 			@RequestParam("nname") String nname,
 			@RequestParam("email") String email,
@@ -67,7 +68,7 @@ public class LogicController {
 			@RequestParam("plz") String plz,
 			@RequestParam("city") String city) {
 		
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 		
 		boolean changeTest = false;
 		if(!vname.equals(currentUser.getMemberData().getFirstName())) {changeTest = true;} 
@@ -81,7 +82,7 @@ public class LogicController {
 		if(changeTest){
 			Adress newAdress = GmbFactory.new_Adress(street,hNumber,plz,city);
 			MemberData newMemberData = GmbFactory.new_MemberData(vname,nname, currentUser.getMemberData().getBirthDate(),currentUser.getMemberData().getPhoneNumber(), email, newAdress);
-			currentUser.sendDataUpdateRequest(newMemberData, "Hello, please accept my update. Thanks.").accept();
+			currentUser.sendDataUpdateRequest(newMemberData, "Hello, please accept my update. Thanks.");
 			mav.addObject("comment","Ihr Änderungswunsch wird von einem Mitarbeiter bearbeitet.");
 		}else{
 			mav.addObject("comment","Sie haben keine Änderungen vorgenommen.");
@@ -93,10 +94,8 @@ public class LogicController {
 	}
 	
 	@RequestMapping(value="/editCustomerPassword",method=RequestMethod.GET)
-	public ModelAndView editCustomerPassword(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid) throws UnsupportedEncodingException{
-		uid = GmbDecoder.decodeUTF8String(uid);
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+	public ModelAndView editCustomerPassword(ModelAndView mav){
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 		mav.addObject("currentUser", currentUser);
 		mav.addObject("comment", "Bitte geben Sie Ihr altes und Ihr neues Passwort ein !");  
 		mav.setViewName("customer/accountStuff/editCustomerPassword");
@@ -105,11 +104,10 @@ public class LogicController {
 
 	@RequestMapping(value="/changeCustomerPassword",method=RequestMethod.POST)
 	public ModelAndView changeCustomerPassword(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid,
 			@RequestParam("oldPassword") String oldPassword,
 			@RequestParam("newPassword") String newPassword) {
 		
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 		
 		if((oldPassword == "" || newPassword == "" )){
 			mav.addObject("comment", "Sie müssen alle Felder Füllen !");
@@ -127,10 +125,9 @@ public class LogicController {
 	}
 	
 	@RequestMapping(value="/editCustomerRealAccount",method=RequestMethod.GET)
-	public ModelAndView editCustomerRealAccount(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid) throws UnsupportedEncodingException {
-		uid = GmbDecoder.decodeUTF8String(uid);
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);		
+	public ModelAndView editCustomerRealAccount(ModelAndView mav) {
+		
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);		
 		mav.addObject("currentUser", currentUser);
 		mav.addObject("comment", "Führen Sie Ihre Änderungswünsche im entsprechenden Feld aus !");
 		mav.setViewName("customer/accountStuff/editCustomerRealAccount");
@@ -139,22 +136,19 @@ public class LogicController {
 	
 	@RequestMapping(value="/changeCustomerRealAccount",method=RequestMethod.POST)
 	public ModelAndView changeCustomerRealAccount(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid,
 			@RequestParam("newBankCode") String newBankCode,
 			@RequestParam("newAccountNumber") String newAccountNumber) {
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 		
 		boolean changeTest = false;
 		if(!newBankCode.equals(currentUser.getBankAccount().getRealAccountData().getBankCode())){changeTest=true;}
 		if(!newAccountNumber.equals(currentUser.getBankAccount().getRealAccountData().getAccountNumber())){changeTest=true;}
-		System.out.println(changeTest);
 		
 		if((newBankCode == "" || newAccountNumber == "" )){
-			mav.addObject("comment", "Sie müssen alle Felder ausüllen !");
+			mav.addObject("comment", "Sie müssen alle Felder ausfüllen !");
 		}
 		else if(changeTest){
-			RealAccountData rad = GmbFactory.new_RealAccountData(newBankCode, newAccountNumber);
-			currentUser.getBankAccount().sendDataUpdateRequest(GmbFactory.new_RealAccountData(newBankCode, newAccountNumber), "Bitte aendern.").accept();
+			currentUser.getBankAccount().sendDataUpdateRequest(GmbFactory.new_RealAccountData(newBankCode, newAccountNumber), "Bitte ändern.").accept();
 			mav.addObject("comment","Ihr Änderungswunsch wird von einem Mitarbeiter bearbeitet.");
 		} 
 		else if(!changeTest){
@@ -167,57 +161,91 @@ public class LogicController {
 	}
 	
 	@RequestMapping(value="/cancelEditingCustomer",method=RequestMethod.GET)
-	public ModelAndView cancelEditingCustomer(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid) throws UnsupportedEncodingException{
-		uid = GmbDecoder.decodeUTF8String(uid);
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
+	public ModelAndView cancelEditingCustomer(ModelAndView mav){
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
 		mav.setViewName("customer/customer");
 		mav.addObject("currentUser", currentUser);
 		return mav;	
 	}
+		
+//------------------------------BANKING---------------------------------------
 	
 	@RequestMapping(value="/bankingCustomer",method=RequestMethod.GET)
-	public ModelAndView bankingCustomer(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid) throws UnsupportedEncodingException{
-		uid = GmbDecoder.decodeUTF8String(uid);
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-		//LotteryBankAccount acc = (LotteryBankAccount) GmbPersistenceManager.get(LotteryBankAccount.class, currentUser.getBankAccount().getId());
+	public ModelAndView bankingCustomer(ModelAndView mav){
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);	
+		
+		mav.setViewName("customer/accountStuff/bankingCustomer");
+		mav.addObject("currentUser", currentUser);
+		mav.addObject("comment", "Bitte geben Sie die erforderlichen Daten ein !");
+		return mav;	
+	}	
+	
+	@RequestMapping(value="/doBanking",method=RequestMethod.POST)
+	public ModelAndView loadingBankAccount(ModelAndView mav,
+			@RequestParam("load") String load,
+			@RequestParam("bankCode") String bankCode,
+			@RequestParam("mode") String mode,
+			@RequestParam("accountNumber") String accountNumber){
+		Customer currentUser = (Customer) GmbPersistenceManager.get(UID);
+
+		if(accountNumber.equals("") || bankCode.equals("") || load.equals("")){
+			mav.addObject("comment", "Ihre Eingaben sind nicht vollständig !");
+			mav.addObject("bankCode", bankCode);
+			mav.addObject("accountNumber", accountNumber);
+			mav.addObject("load", load);
+		}
+		
+		if(!bankCode.equals(currentUser.getBankAccount().getRealAccountData().getBankCode()) ||
+				!accountNumber.equals(currentUser.getBankAccount().getRealAccountData().getAccountNumber())){
+			mav.addObject("comment", "Ihre Eingaben sind nicht korrekt !");
+			mav.addObject("bankCode", bankCode);
+			mav.addObject("accountNumber", accountNumber);
+			mav.addObject("load", load);
+		}
+		
+		if(bankCode.equals(currentUser.getBankAccount().getRealAccountData().getBankCode()) ||
+		   accountNumber.equals(currentUser.getBankAccount().getRealAccountData().getAccountNumber())){
+			
+			if(load.matches("\\d+([.]{1}\\d+)?")){
+				
+				if(mode.equals("load")){
+					ExternalTransactionRequest currentRequest = currentUser.getBankAccount().sendExternalTransactionRequest(new CDecimal(load), "druff").var2;
+					currentRequest.accept();
+					mav.addObject("comment", load+" € wurden aufgeladen !");
+				}
+				else{
+					CDecimal c1 = currentUser.getBankAccount().getCredit();
+					CDecimal c2 = new CDecimal(load);
+
+					if(c1.compareTo(c2) != -1){
+						ExternalTransactionRequest currentRequest = currentUser.getBankAccount().sendExternalTransactionRequest(new CDecimal("-"+load), "druff").var2;
+						currentRequest.accept();
+						mav.addObject("comment", load+" € wurden abgebucht !");
+					}else {
+						mav.addObject("comment", "Sie haben zu wenig Geld auf Ihrem Lotteriekonto !");
+					}
+				}
+			}
+			else{
+				mav.addObject("comment", "Geben Sie bitte bei Betrag eine Zahl ein !");
+				mav.addObject("bankCode", bankCode);
+				mav.addObject("accountNumber", accountNumber); 
+				mav.addObject("load", "");
+			}
+		}
+				
 		mav.setViewName("customer/accountStuff/bankingCustomer");
 		mav.addObject("currentUser", currentUser);
 		return mav;	
 	}
 	
-	@RequestMapping(value="/loadingBankAccount",method=RequestMethod.POST)
-	public ModelAndView loadingBankAccount(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid,
-			@RequestParam("load") String load){
-
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-		ExternalTransactionRequest currentRequest = currentUser.getBankAccount().sendExternalTransactionRequest(new CDecimal(load), "druff").var2;
-		currentRequest.accept();
-	//	System.out.println(currentUser.getBankAccount().getCredit().toString());
-		mav.setViewName("bankingCustomer");
-		mav.addObject("currentUser", GmbPersistenceManager.get(uid));
-		return mav;	
-	}
 	
-	@RequestMapping(value="/chargingBankAccount",method=RequestMethod.POST)
-	public ModelAndView chargingBankAccount(ModelAndView mav,
-			@RequestParam("uid") UserIdentifier uid,
-			@RequestParam("load") String load){
-		System.out.println("----loadingBankAccount----");
-		Customer currentUser = (Customer) GmbPersistenceManager.get(uid);
-		ExternalTransactionRequest currentRequest = currentUser.getBankAccount().sendExternalTransactionRequest(new CDecimal("-"+load), "druff").var2;
-		currentRequest.accept();
-		mav.setViewName("bankingCustomer");
-		mav.addObject("currentUser", GmbPersistenceManager.get(uid));
-		return mav;	
-	}
-	
+	//geändert
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	public ModelAndView login(HttpSession session,ModelAndView mav,
 			@RequestParam("uid") UserIdentifier uid,
 			@RequestParam("password") String pw) {
+				
 		Member user = GmbPersistenceManager.get(uid);
 		
 		if(uid.toString() == ""){
@@ -227,43 +255,46 @@ public class LogicController {
 			return mav;
 		}
 		
-		if(user != null) {
+		
+		if(GmbPersistenceManager.get(uid) != null && user.getActivationState()) {
 			if(pw==""){
 				mav.addObject("failureText", "Bitte geben Sie ein Passwort ein !");	
-				mav.addObject("uidInput", uid.toString());
+				mav.addObject("uid", uid.toString());
 				mav.setViewName("index");
 				return mav;
 			}
 			if(user.verifyPassword(pw)) {
+				
 				GmbPersistenceManager.login(user, session);
-				Capability adminCAP = new Capability("admin");
-				Capability employeeCAP = new Capability("employee");
-				Capability customerCAP = new Capability("customer");
-				if(user.hasCapability(adminCAP)){
-					mav.setViewName("employee/employee");
+				UID = uid;
+				if(user.hasCapability(new Capability("admin"))){
+					mav.setViewName("admin/admin");
+					mav.addObject("currentUser",user);
 				}
-				else if(user.hasCapability(employeeCAP)){
-					mav.setViewName("employee/employee");
+				else if(user.hasCapability(new Capability("employee"))){
+					mav.setViewName("admin/admin");
+					mav.addObject("currentUser",user);
 				}
-				else if(user.hasCapability(customerCAP)){
+				else if(user.hasCapability(new Capability("customer"))){
 					mav.setViewName("customer/customer");
+					mav.addObject("currentUser",(Customer) user);
 				}
 				else{
 					mav.setViewName("notary/notary");
+					mav.addObject("currentUser",user);
 					int latest = Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().size()-1;
 					mav.addObject("draw", Lottery.getInstance().getTipManagement().getWeeklyLottoDrawings().get(latest));
-					mav.addObject("time", Lottery.getInstance().getTimer().getDateTime());
 					}		
-				mav.addObject("currentUser",user);
 				return mav;
 			}
 			else{
 				mav.setViewName("index");
 				mav.addObject("failureText", "Das eingegebene Passwort ist falsch !");	
-				mav.addObject("uidInput", user.getIdentifier().toString());
+				mav.addObject("uid", uid.toString());
 				return mav;
 			}
-		} 
+		}else { mav.addObject("failureText", "Der Account ist nicht vorhanden !");}
+		
 		mav.setViewName("index");
 		return mav;
 	}
@@ -271,6 +302,7 @@ public class LogicController {
 	@RequestMapping("/logout")
 	public String logout(HttpSession session) {
 		GmbPersistenceManager.logout(session);
+		UID = null;
 		return "redirect:/";
 	}	
 	
@@ -285,9 +317,7 @@ public class LogicController {
 		mav.addObject("hNumber", "");
 		mav.addObject("plz", "");
 		mav.addObject("city", "");
-		mav.addObject("uidFail", "true");
-		mav.addObject("fail", "");
-		mav.addObject("comment", "");
+		mav.addObject("comment", "Bitte geben Sie ihre Daten ein.");
 		mav.setViewName("register");
 		return mav;
 		
@@ -306,47 +336,12 @@ public class LogicController {
 			@RequestParam("city") String city,
 			@RequestParam("accountNumber") String accountNumber,
 			@RequestParam("bankCode") String bankCode,
-			@RequestParam("age") String age) {
-		if(age.equals(new String("false"))){
-			mav.setViewName("register");
-			mav.addObject("vorname", vname);
-			mav.addObject("nachname", nname);
-			mav.addObject("password", password);
-			mav.addObject("uid", uid);
-			mav.addObject("email", email);
-			mav.addObject("street", street);
-			mav.addObject("hNumber", hNumber);
-			mav.addObject("plz", plz);
-			mav.addObject("city", city);
-			mav.addObject("accountNumber", accountNumber);
-			mav.addObject("bankCode", bankCode);
-			mav.addObject("fail", "- Fehler");
-			mav.addObject("comment", new String("Sie müssen mindestens 18 Jahre alt sein um an Gewinnspielen teilnehmen zu können!"));
-			return mav;
-		}
-		//Username schon vorhanden
-		if(GmbPersistenceManager.get(uid)!= null){
+			@RequestParam("age") boolean age) throws UnsupportedEncodingException {
+		
+		if(!age){
 			mav.setViewName("register"); 
 			mav.addObject("vorname", vname);
 			mav.addObject("nachname", nname);
-			mav.addObject("password", password);
-			mav.addObject("uid", "");
-			mav.addObject("email", email);
-			mav.addObject("street", street);
-			mav.addObject("hNumber", hNumber);
-			mav.addObject("plz", plz);
-			mav.addObject("city", city);
-			mav.addObject("accountNumber", accountNumber);
-			mav.addObject("bankCode", bankCode);
-			mav.addObject("uidFail", "fail");
-			mav.addObject("fail", "- Fehler");
-			mav.addObject("comment", new String("Die UID wird schon verwendet !"));
-		}
-		else if(this.testeEingabeFehler(vname,nname,uid.getIdentifier(), password,email,street,hNumber,plz,city, accountNumber,bankCode)){
-			mav.setViewName("register"); 
-			mav.addObject("vorname", vname);
-			mav.addObject("nachname", nname);
-			mav.addObject("password", password);
 			mav.addObject("uid", uid.toString());
 			mav.addObject("email", email);
 			mav.addObject("street", street);
@@ -355,8 +350,39 @@ public class LogicController {
 			mav.addObject("city", city);
 			mav.addObject("accountNumber", accountNumber);
 			mav.addObject("bankCode", bankCode);
-			mav.addObject("fail", "- Fehler");
-			mav.addObject("comment", new String("Alle Felder fuellen !!!"));
+			mav.addObject("comment", new String("Sie müssen mindestens 18 Jahre sein!"));
+			return mav;
+		}
+		
+		//Username schon vorhanden
+		if(GmbPersistenceManager.get(uid)!= null){
+			mav.setViewName("register"); 
+			mav.addObject("vorname", vname);
+			mav.addObject("nachname", nname);
+			mav.addObject("uid", "");
+			mav.addObject("email", email);
+			mav.addObject("street", street);
+			mav.addObject("hNumber", hNumber);
+			mav.addObject("plz", plz);
+			mav.addObject("city", city);
+			mav.addObject("accountNumber", accountNumber);
+			mav.addObject("bankCode", bankCode);
+			mav.addObject("comment", "Die UID wird schon verwendet !");
+		}
+
+		else if(this.testeEingabeFehler(vname,nname,uid.getIdentifier(), password,email,street,hNumber,plz,city, accountNumber,bankCode)){
+			mav.setViewName("register"); 
+			mav.addObject("vname", vname);
+			mav.addObject("nname", nname);
+			mav.addObject("uid", uid.toString());
+			mav.addObject("email", email);
+			mav.addObject("street", street);
+			mav.addObject("hNumber", hNumber);
+			mav.addObject("plz", plz);
+			mav.addObject("city", city);
+			mav.addObject("accountNumber", accountNumber);
+			mav.addObject("bankCode", bankCode);
+			mav.addObject("comment", "Sie müssen alle Felder füllen !!!");
 		}
 		
 
@@ -368,17 +394,16 @@ public class LogicController {
 			Customer user = new Customer(uid.toString(), password, memberData,lba);
 			Lottery.getInstance().getMemberManagement().addMember(user);
 			lba.setOwner(user);
-			user.getBankAccount().setCredit(new CDecimal(5000));
+			user.getBankAccount().setCredit(new CDecimal(0));
 			user.activateAccount();
 			mav.setViewName("redirect:/");
 		}
 		return mav;
-				
+		
 	}
-	
 	private boolean testeEingabeFehler(
-		String vname,String nname,String uid,String password,String email,
-		String street,String hNumber,String plz,String city, String accountNumber, String bankCode){
+			String vname,String nname,String uid,String password,String email,
+			String street,String hNumber,String plz,String city, String accountNumber, String bankCode){
 		Boolean erg = false;
 		if(vname==""){	erg = true;}
 		if(nname==""){	erg = true;}
@@ -392,6 +417,6 @@ public class LogicController {
 		if(accountNumber ==""){erg = true;}
 		if(bankCode ==""){erg = true;}
 		return erg;
-	}
+		}
 
 }

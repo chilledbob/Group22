@@ -136,6 +136,8 @@ public class ZahlenController {
 	
 
 //-----------------------------------------for groups-------------------------------
+	
+//	-------------------------------------GROUP ADMIN------------------------------------
 @RequestMapping("/new_dailyLotto_GroupTip")
 public ModelAndView new_weeklyLotto_GroupTip(ModelAndView mav,
 		@RequestParam("uid") UserIdentifier uid,
@@ -225,6 +227,30 @@ public ModelAndView NumberConfirmSingle_Group(ModelAndView mav,
 		mav.addObject("failureComment", "Es werden 10 Zahlen benötigt.");
 	}
 	mav.addObject("currentUser", GmbPersistenceManager.get(uid));
+	return mav;
+}
+
+//---------------------------------------------GROUP MEMBER ------------------------------------------
+
+@RequestMapping("/new_dailyLotto_GroupTip_Member")
+public ModelAndView new_weeklyLotto_GroupTip_Member(ModelAndView mav,
+		@RequestParam("uid") UserIdentifier uid,
+		@RequestParam("groupName") String groupName,
+		@RequestParam("tipId") int tipId,
+		@RequestParam("drawId") int drawId){
+	DailyLottoDraw draw = (DailyLottoDraw) GmbPersistenceManager.get(WeeklyLottoDraw.class, drawId);
+	Customer currentCustomer = (Customer) GmbPersistenceManager.get(uid);
+	DailyLottoGroupTip dgt = (DailyLottoGroupTip) GmbPersistenceManager.get(DailyLottoGroupTip.class, tipId);
+	mav.addObject("confirm", false);
+	mav.addObject("tip", dgt.getTips().getFirst());
+	mav.addObject("currentUser", currentCustomer);
+	mav.addObject("currentGroup", GmbPersistenceManager.getGroup(groupName));
+	mav.addObject("draw", draw);
+	
+	mav.addObject("drawType", dgt.getTips().getFirst().getTipTicket().getDrawType().toString());
+	
+	
+	mav.setViewName("customer/tips/grouptip_Member");
 	return mav;
 }
 

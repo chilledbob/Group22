@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.OneToMany;
@@ -26,7 +27,7 @@ public abstract class PermaTT extends TipTicket
 {
 	protected int[] tip;
 	
-	@OneToMany(mappedBy="permaTT")
+	@OneToMany(mappedBy="permaTT", cascade=CascadeType.REMOVE)
 	protected List<SingleTip> tips;
 
 	protected int durationType;	
@@ -44,6 +45,7 @@ public abstract class PermaTT extends TipTicket
 		expired = false;
 		this.setDuration(duration);
 		tips = new LinkedList<SingleTip>();
+		this.papaTicket = 0;
 	}
 
 	/**
@@ -174,4 +176,7 @@ public abstract class PermaTT extends TipTicket
 
 	public int getDurationTypeAsInt(){ return durationType; }
 	public boolean getExpired(){ return expired; }
+	public void setPapaTicket(int newPapa){ this.papaTicket = newPapa; }
+	
+	public int getPapaTicket(){ return papaTicket; }
 }

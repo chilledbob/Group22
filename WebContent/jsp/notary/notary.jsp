@@ -20,7 +20,7 @@
 		
 		<div class="top_navi">
 			<section>Ergebnisse für 6 aus 49</section>
-			<p style="text-align:right">${time }</p>
+			<p style="text-align:right"><fmt:formatDate type="date" value="${time.toDate()}"></fmt:formatDate></p>
 		</div>	
 		
 		<div class="sub_navi" >
@@ -51,7 +51,7 @@
 		<p style="text-align:center;">Ergebnise der letzten Ziehung ${fail}</p>
 		<p style="text-align:left;">Bitte geben Sie die Daten ein.</p>
    		<div class="failComment">${failureComment}</div>
-   		<h4>Ergebnisse für die Ziehung ${draw.planedEvaluationDate }</h4>
+   		<h4>Ergebnisse für die Ziehung <fmt:formatDate type="date" value="${draw.getPlanedEvaluationDate().toDate()}"></fmt:formatDate></h4>
 		<form id="form" action="WeeklyLottoDrawResult" method="post" style="border:0px;">
 			<input name="drawID" id="drawID" type="text" value="${draw.getId() }"/>
 			<fieldset style="border:0px;"> 	

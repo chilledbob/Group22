@@ -41,25 +41,21 @@
 		</div>	
 		
 		<div class="sub_navi" >
-			<br>
 		</div>	
 	</div>
 </div>
 		
 <div id="middle">
-
-	<div class="main_content">
+	<div class="main_content_full">
 		<div class="current_content">
-		<p style="text-align:center;">Neuer Nutzer ${fail}</p>
-		<p style="text-align:left;">Bitte geben Sie ihre Daten ein.</p>
-   		<div class="failComment">${comment}</div>
-		<form id="form" action="createUser" method="post" style="border:0px;"> 
-			<fieldset style="border:0px;"> 	
+			
+			<h4 align="center">Neuen Nutzer anlegen</h4>
+			<div align="center">
+			${comment}
+			<br>	
+
+			<form id="form" action="createUser" method="post" style="border:0px;"> 
 			<table>
-				<tr>
-					<th></th>
-					<th></th>
-				</tr>
 				<tr>
 					<td><label for="vame">Vorname</label></td>
 					<td><input name="vname" id="vname"  type="text" size="30" maxlength="30" value="${vname}"/></td> 
@@ -74,7 +70,7 @@
 					</tr>
 					<tr>
 						<td><label for="password">Passwort</label></td>
-						<td><input name="password" id="password"  type="password" size="30" maxlength="30" value="${password}"/></td>
+						<td><input name="password" id="password"  type="password" size="30" maxlength="30"/></td>
 					</tr>
 					<tr>
 						<td><label for="email">eMail</label></td>
@@ -114,16 +110,13 @@
 						</td>
 					</tr>
 				</table>
-				<div class="button1"><button class="btn">abschicken</button></div>
-			</fieldset> 
-		</form> 
-		
-		<div class="button"><a href ="<c:url value="/" />">Cancel</a></div>	
+				<div class="button1"><button class="btn">Registrieren</button> <a href ="<c:url value="/" />">Abbrechen</a>
+				</div>
+			</form> 
+		</div>
 	</div>
 </div>
-	
-
-</div>
+</div>	
 
 <div class="footer">
 		<p>Copyright SuperLotterie ©</p>

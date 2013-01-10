@@ -112,11 +112,11 @@ public class Customer extends Member
  	public LotteryBankAccount getBankAccount(){ return lotteryBankAccount; }
  	public List<Group> getGroups(){ return groups; }
  	
-	public List<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return weeklyLottoSTTs; }
-	public List<DailyLottoSTT> getDailyLottoSTTs(){ return dailyLottoSTTs; }
-	public List<TotoSTT> getTotoSTTs(){ return totoSTTs; }
-	public List<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return weeklyLottoPTTs; }
-	public List<DailyLottoPTT> getDailyLottoPTTs(){ return dailyLottoPTTs; }
+	public LinkedList<WeeklyLottoSTT> getWeeklyLottoSTTs(){ return new LinkedList<WeeklyLottoSTT>(weeklyLottoSTTs); }
+	public LinkedList<DailyLottoSTT> getDailyLottoSTTs(){ return new LinkedList<DailyLottoSTT>(dailyLottoSTTs); }
+	public LinkedList<TotoSTT> getTotoSTTs(){ return new LinkedList<TotoSTT>(totoSTTs); }
+	public LinkedList<WeeklyLottoPTT> getWeeklyLottoPTTs(){ return new LinkedList<WeeklyLottoPTT>(weeklyLottoPTTs); }
+	public LinkedList<DailyLottoPTT> getDailyLottoPTTs(){ return new LinkedList<DailyLottoPTT>(dailyLottoPTTs); }
 	
 	public List<GroupMembershipInvitation> getGroupInvitations(){ return groupInvitations; }
 	public List<GroupAdminRightsTransfereOffering> getGroupAdminRightsTransfereOfferings(){ return groupAdminRightsTransfereOfferings; }

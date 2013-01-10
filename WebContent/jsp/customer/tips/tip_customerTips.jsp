@@ -166,7 +166,11 @@
 				</c:forEach>
 			</td>
 			<td>
-				<a href="customerEditPTT">bearbeiten</a>
+				<c:url value="customerEditPTT" var="url">
+					<c:param name="uid" value="${currentUser.identifier }" />
+					<c:param name="PTTid" value="${wPTT.getId() }" />
+				</c:url>
+				<a href="${url }">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>
@@ -184,7 +188,11 @@
 				</c:forEach>
 			</td>
 			<td>
-				<a href="customerEditPTT">bearbeiten</a>
+				<c:url value="customerEditPTT" var="url">
+					<c:param name="uid" value="${currentUser.identifier }" />
+					<c:param name="PTTid" value="${dPTT.getId() }" />
+				</c:url>
+				<a href="${url }">bearbeiten</a>
 			</td>
 		</tr>
 	</c:forEach>

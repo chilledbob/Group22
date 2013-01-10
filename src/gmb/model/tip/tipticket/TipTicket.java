@@ -58,6 +58,7 @@ public abstract class TipTicket extends PersiObjectSingleTable implements  Gener
 	protected Customer owner;
 	protected int drawType;
 	
+	protected int papaTicket;
 	
 	public TipTicket(){}
 

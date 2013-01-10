@@ -19,7 +19,7 @@
 				<th id="account"><a href ="${url}">Account</a></th>
 				<th id="logout"><a href ="<c:url value="/logout/" /> ">Logout</a></th>
 				<th id="namevorname">
-				<section id="name-vorname"> ${currentUser.getMemberData().getFirstName()}  ${currentUser.getMemberData().getLastName()}</section>
+				<section id="name-vorname">[${currentUser.getTypeAsGerman().toString()}] ------- ${currentUser.getMemberData().getFirstName()}  ${currentUser.getMemberData().getLastName()}</section>
 				</th>
 				</tr>
 			</table>

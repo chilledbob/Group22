@@ -29,40 +29,21 @@
 		
 		
 		<div class="sub_navi">
-		
-			<c:url value="newGroup" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
-			
+			<section><a href ="newGroup">Erstellen</a></section>
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
 			<section>Gruppen</section>
-
 		</div>	
 	</div>
 </div>
 
-	
 <div id="middle">
 	<div class="main_content_full">
 		<div class="current_content" >
-			<H4 align="center">- Meine Gruppen -</H4>
-			<c:url value="myGroups" var="url1">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<c:url value="allGroups" var="url2">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<div align="center"><a href ="${url1}">Eigene</a> <a href ="${url2}">Alle</a></div>
+			<br>
+			<h4 align="center">Eigene Gruppen<sup style="text-shadow: aqua;font-size: x-small;">${currentUser.identifier}</sup></h4>
+			
+			<div align="center"><a href ="myGroups">Eigene</a> <a href ="allGroups">Alle</a>   <a href ="returnToCustomerGroups">Abbrechen</a></div>
 			
 			<table align="center">
 				<tr>
@@ -71,44 +52,42 @@
 					<th>Mitgl</th>
 					<th>Bew</th>
 					<th>Status</th>
-					<th>Aktion</th>
+					<th colspan="2">Aktion</th>
 				</tr>
-				<sp:forEach items="${groupList}" var="gl">
+				<sp:forEach items="${groupList}" var="glItem">
+				<c:if test="${!glItem.isClosed()}">
 					<tr>
-						<td>${gl.getName()}</td>
-						<td>${gl.getGroupAdmin()}</td>
-						<td>${gl.getGroupMembers().size()}</td> 
-						<td>${gl.countUnhandled()}</td> 
+						<td>${glItem.name}</td>
+						<td>${glItem.getGroupAdmin()}</td>
+						<td>${glItem.getGroupMembers().size()}</td> 
+						<td>${glItem.countUnhandled()}</td> 
 							<c:choose>
-								<c:when test="${gl.getGroupAdmin().equals(currentUser)}">
+								<c:when test="${glItem.getGroupAdmin().equals(currentUser)}">
 									<td>Admin</td>
 									<td>
 										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
+											<c:param name="groupName" value="${glItem.name}" />
 										</c:url><a href="${url}">Öffnen</a> 
 									</td>
-								</c:when>
-								<c:when test="${gl.getGroupMembers().contains(currentUser)}">
-									<td>Mitglied</td>
 									<td>
-										<c:url value="currentGroupView" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Öffnen</a> 
+										<c:url value="closeGroup" var="url">
+											<c:param name="groupName" value="${glItem.name}" />
+											<c:param name="groupid" value="${glItem.id}" />
+										</c:url><a href="${url}">Löschen</a> 
 									</td>
 								</c:when>
 								<c:otherwise>
-									<td></td>
+									<td>Mitglied</td>
 									<td>
-										<c:url value="applyGroupMembership" var="url">
-											<c:param name="uid" value="${currentUser.identifier}" />
-											<c:param name="groupName" value="${gl.getName()}" />
-										</c:url><a href="${url}">Bewerben</a> 
+										<c:url value="currentGroupView" var="url">
+											<c:param name="groupName" value="${glItem.name}" />
+										</c:url><a href="${url}">Öffnen</a> 
 									</td>
+									<td></td>
 								</c:otherwise>
 							</c:choose>
 					</tr>
+				</c:if>
 				</sp:forEach>
 			</table>
 		</div>		

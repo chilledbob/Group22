@@ -45,14 +45,14 @@
 		</sp:loggedIn>
 		<sp:loggedIn test="false">
 			<form method="post" action="login">
-				<label for="uid">Name: </label>
-					<input type="text" id="uid" name="uid" size="12" maxlength="16">
+				<label for="uid">Nutzername: </label>
+					<input type="text" id="uid" name="uid" size="12" maxlength="16" value="${uid}">
 				<label for="password">Passwort: </label>
 					<input type="password" id="password" name="password" size="12" maxlength="16">
 				<button type="submit">login</button> 
 				<a style="color:black;" href ="<c:url value="register" />">registrieren</a>
 			</form> 
-			
+			<br>${failureText}	
 		</sp:loggedIn>
 	</div>
 			

@@ -20,6 +20,7 @@ import gmb.model.Lottery;
 import gmb.model.request.ExternalTransactionRequest;
 import gmb.model.tip.*;
 import gmb.model.tip.draw.DailyLottoDraw;
+import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 import gmb.model.tip.draw.container.FootballGameData;
 import gmb.model.tip.tip.single.WeeklyLottoTip;
@@ -58,17 +59,20 @@ public class Main {
 			GmbFactory.new_MemberManagement();
 			GmbFactory.new_TipManagement();
 			GmbFactory.new_GroupManagement();
+			Timer timer = new Timer();
+			timer.setReferenceDate(new DateTime(2012,7,31,12,0,0,0));
+			GmbPersistenceManager.add(timer);
 		}
 	}
 
 	private void initData() {
 		if(GmbPersistenceManager.get(new UserIdentifier("admin")) == null){
 		
-		Lottery.getInstance().getTimer().setReferenceDate(new DateTime(2012,7,31,12,0,0,0));
 		Adress a = GmbFactory.new_Adress("a","b","c","d");
 		DateTime d = new DateTime();
 		MemberData md = GmbFactory.new_MemberData("a","b",d,"c","d",a);
-		Member admin = new Member("admin","admin",md, MemberType.Admin);		
+		Member admin = new Member("admin","admin",md, MemberType.Admin);
+		admin.activateAccount();
 		Lottery.getInstance().getMemberManagement().addMember(admin);
 
 		//GmbPersistenceManager.update(Lottery.getInstance().getMemberManagement());
@@ -86,11 +90,14 @@ public class Main {
 		MemberData mdaa = GmbFactory.new_MemberData("Vorname","Nachname",daa,"k","l",abb);
 		
 		Customer c = new Customer("nutzer","nutzer",mda,lba);
+		c.activateAccount();
 		Lottery.getInstance().getMemberManagement().addMember(c);
 		lba.setOwner(c);
 		
 		Customer c1 = new Customer("UserTroll","UserTroll",mdaa,lbab);
 		lbab.setOwner(c1);
+		c1.activateAccount();
+		Lottery.getInstance().getMemberManagement().addMember(c1);
 
 		Adress ab = new Adress("ee","f","g","h");
 		DateTime db = new DateTime();
@@ -109,7 +116,8 @@ public class Main {
 		Adress aaa = GmbFactory.new_Adress("aa","bb","cc","dd");
 		DateTime dd = new DateTime();
 		MemberData mdd = GmbFactory.new_MemberData("a","b",dd,"c","d",aaa);
-		Member notary = new Member("arschkrampe","123",mdd, MemberType.Notary);		
+		Member notary = new Member("arschkrampe","123",mdd, MemberType.Notary);
+		notary.activateAccount();
 		Lottery.getInstance().getMemberManagement().addMember(notary);
 		
 		DateTime currentTime = Lottery.getInstance().getTimer().getDateTime();
@@ -134,29 +142,32 @@ public class Main {
 		
 		
 //		------------------------------------------------------------------------------------
-//		SportsdataSoap sportDataSoup = new SportsdataSoapProxy().getSportsdataSoap();
-//		Matchdata[] data = null;
-//		Matchdata[] matchdaydata = new Matchdata[9];
-//		ArrayList<FootballGameData> footballData = new ArrayList<FootballGameData>();
-//		
-//		try {
-//			data=sportDataSoup.getMatchdataByLeagueSaison("bl1", "2012");
-//		} catch (RemoteException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		for(int i = 0; i < 34; i++){
-//			footballData.clear();
-//			for(int j = 0; j < 9; j++){
-//				matchdaydata[j] = data[i*9+j];
-//			}
-//			for(int k = 0; k < 9; k++){
-//				FootballGameData fgd = GmbFactory.new_FootballGameData(new DateTime(matchdaydata[k].getMatchDateTime().getTime()), matchdaydata[k].getNameTeam1(), matchdaydata[k].getNameTeam2());
-//				footballData.add(fgd);
-//			}
-//			
-//			GmbFactory.new_TotoEvaluation(new DateTime(footballData.get(0).getMatchDay()), footballData);
-//		}
+		SportsdataSoap sportDataSoup = new SportsdataSoapProxy().getSportsdataSoap();
+		Matchdata[] data = null;
+		Matchdata[] matchdaydata = new Matchdata[9];
+		ArrayList<FootballGameData> footballData = new ArrayList<FootballGameData>();
+		
+		try {
+			data=sportDataSoup.getMatchdataByLeagueSaison("bl1", "2012");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < 34; i++){
+			footballData.clear();
+			for(int j = 0; j < 9; j++){
+				matchdaydata[j] = data[i*9+j];
+			}
+			for(int k = 0; k < 9; k++){
+				FootballGameData fgd = GmbFactory.new_FootballGameData(new DateTime(matchdaydata[k].getMatchDateTime().getTime()), matchdaydata[k].getNameTeam1(), matchdaydata[k].getNameTeam2());
+				footballData.add(fgd);
+			}
+			
+			TotoEvaluation totoEvaluation = GmbFactory.new_TotoEvaluation(new DateTime(footballData.get(8).getMatchDay()), footballData);
+			for(FootballGameData fgd : footballData){
+				fgd.setTotoEvaluation(totoEvaluation);
+			}
+		}
 		
 		}
 		

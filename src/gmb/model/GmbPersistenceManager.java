@@ -14,12 +14,15 @@ import gmb.model.tip.draw.Draw;
 import gmb.model.tip.draw.TotoEvaluation;
 import gmb.model.tip.draw.WeeklyLottoDraw;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.RollbackException;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.persistence.exceptions.DatabaseException;
 import org.salespointframework.core.database.Database;
 import org.salespointframework.core.user.PersistentUserManager;
 import org.salespointframework.core.user.UserIdentifier;
@@ -69,6 +72,16 @@ public class GmbPersistenceManager
 		
 	}
 	
+	public static Timer add(Timer obj){
+		EntityManager em = emf.createEntityManager();
+		
+		em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		return em.find(obj.getClass(), obj.getId());
+	}
+	
 	public static PersiObject add(PersiObject obj)
 	{
 	EntityManager em = emf.createEntityManager();
@@ -96,8 +109,15 @@ public class GmbPersistenceManager
 		EntityManager em = emf.createEntityManager();
 		
 		em.getTransaction().begin();
-		obj = em.merge(obj);
-		em.remove(obj);
+		em.remove(em.merge(obj));
+		em.getTransaction().commit();
+	}
+	
+	public static void update(Timer obj){
+		EntityManager em = emf.createEntityManager();
+		
+		em.getTransaction().begin();
+		em.merge(obj);
 		em.getTransaction().commit();
 	}
 	
@@ -128,6 +148,7 @@ public class GmbPersistenceManager
 		
 		Lottery.Instanciate(fm, mm, gm, tm);
 		
+		Lottery.getInstance().setTimer((Timer) initContainer(Timer.class, 0));
 	}
 	
 	private static Object initContainer(Class<?> classType, int id)
@@ -148,6 +169,26 @@ public class GmbPersistenceManager
 				"d.DRAW_PERSISTENCEID = "+id;
 		Query query = em.createQuery(q);
 		return query.getResultList();
+	}
+	
+	public static Object refresh(Object obj){
+		EntityManager em = emf.createEntityManager();
+		
+		try {
+			em.getTransaction().begin();
+			obj = em.merge(obj);
+			try {
+				em.refresh(obj);
+			} catch (EntityNotFoundException e) {
+				// TODO: handle exception
+				System.out.println(e.getMessage());
+			}
+			em.getTransaction().commit();
+		} catch (RollbackException e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return obj;
 	}
 	
 }

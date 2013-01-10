@@ -446,7 +446,7 @@ public abstract class GroupTip extends Tip
 
 		for(SingleTip tip : tips)
 		{
-			if(tip.getTipTicket().getOwner() == groupMember)
+			if(tip.getOwner().equals(groupMember))
 				memberTips.add(tip);
 		}
 		
@@ -525,7 +525,7 @@ public abstract class GroupTip extends Tip
 
 	public Group getGroup(){ return group; }	
 	public boolean isSubmitted(){ return submitted; }
-	public LinkedList<SingleTip> getTips(){ return (LinkedList<SingleTip>)tips; }
+	public LinkedList<SingleTip> getTips(){ return new LinkedList<SingleTip>(tips); }
 
 	public Customer getOwner(){ return group.getGroupAdmin(); }
 }

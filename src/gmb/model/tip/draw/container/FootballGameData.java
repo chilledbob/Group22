@@ -23,7 +23,7 @@ public class FootballGameData extends PersiObject
 	@Temporal(value = TemporalType.TIMESTAMP)
 	protected Date matchDay;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	protected TotoEvaluation totoEvaluation;
 	
 	protected String homeClubName;
@@ -49,6 +49,10 @@ public class FootballGameData extends PersiObject
 	{
 		this.homeResult = (new Integer(homeResult)).toString();
 		this.visitorResult = (new Integer(visitorResult)).toString();
+	}
+	
+	public void setTotoEvaluation(TotoEvaluation totoEvaluation){
+		this.totoEvaluation = totoEvaluation;
 	}
 	
 	public DateTime getMatchDay(){ return new DateTime(matchDay); }

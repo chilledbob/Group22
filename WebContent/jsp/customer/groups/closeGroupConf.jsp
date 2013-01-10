@@ -29,29 +29,25 @@
 		
 		
 		<div class="sub_navi">
-		
 			<c:url value="newGroup" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
+			<section><a href ="newGroup">Erstellen</a></section>
 			
 			<c:url value="showInvitations" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
+			<section><a href ="showInvitations">Meine Einladungen (${invCount})</a></section>
 			
 			<c:url value="showApplications" var="url">
 				<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
 			
 			<c:url value="myGroups" var="url">
 				<c:param name="uid" value="${currentUser.identifier }"/>
 			</c:url>
-			<section><a href="${url }">Gruppen</a></section>
-			
-			<section>${currentGroup.name} : Admin</section>
-
+			<section><a href="myGroups">Gruppen</a></section>
 		</div>	
 	</div>
 </div>
@@ -59,16 +55,16 @@
 	
 <div id="middle">
 	<div class="main_content_full">
+			<div align="right">Gruppe: ${currentGroup.getName()} [Admin]</div>
+			<h3 align="center">Bestätigung Schliessen </h3>
 		<div class="current_content">
-			<h4 align="center">- Mitglieder -</h4>
 			
 			<c:url value="currentGroupView" var="url1">
 				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
+				<c:param name="groupName" value="${currentGroup.name}" />
 			</c:url>
 			<c:url value="currentGroupViewTips_Admin" var="url2">
 				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			<c:url value="currentGroupViewApplications" var="url3">
 				<c:param name="uid" value="${currentUser.identifier}" />
@@ -81,16 +77,15 @@
 			</c:url>
 			<c:url value="closeGroup" var="url6">
 				<c:param name="uid" value="${currentUser.identifier}" />
-				<c:param name="groupName" value="${currentGroup.name }" />
 			</c:url>
 			
 			<div align="center">
-				<a href ="${url1}">Mitglieder</a>
+				<a href ="${url1}">Mitglieder (${currentGroup.getGroupMembers().size()})</a>
 				<a href ="${url2}">Tipps</a>
-				<a href ="${url3}">Bewerbungen</a>
-				<a href ="${url4}">Einladungen</a> 
+				<a href ="${url3}">Bewerbungen (${applCount})</a>
+				<a href ="${url4}">Einladungen (${invCount})</a> 
 				<a href ="${url6}">Schliessen</a>    
-				   <a href ="${url5}">Abbrechen</a>
+				<a href ="${url5}">Abbrechen</a>
 			</div>	
 			<br>		
 			

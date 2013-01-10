@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://www.salespoint-framework.org/web/taglib" prefix="sp" %>
-    
+<% int k = 1; int h = 7;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -61,21 +61,20 @@
 	
 	 
 	<table border="1">
-	<th> SpielID</th>
+	<th> SpielDatum</th>
 	<th>Manschaft A</th>
 	<th>Manschaft B</th>
-	<th> Ihr Ergebnis</th>
+	<th> Ihr Tip</th>
 	<c:forEach var="e" items="${spielliste}" varStatus="status">
 		<tr>
 			<td>
-				${e.getMatchID()}
-			</td>
-			
-			<td>
-				${e.getNameTeam1()}
+				${e.getMatchDay()}
 			</td>
 			<td>
-				${e.getNameTeam2()}
+				${e.getHomeClubName()}
+			</td>
+			<td>
+				${e.getVisitorClubName()}
 			</td>
 			<td>
 				${tips.get(status.index)}
@@ -94,198 +93,27 @@
 	<h3>Wählen Sie einen Spieltag der aktuellen Saison 2012/2013</h3>
 	<table border="1" cellspacing="1" cellpadding="1">
 	<tr> 
+	<c:forEach items="${totoList }" var="eva">
 		<td>
 			<c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="1" />
+			<c:param name="TotoEvaID" value="${eva.getId() }" />
 			<c:param name="uid" value="${currentUser.identifier}" />
 			</c:url>
-			<a href ="${url}">1</a>	
+			<a href ="${url}">Spieltag <%= k %></a>	
 		</td>
-				
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="2" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">2</a>	</td>
-			
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="3" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">3</a>	</td>
-			
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="4" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">4</a>	</td>
-			
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="5" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">5</a>	</td>
-			
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="6" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">6</a>	</td>
-			
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="7" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">7</a>	</td>
-	<tr>
-	<tr>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="8" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">8</a>	</td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="9" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">9</a>	</td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="10" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">10</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="11" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">11</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="12" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">12</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="13" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">13</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="14" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">14</a></td>
-	<tr>
-	<tr>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="15" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">15</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="16" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">16</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="17" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">17</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="18" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">18</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="19" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">19</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="20" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">20</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="21" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">21</a></td>
-	<tr>
-	<tr>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="22" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">22</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="23" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">23</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="24" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">24</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="25" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">25</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="26" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">26</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="27" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">27</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="28" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">28</a></td>
-	<tr>
-	<tr>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="29" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">29</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="30" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">30</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="31" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">31</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="32" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">32</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="33" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">33</a></td>
-		<td><c:url value="Matches" var="url">
-			<c:param name="GroupOrderID" value="34" />
-			<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<a href ="${url}">34</a></td>
+		<% k++;
+		if((k % h) == 0){%>
+		<%="<tr></tr>" %>
+		<%} %>
+	</c:forEach>
 		</tr>
 		</table>	
 	</c:when>
 	<c:otherwise>
+	
+	<h3>Erstellen Sie einen Tip für den ${spieltag }. Spieltag</h3>
 		<c:url var="url" value="TotoConfirm">
-			<c:param name="GroupOrderID" value="${goid }" />
+			<c:param name="GroupOrderID" value="${eva.getId() }" />
 			<c:param name="uid" value="${currentUser.identifier }" />
 		</c:url>
 <form action="${url }" method="post">
@@ -303,14 +131,14 @@
 		
 		<tr>
 			<td>
-				${e.getMatchID()}
+				${e.getMatchDay()}
 			</td>
 			
 			<td>
-				${e.getNameTeam1()}
+				${e.getHomeClubName()}
 			</td>
 			<td>
-				${e.getNameTeam2()}
+				${e.getVisitorClubName()}
 			</td>
 			<td>
 			

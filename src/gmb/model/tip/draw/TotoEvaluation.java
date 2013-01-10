@@ -35,7 +35,7 @@ import org.joda.time.DateTime;
 @Entity
 public class TotoEvaluation extends Draw 
 {
-	@OneToMany(mappedBy="totoEvaluation",fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER)
 	@JoinColumn(name="TOTOEVALUATION_PERSISTENCEID")
 	protected List<FootballGameData> gameData;
 	
@@ -285,7 +285,7 @@ public class TotoEvaluation extends Draw
 	public boolean removeTip(SingleTip tip){ return super.removeTip(tip, TotoTip.class); }
 	public boolean removeTip(GroupTip tip){ return super.removeTip(tip, TotoGroupTip.class); }
 	
-	public ArrayList<FootballGameData> getGameData(){ return (ArrayList<FootballGameData>) gameData; }
+	public ArrayList<FootballGameData> getGameData(){ return new ArrayList<FootballGameData>(gameData); }
 	
 	/**
 	 * [Intended for direct usage by controller]<br>

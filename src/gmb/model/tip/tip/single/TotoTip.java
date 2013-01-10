@@ -52,7 +52,7 @@ public class TotoTip extends SingleTip
 	 * <ul>
 	 * <li> 0 - successful
 	 * <li>-2 - not enough time left until the planned evaluation of the draw
-	 * <li> 3 - a tipped number is smaller than 0 oder greater than 2
+	 * <li> 3 - a tipped number is smaller than 0 or greater than 2
 	 * </ul>
 	 */
 	public int validateTip(int[] tip)

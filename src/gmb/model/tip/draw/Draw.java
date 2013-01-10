@@ -66,9 +66,11 @@ public abstract class Draw extends PersiObjectSingleTable
 	@PrimaryKeyJoinColumn
 	protected EvaluationResult drawEvaluationResult;
 
-	@OneToMany(mappedBy="draw")
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinColumn(name="DRAW_PERSISTENCEID")
 	protected List<SingleTip> singleTips;
 	@OneToMany(mappedBy="draw")
+	@JoinColumn(name="DRAW_PERSISTENCEID")
 	protected List<GroupTip> groupTips;
 
 	protected static final CDecimal dec100 = new CDecimal(100);
@@ -112,7 +114,10 @@ public abstract class Draw extends PersiObjectSingleTable
 		
 		//accumulate the amount of spent money and all SingleTips:
 		for(SingleTip tip : singleTips)
-			prizePotential = prizePotential.add(tip.getTipTicket().getPerTicketPaidPurchasePrice());
+			prizePotential = prizePotential.add(
+					tip.
+					getTipTicket().
+					getPerTicketPaidPurchasePrice());
 
 		allSingleTips.addAll(singleTips);
 
@@ -207,8 +212,8 @@ public abstract class Draw extends PersiObjectSingleTable
 	 */
 	public ReturnBox<Integer, SingleTip> createAndSubmitSingleTip(TipTicket ticket, int[] tipTip) 
 	{	
-		int result = check_createAndSubmitSingleTip(ticket, tipTip);
-		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
+//		int result = check_createAndSubmitSingleTip(ticket, tipTip);
+//		if(result!=0) return new ReturnBox<Integer, SingleTip>(new Integer(result), null);
 		
 		SingleTip tip = this.createSingleTipPersistent(ticket);
 		tip.setTip(tipTip);

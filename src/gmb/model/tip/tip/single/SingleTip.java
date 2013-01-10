@@ -11,6 +11,7 @@ import gmb.model.tip.tipticket.TipTicket;
 import gmb.model.tip.tipticket.perma.PermaTT;
 import gmb.model.tip.tipticket.type.GenericTT;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,7 +32,7 @@ public abstract class SingleTip extends Tip
 	protected PermaTT permaTT;
 
 	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="TIPTICKET_PERSISTENCEID")
+	@JoinColumn(name="TIPTICKET_PERSISTENCEID",referencedColumnName="PERSISTENCEID")
 	protected TipTicket tipTicket;
 	@ManyToOne
 	protected GroupTip groupTip;

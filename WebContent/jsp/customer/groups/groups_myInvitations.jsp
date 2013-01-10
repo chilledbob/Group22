@@ -29,37 +29,21 @@
 		
 		
 		<div class="sub_navi">
-		
-			<c:url value="newGroup" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Erstellen</a></section>
-			
-			<c:url value="showInvitations" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Einladungen (${invCount})</a></section>
-			
-			<c:url value="showApplications" var="url">
-				<c:param name="uid" value="${currentUser.identifier}" />
-			</c:url>
-			<section><a href ="${url}">Meine Bewerbungen (${applCount})</a></section>
-			
-			<c:url value="myGroups" var="url">
-				<c:param name="uid" value="${currentUser.identifier }"/>
-			</c:url>
-			<section><a href="${url }">Gruppen</a></section>
-
+			<section><a href ="newGroup">Erstellen</a></section>
+			<section><a href ="">Meine Einladungen</a> (${invCount})</section>
+			<section><a href ="showApplications">Meine Bewerbungen (${applCount})</a></section>
+			<section><a href="myGroups">Gruppen</a></section>
 		</div>	
 	</div>
 </div>
 
-	
 <div id="middle">
 	<div class="main_content_full">
-		<div class="current_content">		
+		<div class="current_content" >
+			<br>
+			<h4 align="center">Einladungen<sup style="text-shadow: aqua;font-size: x-small;">${currentUser.identifier}</sup></h4>
 			
-			<h4 align="center">- Meine Einladungen -</h4>
+			<div align="center"><a href ="returnToCustomerGroups">Abbrechen</a></div>
 			
 			<table>
 				<tr>

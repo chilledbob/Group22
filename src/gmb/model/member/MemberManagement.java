@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
+import org.salespointframework.core.user.UserIdentifier;
+
 /**
  * Container class storing members related data.
  *
@@ -41,4 +43,11 @@ public class MemberManagement extends PersiObject
 	
 	public List<MemberDataUpdateRequest> getMemberDataUpdateRequests(){ return requests; }
 	public List<Member> getMembers(){ return members; }
+	
+	public Member getMember(UserIdentifier uid){ 
+		for(Member mem : members){
+			if(mem.getIdentifier().equals(uid)) return mem;
+		}
+		return null;
+	}
 }
